@@ -125,7 +125,6 @@
 		546885AB1CC2DE70003F3614 /* Problem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Problem.swift; sourceTree = "<group>"; };
 		546885AD1CC2E758003F3614 /* ProblemList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemList.swift; sourceTree = "<group>"; };
 		546A2271212362CA00A2FE5D /* CodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeController.swift; sourceTree = "<group>"; };
-		546A22742123698100A2FE5D /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		547C63AB213493F000D50AD4 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		549BABFC212217A60015D6F6 /* LocalCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCodeController.swift; sourceTree = "<group>"; };
 		54A78F492130A720009122E4 /* TextFieldStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldStepperView.swift; sourceTree = "<group>"; };
@@ -270,7 +269,6 @@
 				546885AB1CC2DE70003F3614 /* Problem.swift */,
 				546885AD1CC2E758003F3614 /* ProblemList.swift */,
 				54A78F492130A720009122E4 /* TextFieldStepperView.swift */,
-				546A22742123698100A2FE5D /* MyPlayground.playground */,
 				546885811CC2BA0C003F3614 /* Assets.xcassets */,
 				546885831CC2BA0C003F3614 /* Main.storyboard */,
 				546240C81CC604E0009AA888 /* Extensions.swift */,
