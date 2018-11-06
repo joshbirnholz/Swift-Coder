@@ -4224,7 +4224,7 @@ fileprivate let codingBatArray2Problems: [Problem] = [
 		eulerMode: false
 	),
 	Problem(
-		title: "matchUp",
+		title: "matchUp2",
 		returnType: Int.self,
 		parameters: [
 			Problem.Parameter(name: "nums1", type: [Int].self),
@@ -4247,11 +4247,648 @@ fileprivate let codingBatArray2Problems: [Problem] = [
 			Problem.TestCase(expectation: 1, arguments: [4], [5])
 		],
 		eulerMode: false
+	),
+	Problem(
+		title: "has77",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if the array contains two 7's next to each other, or there are two 7's separated by one element, such as with [7, 1, 7].",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 7, 7]),
+			Problem.TestCase(expectation: true, arguments: [1, 7, 1, 7]),
+			Problem.TestCase(expectation: false, arguments: [1, 7, 1, 1, 7]),
+			Problem.TestCase(expectation: true, arguments: [7, 7, 1, 1, 7]),
+			Problem.TestCase(expectation: false, arguments: [2, 7, 2, 2, 7, 2]),
+			Problem.TestCase(expectation: true, arguments: [2, 7, 2, 2, 7, 7]),
+			Problem.TestCase(expectation: true, arguments: [7, 2, 7, 2, 2, 7]),
+			Problem.TestCase(expectation: false, arguments: [7, 2, 6, 2, 2, 7]),
+			Problem.TestCase(expectation: true, arguments: [7, 7, 7]),
+			Problem.TestCase(expectation: true, arguments: [7, 1, 7]),
+			Problem.TestCase(expectation: false, arguments: [7, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 2]),
+			Problem.TestCase(expectation: false, arguments: [1, 7]),
+			Problem.TestCase(expectation: false, arguments: [7])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "has12",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if there is a 1 in the array with a 2 somewhere later in the array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 3, 2]),
+			Problem.TestCase(expectation: true, arguments: [3, 1, 2]),
+			Problem.TestCase(expectation: true, arguments: [3, 1, 4, 5, 2]),
+			Problem.TestCase(expectation: false, arguments: [3, 1, 4, 5, 6]),
+			Problem.TestCase(expectation: true, arguments: [3, 1, 4, 1, 6, 2]),
+			Problem.TestCase(expectation: true, arguments: [2, 1, 4, 1, 6, 2]),
+			Problem.TestCase(expectation: false, arguments: [2, 1, 4, 1, 6]),
+			Problem.TestCase(expectation: false, arguments: [1]),
+			Problem.TestCase(expectation: false, arguments: [2, 1, 3]),
+			Problem.TestCase(expectation: true, arguments: [2, 1, 3, 2]),
+			Problem.TestCase(expectation: false, arguments: [2]),
+			Problem.TestCase(expectation: false, arguments: [3, 2]),
+			Problem.TestCase(expectation: true, arguments: [3, 1, 3, 2]),
+			Problem.TestCase(expectation: false, arguments: [3, 5, 9]),
+			Problem.TestCase(expectation: false, arguments: [3, 5, 1]),
+			Problem.TestCase(expectation: false, arguments: [3, 2, 1]),
+			Problem.TestCase(expectation: true, arguments: [1, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "modThree",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if the array contains either 3 even or 3 odd values all next to each other.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [2, 1, 3, 5]),
+			Problem.TestCase(expectation: false, arguments: [2, 1, 2, 5]),
+			Problem.TestCase(expectation: true, arguments: [2, 4, 2, 5]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 1, 2, 1]),
+			Problem.TestCase(expectation: true, arguments: [9, 9, 9]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 2]),
+			Problem.TestCase(expectation: false, arguments: [1]),
+			Problem.TestCase(expectation: false, arguments: [Int]()),
+			Problem.TestCase(expectation: false, arguments: [9, 7, 2, 9]),
+			Problem.TestCase(expectation: false, arguments: [9, 7, 2, 9, 2, 2]),
+			Problem.TestCase(expectation: true, arguments: [9, 7, 2, 9, 2, 2, 6])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "haveThree",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if the value 3 appears in the array exactly 3 times, and no 3's are next to each other.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [3, 1, 3, 1, 3]),
+			Problem.TestCase(expectation: false, arguments: [3, 1, 3, 3]),
+			Problem.TestCase(expectation: false, arguments: [3, 4, 3, 3, 4]),
+			Problem.TestCase(expectation: false, arguments: [1, 3, 1, 3, 1, 2]),
+			Problem.TestCase(expectation: true, arguments: [1, 3, 1, 3, 1, 3]),
+			Problem.TestCase(expectation: false, arguments: [1, 3, 3, 1, 3]),
+			Problem.TestCase(expectation: false, arguments: [1, 3, 1, 3, 1, 3, 4, 3]),
+			Problem.TestCase(expectation: true, arguments: [3, 4, 3, 4, 3, 4, 4]),
+			Problem.TestCase(expectation: false, arguments: [3, 3, 3]),
+			Problem.TestCase(expectation: false, arguments: [1, 3]),
+			Problem.TestCase(expectation: false, arguments: [3]),
+			Problem.TestCase(expectation: false, arguments: [1])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "twoTwo",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if every 2 that appears in the array is next to another 2.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [4, 2, 2, 3]),
+			Problem.TestCase(expectation: true, arguments: [2, 2, 4]),
+			Problem.TestCase(expectation: false, arguments: [2, 2, 4, 2]),
+			Problem.TestCase(expectation: true, arguments: [1, 3, 4]),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 2, 3, 4]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 3, 4]),
+			Problem.TestCase(expectation: true, arguments: [2, 2]),
+			Problem.TestCase(expectation: true, arguments: [2, 2, 7]),
+			Problem.TestCase(expectation: false, arguments: [2, 2, 7, 2, 1]),
+			Problem.TestCase(expectation: true, arguments: [4, 2, 2, 2]),
+			Problem.TestCase(expectation: true, arguments: [2, 2, 2]),
+			Problem.TestCase(expectation: false, arguments: [1, 2]),
+			Problem.TestCase(expectation: false, arguments: [2]),
+			Problem.TestCase(expectation: true, arguments: [1]),
+			Problem.TestCase(expectation: true, arguments: [Int]()),
+			Problem.TestCase(expectation: true, arguments: [5, 2, 2, 3]),
+			Problem.TestCase(expectation: false, arguments: [2, 2, 5, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "sameEnds",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "len", type: Int.self)
+		],
+		prompt: "Return true if the group of N numbers at the start and end of the array are the same. For example, with [5, 6, 45, 99, 13, 5, 6], the ends are the same for n=0 and n=2, and false for n=1 and n=3. You may assume that n is in the range 0...nums.count.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: false, arguments: [5, 6, 45, 99, 13, 5, 6], 1),
+			Problem.TestCase(expectation: true, arguments: [5, 6, 45, 99, 13, 5, 6], 2),
+			Problem.TestCase(expectation: false, arguments: [5, 6, 45, 99, 13, 5, 6], 3),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 5, 2, 1], 1),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 5, 2, 1], 2),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 5, 2, 1], 0),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 5, 2, 1], 5),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1], 0),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1], 1),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1], 2),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1], 3),
+			Problem.TestCase(expectation: true, arguments: [1], 1),
+			Problem.TestCase(expectation: true, arguments: [Int](), 0),
+			Problem.TestCase(expectation: false, arguments: [4, 2, 4, 5], 1)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "tripleUp",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return true if the array contains, somewhere, three increasing adjacent numbers like .... 4, 5, 6, ... or 23, 24, 25.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 4, 5, 6, 2]),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 4]),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 4, 5, 7, 6, 5, 6, 7, 6]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 4, 5, 7, 6, 5, 7, 7, 6]),
+			Problem.TestCase(expectation: false, arguments: [1, 2]),
+			Problem.TestCase(expectation: false, arguments: [1]),
+			Problem.TestCase(expectation: false, arguments: [Int]()),
+			Problem.TestCase(expectation: true, arguments: [10, 9, 8, -100, -99, -98, 100]),
+			Problem.TestCase(expectation: false, arguments: [10, 9, 8, -100, -99, 99, 100]),
+			Problem.TestCase(expectation: true, arguments: [-100, -99, -99, 100, 101, 102]),
+			Problem.TestCase(expectation: false, arguments: [2, 3, 5, 6, 8, 9, 2, 3])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "fizzArray3",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "end", type: Int.self)
+		],
+		prompt: "Given start and end numbers, return a new array containing the sequence of integers from start up to but not including end, so start=5 and end=10 yields [5, 6, 7, 8, 9]. The end number will be greater or equal to the start number. Note that a length-0 array is valid.",
+		solution: nil,
+		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
+		testCases: [
+			Problem.TestCase(expectation: [5, 6, 7, 8, 9], arguments: 5, 10),
+			Problem.TestCase(expectation: [11, 12, 13, 14, 15, 16, 17], arguments: 11, 18),
+			Problem.TestCase(expectation: [1, 2], arguments: 1, 3),
+			Problem.TestCase(expectation: [1], arguments: 1, 2),
+			Problem.TestCase(expectation: [Int](), arguments: 1, 1),
+			Problem.TestCase(expectation: [1000, 1001, 1002, 1003, 1004], arguments: 1000, 1005)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "shiftLeft",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return an array that is \"left shifted\" by one -- so [6, 2, 5, 3] returns [2, 5, 3, 6].",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [2, 5, 3, 6], arguments: [6, 2, 5, 3]),
+			Problem.TestCase(expectation: [2, 1], arguments: [1, 2]),
+			Problem.TestCase(expectation: [1], arguments: [1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [1, 2, 2, 4, 1], arguments: [1, 1, 2, 2, 4]),
+			Problem.TestCase(expectation: [1, 1, 1], arguments: [1, 1, 1]),
+			Problem.TestCase(expectation: [2, 3, 1], arguments: [1, 2, 3])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "tenRun",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "For each multiple of 10 in the given array, change all the values following it to be that multiple of 10, until encountering another multiple of 10. So [2, 10, 3, 4, 20, 5] yields [2, 10, 10, 10, 20, 20].",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [2, 10, 10, 10, 20, 20], arguments: [2, 10, 3, 4, 20, 5]),
+			Problem.TestCase(expectation: [10, 10, 20, 20], arguments: [10, 1, 20, 2]),
+			Problem.TestCase(expectation: [10, 10, 10, 20], arguments: [10, 1, 9, 20]),
+			Problem.TestCase(expectation: [1, 2, 50, 50], arguments: [1, 2, 50, 1]),
+			Problem.TestCase(expectation: [1, 20, 50, 50], arguments: [1, 20, 50, 1]),
+			Problem.TestCase(expectation: [10, 10], arguments: [10, 10]),
+			Problem.TestCase(expectation: [10, 10], arguments: [10, 2]),
+			Problem.TestCase(expectation: [0, 0], arguments: [0, 2]),
+			Problem.TestCase(expectation: [1, 2], arguments: [1, 2]),
+			Problem.TestCase(expectation: [1], arguments: [1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]())
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "pre4",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given a non-empty array of ints, return a new array containing the elements from the original array that come before the first 4 in the original array. The original array will contain at least one 4.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 2], arguments: [1, 2, 4, 1]),
+			Problem.TestCase(expectation: [3, 1], arguments: [3, 1, 4]),
+			Problem.TestCase(expectation: [1], arguments: [1, 4, 4]),
+			Problem.TestCase(expectation: [1], arguments: [1, 4, 4, 2]),
+			Problem.TestCase(expectation: [1, 3], arguments: [1, 3, 4, 2, 4]),
+			Problem.TestCase(expectation: [Int](), arguments: [4, 4]),
+			Problem.TestCase(expectation: [3, 3], arguments: [3, 3, 4]),
+			Problem.TestCase(expectation: [1, 2, 1], arguments: [1, 2, 1, 4]),
+			Problem.TestCase(expectation: [2, 1], arguments: [2, 1, 4, 2]),
+			Problem.TestCase(expectation: [2, 1, 2, 1], arguments: [2, 1, 2, 1, 4, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "post4",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given a non-empty array of ints, return a new array containing the elements from the original array that come after the last 4 in the original array. The original array will contain at least one 4.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 2], arguments: [2, 4, 1, 2]),
+			Problem.TestCase(expectation: [2], arguments: [4, 1, 4, 2]),
+			Problem.TestCase(expectation: [1, 2, 3], arguments: [4, 4, 1, 2, 3]),
+			Problem.TestCase(expectation: [2], arguments: [4, 2]),
+			Problem.TestCase(expectation: [3], arguments: [4, 4, 3]),
+			Problem.TestCase(expectation: [Int](), arguments: [4, 4]),
+			Problem.TestCase(expectation: [Int](), arguments: [4]),
+			Problem.TestCase(expectation: [3, 2], arguments: [2, 4, 1, 4, 3, 2]),
+			Problem.TestCase(expectation: [2, 2, 2], arguments: [4, 1, 4, 2, 2, 2]),
+			Problem.TestCase(expectation: [3, 2], arguments: [3, 4, 3, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "notAlone",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "val", type: Int.self)
+		],
+		prompt: "We'll say that an element in an array is \"alone\" if there are values before and after it, and those values are different from it. Return a version of the given array where every instance of the given value which is alone is replaced by whichever value to its left or right is larger.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 3, 3], arguments: [1, 2, 3], 2),
+			Problem.TestCase(expectation: [1, 3, 3, 5, 5, 2], arguments: [1, 2, 3, 2, 5, 2], 2),
+			Problem.TestCase(expectation: [3, 4], arguments: [3, 4], 3),
+			Problem.TestCase(expectation: [3, 3], arguments: [3, 3], 3),
+			Problem.TestCase(expectation: [1, 3, 3, 2], arguments: [1, 3, 1, 2], 1),
+			Problem.TestCase(expectation: [3], arguments: [3], 3),
+			Problem.TestCase(expectation: [Int](), arguments: [Int](), 3),
+			Problem.TestCase(expectation: [7, 7, 6], arguments: [7, 1, 6], 1),
+			Problem.TestCase(expectation: [1, 1, 1], arguments: [1, 1, 1], 1),
+			Problem.TestCase(expectation: [1, 1, 1, 2], arguments: [1, 1, 1, 2], 1)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "zeroFront",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return an array that contains the exact same numbers as the given array, but rearranged so that all the zeros are grouped at the start of the array. The order of the non-zero numbers does not matter. So [1, 0, 0, 1] becomes [0 ,0, 1, 1]. You may modify and return the given array or make a new array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [0, 0, 1, 1], arguments: [1, 0, 0, 1]),
+			Problem.TestCase(expectation: [0, 0, 1, 1, 1], arguments: [0, 1, 1, 0, 1]),
+			Problem.TestCase(expectation: [0, 1], arguments: [1, 0]),
+			Problem.TestCase(expectation: [0, 1], arguments: [0, 1]),
+			Problem.TestCase(expectation: [0, 1, 1, 1], arguments: [1, 1, 1, 0]),
+			Problem.TestCase(expectation: [2, 2, 2, 2], arguments: [2, 2, 2, 2]),
+			Problem.TestCase(expectation: [0, 0, 0, 1], arguments: [0, 0, 1, 0]),
+			Problem.TestCase(expectation: [0, 0, 0, -1, -1], arguments: [-1, 0, 0, -1, 0]),
+			Problem.TestCase(expectation: [0, 0, -3, -3], arguments: [0, -3, 0, -3]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [0, 0, 9, 9, 9, 9], arguments: [9, 9, 0, 9, 0, 9])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "withoutTen",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return a version of the given array where all the 10's have been removed. The remaining elements should shift left towards the start of the array as needed, and the empty spaces a the end of the array should be 0. So [1, 10, 10, 2] yields [1, 2, 0, 0].",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 2, 0, 0], arguments: [1, 10, 10, 2]),
+			Problem.TestCase(expectation: [2, 0, 0], arguments: [10, 2, 10]),
+			Problem.TestCase(expectation: [1, 99, 0], arguments: [1, 99, 10]),
+			Problem.TestCase(expectation: [13, 14, 0, 0], arguments: [10, 13, 10, 14]),
+			Problem.TestCase(expectation: [13, 14, 0, 0, 0], arguments: [10, 13, 10, 14, 10]),
+			Problem.TestCase(expectation: [3, 0, 0], arguments: [10, 10, 3]),
+			Problem.TestCase(expectation: [1], arguments: [1]),
+			Problem.TestCase(expectation: [13, 1], arguments: [13, 1]),
+			Problem.TestCase(expectation: [0], arguments: [10]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]())
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "zeroMax",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return a version of the given array where each zero value in the array is replaced by the largest odd value to the right of the zero in the array. If there is no odd value to the right of the zero, leave the zero as a zero.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [5, 5, 3, 3], arguments: [0, 5, 0, 3]),
+			Problem.TestCase(expectation: [3, 4, 3, 3], arguments: [0, 4, 0, 3]),
+			Problem.TestCase(expectation: [1, 1, 0], arguments: [0, 1, 0]),
+			Problem.TestCase(expectation: [5, 1, 5], arguments: [0, 1, 5]),
+			Problem.TestCase(expectation: [0, 2, 0], arguments: [0, 2, 0]),
+			Problem.TestCase(expectation: [1], arguments: [1]),
+			Problem.TestCase(expectation: [0], arguments: [0]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [7, 3, 4, 3, 0, 2], arguments: [7, 0, 4, 3, 0, 2]),
+			Problem.TestCase(expectation: [7, 3, 4, 3, 1, 1], arguments: [7, 0, 4, 3, 0, 1]),
+			Problem.TestCase(expectation: [7, 3, 4, 3, 0, 0], arguments: [7, 0, 4, 3, 0, 0]),
+			Problem.TestCase(expectation: [7, 7, 1, 7, 7, 7], arguments: [7, 0, 1, 0, 0, 7])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "evenOdd",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return an array that contains the exact same numbers as the given array, but rearranged so that all the even numbers come before all the odd numbers. Other than that, the numbers can be in any order.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [0, 0, 0, 1, 1, 1, 1], arguments: [1, 0, 1, 0, 0, 1, 1]),
+			Problem.TestCase(expectation: [2, 3, 3], arguments: [3, 3, 2]),
+			Problem.TestCase(expectation: [2, 2, 2], arguments: [2, 2, 2]),
+			Problem.TestCase(expectation: [2, 2, 3], arguments: [3, 2, 2]),
+			Problem.TestCase(expectation: [0, 0, 1, 1, 1], arguments: [1, 1, 0, 1, 0]),
+			Problem.TestCase(expectation: [1], arguments: [1]),
+			Problem.TestCase(expectation: [2, 1], arguments: [1, 2]),
+			Problem.TestCase(expectation: [2, 1], arguments: [2, 1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]())
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "fizzBuzz",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "end", type: Int.self)
+		],
+		prompt: "This is slightly more difficult version of the famous FizzBuzz problem which is sometimes given as a first problem for job interviews. Consider the series of numbers beginning at start and running up to but not including end, so for example start=1 and end=5 gives the series 1, 2, 3, 4. Return a new String array containing the string form of these numbers, except for multiples of 3, use \"Fizz\" instead of the number, for multiples of 5 use \"Buzz\", and for multiples of both 3 and 5 use \"FizzBuzz\". In Swift, String(xxx) will make the String form of an Int. This version is a little more complicated than the usual version since you have to allocate and index into an array instead of just printing, and we vary the start/end instead of just always doing 1...100.",
+		solution: nil,
+		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
+		testCases: [
+			Problem.TestCase(expectation: ["1", "2", "Fizz", "4", "Buzz"], arguments: 1, 6),
+			Problem.TestCase(expectation: ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7"], arguments: 1, 8),
+			Problem.TestCase(expectation: ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz"], arguments: 1, 11),
+			Problem.TestCase(expectation: ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz"], arguments: 1, 16),
+			Problem.TestCase(expectation: ["1", "2", "Fizz"], arguments: 1, 4),
+			Problem.TestCase(expectation: ["1"], arguments: 1, 2),
+			Problem.TestCase(expectation: ["Buzz", "Fizz", "52", "53", "Fizz", "Buzz"], arguments: 50, 56),
+			Problem.TestCase(expectation: ["FizzBuzz", "16"], arguments: 15, 17),
+			Problem.TestCase(expectation: ["FizzBuzz", "31", "32", "Fizz", "34", "Buzz"], arguments: 30, 36),
+			Problem.TestCase(expectation: ["Buzz", "1001", "Fizz", "1003", "1004", "FizzBuzz"], arguments: 1000, 1006),
+			Problem.TestCase(expectation: ["Fizz", "Buzz", "101"], arguments: 99, 102),
+			Problem.TestCase(expectation: ["14", "FizzBuzz", "16", "17", "Fizz", "19"], arguments: 14, 20)
+		],
+		eulerMode: false
 	)
 ]
 
 // MARK: Array-3
 fileprivate let codingBatArray3roblems: [Problem] = [
+	Problem(
+		title: "maxSpan",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Consider the leftmost and righmost appearances of some value in an array. We'll say that the \"span\" is the number of elements between the two inclusive. A single value has a span of 1. Returns the largest span found in the given array. (Efficiency is not a priority.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 4, arguments: [1, 2, 1, 1, 3]),
+			Problem.TestCase(expectation: 6, arguments: [1, 4, 2, 1, 4, 1, 4]),
+			Problem.TestCase(expectation: 6, arguments: [1, 4, 2, 1, 4, 4, 4]),
+			Problem.TestCase(expectation: 3, arguments: [3, 3, 3]),
+			Problem.TestCase(expectation: 3, arguments: [3, 9, 3]),
+			Problem.TestCase(expectation: 2, arguments: [3, 9, 9]),
+			Problem.TestCase(expectation: 1, arguments: [3, 9]),
+			Problem.TestCase(expectation: 2, arguments: [3, 3]),
+			Problem.TestCase(expectation: 0, arguments: [Int]()),
+			Problem.TestCase(expectation: 1, arguments: [1])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "fix34",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Return an array that contains exactly the same numbers as the given array, but rearranged so that every 3 is immediately followed by a 4. Do not move the 3's, but every other number may move. The array contains the same number of 3's and 4's, every 3 has a number after it that is not a 3, and a 3 appears in the array before any 4.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 3, 4, 1], arguments: [1, 3, 1, 4]),
+			Problem.TestCase(expectation: [1, 3, 4, 1, 1, 3, 4], arguments: [1, 3, 1, 4, 4, 3, 1]),
+			Problem.TestCase(expectation: [3, 4, 2, 2], arguments: [3, 2, 2, 4]),
+			Problem.TestCase(expectation: [3, 4, 3, 4, 2, 2], arguments: [3, 2, 3, 2, 4, 4]),
+			Problem.TestCase(expectation: [2, 3, 4, 3, 4, 2, 2], arguments: [2, 3, 2, 3, 2, 4, 4]),
+			Problem.TestCase(expectation: [5, 3, 4, 5, 5, 5, 5, 5, 3, 4, 3, 4], arguments: [5, 3, 5, 4, 5, 4, 5, 4, 3, 5, 3, 5]),
+			Problem.TestCase(expectation: [3, 4, 1], arguments: [3, 1, 4]),
+			Problem.TestCase(expectation: [3, 4, 1], arguments: [3, 4, 1]),
+			Problem.TestCase(expectation: [1, 1, 1], arguments: [1, 1, 1]),
+			Problem.TestCase(expectation: [1], arguments: [1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [7, 3, 4, 7, 7], arguments: [7, 3, 7, 7, 4]),
+			Problem.TestCase(expectation: [3, 4, 1, 3, 4, 1], arguments: [3, 1, 4, 3, 1, 4]),
+			Problem.TestCase(expectation: [3, 4, 1, 3, 4, 1], arguments: [3, 1, 1, 3, 4, 4])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "fix45",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "(This is a slightly harder version of the fix34 problem.) Return an array that contains exactly the same numbers as the given array, but rearranged so that every 4 is immediately followed by a 5. Do not move the 4's, but every other number may move. The array contains the same number of 4's and 5's, and every 4 has a number after it that is not a 4. In this version, 5's may appear anywhere in the original array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [9, 4, 5, 4, 5, 9], arguments: [5, 4, 9, 4, 9, 5]),
+			Problem.TestCase(expectation: [1, 4, 5, 1], arguments: [1, 4, 1, 5]),
+			Problem.TestCase(expectation: [1, 4, 5, 1, 1, 4, 5], arguments: [1, 4, 1, 5, 5, 4, 1]),
+			Problem.TestCase(expectation: [4, 5, 4, 5, 9, 9, 4, 5, 9], arguments: [4, 9, 4, 9, 5, 5, 4, 9, 5]),
+			Problem.TestCase(expectation: [1, 1, 4, 5, 4, 5], arguments: [5, 5, 4, 1, 4, 1]),
+			Problem.TestCase(expectation: [4, 5, 2, 2], arguments: [4, 2, 2, 5]),
+			Problem.TestCase(expectation: [4, 5, 4, 5, 2, 2], arguments: [4, 2, 4, 2, 5, 5]),
+			Problem.TestCase(expectation: [4, 5, 4, 5, 2], arguments: [4, 2, 4, 5, 5]),
+			Problem.TestCase(expectation: [1, 1, 1], arguments: [1, 1, 1]),
+			Problem.TestCase(expectation: [4, 5], arguments: [4, 5]),
+			Problem.TestCase(expectation: [1, 4, 5], arguments: [5, 4, 1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [1, 4, 5, 4, 5], arguments: [5, 4, 5, 4, 1]),
+			Problem.TestCase(expectation: [4, 5, 4, 5, 1], arguments: [4, 5, 4, 1, 5]),
+			Problem.TestCase(expectation: [3, 4, 5], arguments: [3, 4, 5]),
+			Problem.TestCase(expectation: [4, 5, 1], arguments: [4, 1, 5]),
+			Problem.TestCase(expectation: [1, 4, 5], arguments: [5, 4, 1]),
+			Problem.TestCase(expectation: [2, 4, 5, 2], arguments: [2, 4, 2, 5])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "canBalance",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given a non-empty array, return true if there is a place to split the array so that the sum of the numbers on one side is equal to the sum of the numbers on the other side.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1, 2, 1]),
+			Problem.TestCase(expectation: false, arguments: [2, 1, 1, 2, 1]),
+			Problem.TestCase(expectation: true, arguments: [10, 10]),
+			Problem.TestCase(expectation: true, arguments: [10, 0, 1, -1, 10]),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1, 1, 4]),
+			Problem.TestCase(expectation: false, arguments: [2, 1, 1, 1, 4]),
+			Problem.TestCase(expectation: false, arguments: [2, 3, 4, 1, 2]),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 3, 1, 0, 2, 3]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 3, 1, 0, 1, 3]),
+			Problem.TestCase(expectation: false, arguments: [1]),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1, 2, 1])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "squareUp",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "Given n>=0, create an array length n*n with the following pattern, shown here for n=3 :\n[0, 0, 1,    0, 2, 1,    3, 2, 1] (spaces added to show the 3 groups).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [0, 0, 1, 0, 2, 1, 3, 2, 1], arguments: 3),
+			Problem.TestCase(expectation: [0, 1, 2, 1], arguments: 2),
+			Problem.TestCase(expectation: [0, 0, 0, 1, 0, 0, 2, 1, 0, 3, 2, 1, 4, 3, 2, 1], arguments: 4),
+			Problem.TestCase(expectation: [1], arguments: 1),
+			Problem.TestCase(expectation: [Int](), arguments: 0),
+			Problem.TestCase(expectation: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 0, 0, 3, 2, 1, 0, 0, 4, 3, 2, 1, 0, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1], arguments: 6)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "seriesUp",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "Given n>=0, create an array with the pattern [1,    1, 2,    1, 2, 3,   ... 1, 2, 3 .. n] (spaces added to show the grouping). Note that the length of the array will be 1 + 2 + 3 ... + n, which is known to sum to exactly n*(n + 1)/2.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 1, 2, 1, 2, 3], arguments: 3),
+			Problem.TestCase(expectation: [1, 1, 2, 1, 2, 3, 1, 2, 3, 4], arguments: 4),
+			Problem.TestCase(expectation: [1, 1, 2], arguments: 2),
+			Problem.TestCase(expectation: [1], arguments: 1),
+			Problem.TestCase(expectation: [Int](), arguments: 0),
+			Problem.TestCase(expectation: [1, 1, 2, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6], arguments: 6)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "maxMirror",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "We'll say that a \"mirror\" section in an array is a group of contiguous elements such that somewhere in the array, the same group appears in reverse order. For example, the largest mirror section in [1, 2, 3, 8, 9, 3, 2, 1] is length 3 (the [1, 2, 3] part). Return the size of the largest mirror section found in the given array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 3, arguments: [1, 2, 3, 8, 9, 3, 2, 1]),
+			Problem.TestCase(expectation: 3, arguments: [1, 2, 1, 4]),
+			Problem.TestCase(expectation: 2, arguments: [7, 1, 2, 9, 7, 2, 1]),
+			Problem.TestCase(expectation: 4, arguments: [21, 22, 9, 8, 7, 6, 23, 24, 6, 7, 8, 9, 25, 7, 8, 9]),
+			Problem.TestCase(expectation: 4, arguments: [1, 2, 1, 20, 21, 1, 2, 1, 2, 23, 24, 2, 1, 2, 1, 25]),
+			Problem.TestCase(expectation: 5, arguments: [1, 2, 3, 2, 1]),
+			Problem.TestCase(expectation: 2, arguments: [1, 2, 3, 3, 8]),
+			Problem.TestCase(expectation: 2, arguments: [1, 2, 7, 8, 1, 7, 2]),
+			Problem.TestCase(expectation: 3, arguments: [1, 1, 1]),
+			Problem.TestCase(expectation: 1, arguments: [1]),
+			Problem.TestCase(expectation: 0, arguments: [Int]()),
+			Problem.TestCase(expectation: 3, arguments: [9, 1, 1, 4, 2, 1, 1, 1]),
+			Problem.TestCase(expectation: 7, arguments: [5, 9, 9, 4, 5, 4, 9, 9, 2]),
+			Problem.TestCase(expectation: 2, arguments: [5, 9, 9, 6, 5, 4, 9, 9, 2]),
+			Problem.TestCase(expectation: 3, arguments: [5, 9, 1, 6, 5, 4, 1, 9, 5])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "countClumps",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Say that a \"clump\" in an array is a series of 2 or more adjacent elements of the same value. Return the number of clumps in the given array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 2, arguments: [1, 2, 2, 3, 4, 4]),
+			Problem.TestCase(expectation: 2, arguments: [1, 1, 2, 1, 1]),
+			Problem.TestCase(expectation: 1, arguments: [1, 1, 1, 1, 1]),
+			Problem.TestCase(expectation: 0, arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: 4, arguments: [2, 2, 1, 1, 1, 2, 1, 1, 2, 2]),
+			Problem.TestCase(expectation: 4, arguments: [0, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2]),
+			Problem.TestCase(expectation: 5, arguments: [0, 0, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2]),
+			Problem.TestCase(expectation: 5, arguments: [0, 0, 0, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2]),
+			Problem.TestCase(expectation: 0, arguments: [Int]())
+		],
+		eulerMode: false
+	)
 ]
 
 // MARK: Recursion-1

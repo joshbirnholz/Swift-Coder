@@ -11,6 +11,7 @@ import Foundation
 class LocalCodeController: CodeController {
 
 	public let baseDirectory: URL
+	public let tempDirectory: URL
 	
 	private init() {
 		guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Swift Coder", isDirectory: true) else {
@@ -26,6 +27,12 @@ class LocalCodeController: CodeController {
 		}
 		
 		baseDirectory = dir
+		
+		do {
+			tempDirectory = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: dir, create: true)
+		} catch {
+			fatalError("Couldn't get temp directory")
+		}
 	}
 	
 	public static let shared = LocalCodeController()
@@ -76,7 +83,7 @@ class LocalCodeController: CodeController {
 		
 		if let error = error {
 			if error.lowercased().contains("error") {
-				var actualErrorText = error.replacingOccurrences(of: baseDirectory.path + "/", with: "")
+				var actualErrorText = error.replacingOccurrences(of: baseDirectory.path + "/", with: "").replacingOccurrences(of: tempDirectory.path + "/", with: "")
 				var lines = actualErrorText.split(separator: "\n")
 				
 				for (index, line) in lines.enumerated() {
@@ -118,7 +125,7 @@ class LocalCodeController: CodeController {
 		let startTime = Date()
 		
 		do {
-			let path = baseDirectory.appendingPathComponent("runnable_\(problem.functionName)", isDirectory: false).path
+			let path = tempDirectory.appendingPathComponent("runnable_\(problem.functionName)", isDirectory: false).path
 			let runResult = try execute(launchPath: path, command: command, timeout: 10)
 			
 			let runTime = Date().timeIntervalSince(startTime)
@@ -171,12 +178,12 @@ class LocalCodeController: CodeController {
 			completion(Result {
 				// Try compiling code on its own. If there are compile errors, they will be thrown
 				let filePath = self.baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
-				let outputPath = self.baseDirectory.appendingPathComponent(problem.functionName).path
+				let outputPath = self.tempDirectory.appendingPathComponent(problem.functionName).path
 				try self.swiftc(filePath: filePath, outputPath: outputPath)
 				
 				// If successful, compile runnable tester
-				let runnableProgramFilePath = self.baseDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
-				let runnableProgramOutputPath = self.baseDirectory.appendingPathComponent("runnable_" + problem.functionName).path
+				let runnableProgramFilePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
+				let runnableProgramOutputPath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName).path
 				let runnableProgram = problem.runnableVersionForCode(code: code)
 				
 				// Write runnable tester
@@ -203,12 +210,12 @@ class LocalCodeController: CodeController {
 			do {
 				// Try compiling code on its own. If there are compile errors, they will be thrown
 				let filePath = self.baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
-				let outputPath = self.baseDirectory.appendingPathComponent(problem.functionName).path
+				let outputPath = self.tempDirectory.appendingPathComponent(problem.functionName).path
 				try self.swiftc(filePath: filePath, outputPath: outputPath)
 				
 				// If successful, compile runnable tester
-				let runnableProgramFilePath = self.baseDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
-				let runnableProgramOutputPath = self.baseDirectory.appendingPathComponent("runnable_" + problem.functionName).path
+				let runnableProgramFilePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
+				let runnableProgramOutputPath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName).path
 				let runnableProgram = problem.runnableVersionForCode(code: code)
 				
 				do {

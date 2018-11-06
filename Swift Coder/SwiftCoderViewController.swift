@@ -183,32 +183,22 @@ class SwiftCoderViewController: NSViewController {
 		
 	}
 	
-	override func viewDidAppear() {
-		super.viewDidAppear()
+	override func viewWillDisappear() {
+		super.viewWillDisappear()
 		
-		if let closeButton = self.view.window?.standardWindowButton(.closeButton) {
-			closeButton.target = self
-			closeButton.action = #selector(closeButtonPressed)
-		}
-	}
-	
-	/// Ensures that code is saved before quitting the app when the close button is pressed
-	@objc func closeButtonPressed() {
 		do {
+			// Save code
 			try self.codeController.saveCode(self.inputTextView.text, for: self.problem)
-			view.window?.close()
 		} catch {
-			let alert = NSAlert()
-			alert.messageText = "There was a problem saving your code. The error was:\n\n\(error.localizedDescription)\n\nDo you want to quit anyway?"
-			
-			alert.addButton(withTitle: "Quit")
-			alert.addButton(withTitle: "Don't Quit")
-			
-			if alert.runModal() == .alertFirstButtonReturn {
-				self.view.window?.close()
-			}
+			NSLog("Error: Could not save code: \(error)")
 		}
 		
+		do {
+			// Delete temporary files
+			try FileManager.default.removeItem(at: LocalCodeController.shared.tempDirectory)
+		} catch {
+			NSLog("Error: Could not delete contents of \(LocalCodeController.shared.tempDirectory.path): \(error)")
+		}
 	}
 	
 	@objc @available(OSX 10.14, *)
@@ -645,11 +635,11 @@ class SwiftCoderViewController: NSViewController {
 		let alert = NSAlert()
 		alert.messageText = "Are you sure you want to start over?"
 		alert.informativeText = "This will delete all of your code for this problem."
-		alert.addButton(withTitle: "Start Over")
 		alert.addButton(withTitle: "Cancel")
+		alert.addButton(withTitle: "Start Over")
 		
 		switch alert.runModal() {
-		case NSApplication.ModalResponse.alertFirstButtonReturn:
+		case NSApplication.ModalResponse.alertSecondButtonReturn:
 			inputTextView.text = problem.startingCode
 			try? codeController.saveCode(inputTextView.text, for: problem)
 		default:
