@@ -253,7 +253,9 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	func setupProblemMenu() {
-		problemMenu = NSMenu(title: "Problems")
+		if problemMenu == nil {
+			problemMenu = NSMenu(title: "Problems")
+		}
 		
 		problemMenu.removeAllItems()
 		problemMenu.addItem(withTitle: "Previous", action: #selector(previousButtonPressed(sender:)), keyEquivalent: "\u{001c}")
@@ -281,10 +283,9 @@ class SwiftCoderViewController: NSViewController {
 		}
 		items.forEach(problemMenu.addItem)
 		
-		let problemMenuItem = NSMenuItem(title: "Problems", action: nil, keyEquivalent: "")
-		problemMenuItem.submenu = problemMenu
-		
 		if !NSApp.mainMenu!.items.contains(where: { $0.title == "Problems" }) {
+			let problemMenuItem = NSMenuItem(title: "Problems", action: nil, keyEquivalent: "")
+			problemMenuItem.submenu = problemMenu
 			NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
 		}
 		

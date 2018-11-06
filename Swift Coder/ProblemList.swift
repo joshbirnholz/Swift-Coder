@@ -4122,6 +4122,131 @@ fileprivate let codingBatArray2Problems: [Problem] = [
 			Problem.TestCase(expectation: true, arguments: [1, 4, 1, 4, 1, 6])
 		],
 		eulerMode: false
+	),
+	Problem(
+		title: "fizzArray",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "Given a number n, create and return a new int array of length n, containing the numbers 0, 1, 2, ... n-1. The given n may be 0, in which case just return a length 0 array. You do not need a separate if-statement for the length-0 case; the for-loop should naturally execute 0 times in that case, so it just works.",
+		solution: nil,
+		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
+		testCases: [
+			Problem.TestCase(expectation: [0, 1, 2, 3], arguments: 4),
+			Problem.TestCase(expectation: [0], arguments: 1),
+			Problem.TestCase(expectation: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], arguments: 10),
+			Problem.TestCase(expectation: [Int](), arguments: 0),
+			Problem.TestCase(expectation: [0, 1], arguments: 2),
+			Problem.TestCase(expectation: [0, 1, 2, 3, 4, 5, 6], arguments: 7)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "only14",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if every element is a 1 or a 4.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 4, 1, 4]),
+			Problem.TestCase(expectation: false, arguments: [1, 4, 2, 4]),
+			Problem.TestCase(expectation: true, arguments: [1, 1]),
+			Problem.TestCase(expectation: true, arguments: [4, 1]),
+			Problem.TestCase(expectation: false, arguments: [2]),
+			Problem.TestCase(expectation: true, arguments: [Int]()),
+			Problem.TestCase(expectation: false, arguments: [1, 4, 1, 3]),
+			Problem.TestCase(expectation: false, arguments: [3, 1, 3]),
+			Problem.TestCase(expectation: true, arguments: [1]),
+			Problem.TestCase(expectation: true, arguments: [4]),
+			Problem.TestCase(expectation: false, arguments: [3, 4]),
+			Problem.TestCase(expectation: false, arguments: [1, 3, 4]),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 1, 1, 5]),
+			Problem.TestCase(expectation: true, arguments: [4, 1, 4, 1])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "fizzArray2",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "Given a number n, create and return a new string array of length n, containing the strings \"0\", \"1\" \"2\" .. through n-1. N may be 0, in which case just return a length 0 array. Note: String(xxx) will make the String form of an Int.",
+		solution: nil,
+		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
+		testCases: [
+			Problem.TestCase(expectation: ["0", "1", "2", "3"], arguments: 4),
+			Problem.TestCase(expectation: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], arguments: 10),
+			Problem.TestCase(expectation: ["0", "1"], arguments: 2),
+			Problem.TestCase(expectation: ["0"], arguments: 1),
+			Problem.TestCase(expectation: [String](), arguments: 0),
+			Problem.TestCase(expectation: ["0", "1", "2", "3", "4", "5", "6"], arguments: 7),
+			Problem.TestCase(expectation: ["0", "1", "2", "3", "4", "5", "6", "7", "8"], arguments: 9),
+			Problem.TestCase(expectation: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], arguments: 11)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "no14",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if it contains no 1's or it contains no 4's.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 3, 4]),
+			Problem.TestCase(expectation: true, arguments: [2, 3, 4]),
+			Problem.TestCase(expectation: false, arguments: [1, 1, 4, 4]),
+			Problem.TestCase(expectation: true, arguments: [2, 2, 4, 4]),
+			Problem.TestCase(expectation: false, arguments: [2, 3, 4, 1]),
+			Problem.TestCase(expectation: true, arguments: [2, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 4]),
+			Problem.TestCase(expectation: true, arguments: [2]),
+			Problem.TestCase(expectation: true, arguments: [2, 1]),
+			Problem.TestCase(expectation: true, arguments: [1]),
+			Problem.TestCase(expectation: true, arguments: [4]),
+			Problem.TestCase(expectation: true, arguments: [Int]()),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [9, 4, 4, 1]),
+			Problem.TestCase(expectation: false, arguments: [4, 2, 3, 1]),
+			Problem.TestCase(expectation: true, arguments: [4, 2, 3, 5]),
+			Problem.TestCase(expectation: true, arguments: [4, 4, 2]),
+			Problem.TestCase(expectation: false, arguments: [1, 4, 4])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "matchUp",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "nums1", type: [Int].self),
+			Problem.Parameter(name: "nums2", type: [Int].self)
+		],
+		prompt: "Given arrays nums1 and nums2 of the same length, for every element in nums1, consider the corresponding element in nums2 (at the same index). Return the count of the number of times that the two elements differ by 2 or less, but are not equal.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 2, arguments: [1, 2, 3], [2, 3, 10]),
+			Problem.TestCase(expectation: 3, arguments: [1, 2, 3], [2, 3, 5]),
+			Problem.TestCase(expectation: 2, arguments: [1, 2, 3], [2, 3, 3]),
+			Problem.TestCase(expectation: 1, arguments: [5, 3], [5, 5]),
+			Problem.TestCase(expectation: 2, arguments: [5, 3], [4, 4]),
+			Problem.TestCase(expectation: 1, arguments: [5, 3], [3, 3]),
+			Problem.TestCase(expectation: 1, arguments: [5, 3], [2, 2]),
+			Problem.TestCase(expectation: 1, arguments: [5, 3], [1, 1]),
+			Problem.TestCase(expectation: 0, arguments: [5, 3], [0, 0]),
+			Problem.TestCase(expectation: 0, arguments: [4], [4]),
+			Problem.TestCase(expectation: 1, arguments: [4], [5])
+		],
+		eulerMode: false
 	)
 ]
 
