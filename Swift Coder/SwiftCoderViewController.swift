@@ -12,24 +12,28 @@ import SourceEditor
 
 class SwiftCoderViewController: NSViewController {
 	
-	enum HelperMode {
+	let codeController: CodeController = LocalCodeController.shared
+	let lexer = SwiftLexer()
+	
+	enum AssistantView: CaseIterable {
 		case tableView
 		case textField
 	}
 	
-	let codeController: CodeController = LocalCodeController.shared
-	let lexer = SwiftLexer()
+	func view(for assistantView: AssistantView) -> NSView {
+		switch assistantView {
+		case .tableView:
+			return tableScrollView
+		case .textField:
+			return outputField
+		}
+	}
 	
-	var helperMode: HelperMode = .textField {
+	/// This changes whether the textfield is shown (for errors, hints, solutions) or the table is shown (test results)
+	var assistantView: AssistantView = .textField {
 		didSet {
-			switch helperMode {
-			case .textField:
-				outputField.isHidden = false
-				tableScrollView.isHidden = true
-			case .tableView:
-				outputField.isHidden = true
-				tableScrollView.isHidden = false
-				
+			AssistantView.allCases.forEach {
+				view(for: $0).isHidden = $0 != assistantView
 			}
 		}
 	}
@@ -97,7 +101,7 @@ class SwiftCoderViewController: NSViewController {
 			outputStatusTextField.stringValue = ""
 			outputField.string = ""
 			
-			helperMode = .textField
+			assistantView = .textField
 			
 			promptTextField.stringValue = [problem.prompt, problem.testCases.prefix(problem.eulerMode ? 0 : 3).enumerated().map( { index, _ in
 				problem.expectationString(testCaseIndex: index)
@@ -171,39 +175,11 @@ class SwiftCoderViewController: NSViewController {
 			// TODO - disable touch bar
 		}
 		
-		// Setup code menu
+		// Setup menus
 		
-		let codeMenu = NSMenu(title: "Code")
-		codeMenu.addItem(withTitle: "Save and Run", action: #selector(goButtonPressed(sender:)), keyEquivalent: "\u{000d}")
-//		codeMenu.addItem(withTitle: "Run With…", action: #selector(runTestWithCustomParameters), keyEquivalent: "")
-		codeMenu.addItem(withTitle: "Start Over", action: #selector(startOver(sender:)), keyEquivalent: "")
-		codeMenu.addItem(.separator())
-		codeMenu.addItem(withTitle: "Comment/Uncomment", action: #selector(commentUncommentSelectedLines(_:)), keyEquivalent: "/")
+		setupCodeMenu()
 		
-		if #available(OSX 10.14, *) {
-			let appearanceMenu = NSMenu(title: "Appearance")
-			appearanceMenu.addItem(withTitle: "Default", action: #selector(setDefaultAppearance), keyEquivalent: "")
-			appearanceMenu.addItem(withTitle: "Light", action: #selector(setLightAppearance), keyEquivalent: "")
-			appearanceMenu.addItem(withTitle: "Dark", action: #selector(setDarkAppearance), keyEquivalent: "")
-			let appearanceMenuItem = NSMenuItem(title: "Appearance", action: nil, keyEquivalent: "")
-			appearanceMenuItem.submenu = appearanceMenu
-			let windowMenu = NSApp.mainMenu?.item(withTitle: "Window")
-			windowMenu?.submenu?.insertItem(appearanceMenuItem, at: 0)
-			windowMenu?.submenu?.insertItem(.separator(), at: 1)
-		}
-		
-		let codeMenuItem = NSMenuItem(title: "Code", action: nil, keyEquivalent: "")
-		codeMenuItem.submenu = codeMenu
-		NSApp.mainMenu?.insertItem(codeMenuItem, at: NSApp.mainMenu!.items.count-1)
-//		NSApp.mainMenu?.addItem(codeMenuItem)
-		
-		// Set up problem menu
-		problemMenu = NSMenu(title: "Problems")
 		setupProblemMenu()
-		
-		let problemMenuItem = NSMenuItem(title: "Problems", action: nil, keyEquivalent: "")
-		problemMenuItem.submenu = problemMenu
-		NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
 		
 	}
 	
@@ -216,6 +192,7 @@ class SwiftCoderViewController: NSViewController {
 		}
 	}
 	
+	/// Ensures that code is saved before quitting the app when the close button is pressed
 	@objc func closeButtonPressed() {
 		do {
 			try self.codeController.saveCode(self.inputTextView.text, for: self.problem)
@@ -249,7 +226,35 @@ class SwiftCoderViewController: NSViewController {
 		NSApp.appearance = NSAppearance(named: .darkAqua)
 	}
 	
+	func setupCodeMenu() {
+		let codeMenu = NSMenu(title: "Code")
+		codeMenu.addItem(withTitle: "Save and Run", action: #selector(goButtonPressed(sender:)), keyEquivalent: "\u{000d}")
+		//		codeMenu.addItem(withTitle: "Run With…", action: #selector(runTestWithCustomParameters), keyEquivalent: "")
+		codeMenu.addItem(withTitle: "Start Over", action: #selector(startOver(sender:)), keyEquivalent: "")
+		codeMenu.addItem(.separator())
+		codeMenu.addItem(withTitle: "Comment/Uncomment", action: #selector(commentUncommentSelectedLines(_:)), keyEquivalent: "/")
+		
+		if #available(OSX 10.14, *) {
+			let appearanceMenu = NSMenu(title: "Appearance")
+			appearanceMenu.addItem(withTitle: "Default", action: #selector(setDefaultAppearance), keyEquivalent: "")
+			appearanceMenu.addItem(withTitle: "Light", action: #selector(setLightAppearance), keyEquivalent: "")
+			appearanceMenu.addItem(withTitle: "Dark", action: #selector(setDarkAppearance), keyEquivalent: "")
+			let appearanceMenuItem = NSMenuItem(title: "Appearance", action: nil, keyEquivalent: "")
+			appearanceMenuItem.submenu = appearanceMenu
+			let windowMenu = NSApp.mainMenu?.item(withTitle: "Window")
+			windowMenu?.submenu?.insertItem(appearanceMenuItem, at: 0)
+			windowMenu?.submenu?.insertItem(.separator(), at: 1)
+		}
+		
+		let codeMenuItem = NSMenuItem(title: "Code", action: nil, keyEquivalent: "")
+		codeMenuItem.submenu = codeMenu
+		NSApp.mainMenu?.insertItem(codeMenuItem, at: NSApp.mainMenu!.items.count-1)
+		//		NSApp.mainMenu?.addItem(codeMenuItem)
+	}
+	
 	func setupProblemMenu() {
+		problemMenu = NSMenu(title: "Problems")
+		
 		problemMenu.removeAllItems()
 		problemMenu.addItem(withTitle: "Previous", action: #selector(previousButtonPressed(sender:)), keyEquivalent: "\u{001c}")
 		problemMenu.addItem(withTitle: "Next", action: #selector(nextButtonPressed(sender:)), keyEquivalent: "\u{001d}")
@@ -275,6 +280,10 @@ class SwiftCoderViewController: NSViewController {
 			return item
 		}
 		items.forEach(problemMenu.addItem)
+		
+		let problemMenuItem = NSMenuItem(title: "Problems", action: nil, keyEquivalent: "")
+		problemMenuItem.submenu = problemMenu
+		NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
 	}
 	
 	@objc func problemMenuItemSelected(_ sender: NSMenuItem) {
@@ -389,7 +398,7 @@ class SwiftCoderViewController: NSViewController {
 		outputField.string = ""
 		outputStatusTextField.textColor = .labelColor
 		outputStatusTextField.stringValue =  "Compiling…"
-		helperMode = .textField
+		assistantView = .textField
 		
 		let code = self.inputTextView.text
 		let startedProblemIndex = self.problemIndex
@@ -406,7 +415,7 @@ class SwiftCoderViewController: NSViewController {
 				DispatchQueue.main.async {
 					switch result {
 					case .internalError(let error):
-						self.helperMode = .textField
+						self.assistantView = .textField
 						if #available(OSX 10.13, *) {
 							self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("errorRed"))
 						} else {
@@ -419,14 +428,14 @@ class SwiftCoderViewController: NSViewController {
 							case .error(let output):
 								self.outputField.string = output
 							case .timeout:
-								self.outputField.string = "It took too long to test your code"
+								self.outputField.string = "It took too long to test your code."
 							}
 						} else {
 							self.outputField.string = error.localizedDescription
 						}
 						
 					case .failure(let compilationError):
-						self.helperMode = .textField
+						self.assistantView = .textField
 						if #available(OSX 10.13, *) {
 							self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("errorRed"))
 						} else {
@@ -437,7 +446,7 @@ class SwiftCoderViewController: NSViewController {
 						case .error(let output):
 							self.outputField.string = output
 						case .timeout:
-							self.outputField.string = "Your code took too long to compile"
+							self.outputField.string = "Your code took too long to compile."
 						}
 					case .success(let testResults):
 						self.testResults = testResults
@@ -462,7 +471,7 @@ class SwiftCoderViewController: NSViewController {
 							self.outputStatusTextField.stringValue = ""
 						}
 						
-						self.helperMode = .tableView
+						self.assistantView = .tableView
 						self.outputTableView.reloadData()
 						self.outputTableView.noteHeightOfRows(withIndexesChanged: IndexSet(integersIn: 0 ..< self.outputTableView.numberOfRows))
 					}
@@ -472,7 +481,7 @@ class SwiftCoderViewController: NSViewController {
 		} catch {
 			print("Error")
 			DispatchQueue.main.async {
-				self.helperMode = .textField
+				self.assistantView = .textField
 				if #available(OSX 10.13, *) {
 					self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("errorRed"))
 				} else {
@@ -485,6 +494,7 @@ class SwiftCoderViewController: NSViewController {
 		
 	}
 	
+	// This has problems, but also is completely unnecessary
 	@objc func runTestWithCustomParameters() {
 		let alert = NSAlert()
 		alert.messageText = problem.title
@@ -607,7 +617,7 @@ class SwiftCoderViewController: NSViewController {
 	@IBAction func showSolution(sender: AnyObject) {
 		outputStatusTextField.textColor = .labelColor
 		outputStatusTextField.stringValue = "Solution:"
-		self.helperMode = .textField
+		self.assistantView = .textField
 		
 		outputField.string = problem.solution ?? "The solution isn't available for this problem."
 		
@@ -619,7 +629,7 @@ class SwiftCoderViewController: NSViewController {
 		} else {
 			outputStatusTextField.textColor = .labelColor
 			outputStatusTextField.stringValue = "Hint:"
-			self.helperMode = .textField
+			self.assistantView = .textField
 			
 			outputField.string = problem.hint ?? "There is no hint for this problem."
 		}
