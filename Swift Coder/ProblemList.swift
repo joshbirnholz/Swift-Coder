@@ -4095,6 +4095,33 @@ fileprivate let codingBatArray2Problems: [Problem] = [
 			Problem.TestCase(expectation: true, arguments: [5, 2, 2, 2, 4, 2])
 		],
 		eulerMode: false
+	),
+	Problem(
+		title: "more14",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, return true if the number of 1's is greater than the number of 4's",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 4, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 4, 1, 4]),
+			Problem.TestCase(expectation: true, arguments: [1, 1]),
+			Problem.TestCase(expectation: true, arguments: [1, 6, 6]),
+			Problem.TestCase(expectation: true, arguments: [1]),
+			Problem.TestCase(expectation: false, arguments: [1, 4]),
+			Problem.TestCase(expectation: true, arguments: [6, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 6, 4]),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 4, 4, 1]),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 6, 4, 4, 1]),
+			Problem.TestCase(expectation: false, arguments: [Int]()),
+			Problem.TestCase(expectation: false, arguments: [4, 1, 4, 6]),
+			Problem.TestCase(expectation: false, arguments: [4, 1, 4, 6, 1]),
+			Problem.TestCase(expectation: true, arguments: [1, 4, 1, 4, 1, 6])
+		],
+		eulerMode: false
 	)
 ]
 

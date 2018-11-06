@@ -283,7 +283,11 @@ class SwiftCoderViewController: NSViewController {
 		
 		let problemMenuItem = NSMenuItem(title: "Problems", action: nil, keyEquivalent: "")
 		problemMenuItem.submenu = problemMenu
-		NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
+		
+		if !NSApp.mainMenu!.items.contains(where: { $0.title == "Problems" }) {
+			NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
+		}
+		
 	}
 	
 	@objc func problemMenuItemSelected(_ sender: NSMenuItem) {
