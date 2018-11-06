@@ -421,7 +421,7 @@ class SwiftCoderViewController: NSViewController {
 						} else {
 							self.outputStatusTextField.textColor = .red
 						}
-						self.outputStatusTextField.stringValue =  "An internal error occurred:"
+						self.outputStatusTextField.stringValue =  "Unable to test your code:"
 						
 						if let error = error as? CompilationError {
 							switch error {

@@ -26,9 +26,9 @@ fileprivate func stringDescription(of type: Any.Type) -> String {
 	return paramType
 }
 
-struct Problem {
+struct Problem: Codable {
 	
-	struct TestCase {
+	struct TestCase: Codable {
 		var arguments: [String]
 		var expectation: String
 		
@@ -51,7 +51,7 @@ struct Problem {
 		}
 	}
 	
-	struct Parameter {
+	struct Parameter: Codable {
 		var name: String
 		var type: String
 		
@@ -244,14 +244,14 @@ struct Problem {
 			case "String":
 				// Don't need to convert type, so no need for optional checking with a string.
 				runnableCode += """
-				let _param\(index)String = String(data: Data(base64Encoded: CommandLine.arguments[\(index + 1)])!, encoding: .utf8)!
-				let _param\(index): String = _param\(index)String == "String.empty" ? "" : _param\(index)String
+				let __param\(index)String = String(data: Data(base64Encoded: CommandLine.arguments[\(index + 1)])!, encoding: .utf8)!
+				let __param\(index): String = __param\(index)String == "String.empty" ? "" : __param\(index)String
 				
 				
 				"""
 			default:
 				runnableCode += """
-				guard let _param\(index): \(parameter.type) = \(parameter.type)(String(data: Data(base64Encoded: CommandLine.arguments[\(index + 1)])!, encoding: .utf8)!) else {
+				guard let __param\(index): \(parameter.type) = \(parameter.type)(String(data: Data(base64Encoded: CommandLine.arguments[\(index + 1)])!, encoding: .utf8)!) else {
 					Swift.print("Incorrect argument type")
 					exit(-1)
 				}
@@ -262,11 +262,11 @@ struct Problem {
 			}
 		}
 		
-		runnableCode += "Swift.print(\(functionName)("
+		runnableCode += """
+		let __result: \(returnType) = \(functionName)(\(parameters.enumerated().map { index, parameter in "\(parameter.name): __param\(index)" }.joined(separator: ", ")))
 		
-		runnableCode += parameters.enumerated().map { index, parameter in "\(parameter.name): _param\(index)" }.joined(separator: ", ")
-		
-		runnableCode += "))"
+		Swift.print(__result)
+		"""
 		
 		return runnableCode
 	}
