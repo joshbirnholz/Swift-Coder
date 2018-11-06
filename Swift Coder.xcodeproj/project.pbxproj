@@ -128,6 +128,7 @@
 		547C63AB213493F000D50AD4 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		549BABFC212217A60015D6F6 /* LocalCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCodeController.swift; sourceTree = "<group>"; };
 		54A78F492130A720009122E4 /* TextFieldStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldStepperView.swift; sourceTree = "<group>"; };
+		54FCC3BA219150B20035DD4D /* CodingBatTest.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = CodingBatTest.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +243,7 @@
 		546885711CC2BA0C003F3614 = {
 			isa = PBXGroup;
 			children = (
+				54FCC3BA219150B20035DD4D /* CodingBatTest.playground */,
 				5468857C1CC2BA0C003F3614 /* Swift Coder */,
 				540FFFF52124BB6600284D48 /* SavannaKit */,
 				540F002C2124BBAF00284D48 /* SourceEditor */,
