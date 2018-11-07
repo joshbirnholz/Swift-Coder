@@ -50,6 +50,8 @@ class SwiftCoderViewController: NSViewController {
 	@IBOutlet weak var tableScrollView: NSScrollView!
 	@IBOutlet weak var helpButton: NSButton!
 	
+	var scrubber: NSView?
+	
 	var problemList: ProblemSet! {
 		didSet {
 			if oldValue != nil {
@@ -58,7 +60,7 @@ class SwiftCoderViewController: NSViewController {
 			
 			userDefaults.set(problemList?.rawValue ?? "", forKey: "problemList")
 			
-			setupProblemMenu()
+			setupProblemMenuAndScrubber()
 		}
 	}
 	
@@ -68,7 +70,7 @@ class SwiftCoderViewController: NSViewController {
 		return problemList.problems
 	}
 	
-	var problemIndex: Int = 0 {
+	@objc var problemIndex: Int = 0 {
 		didSet {
 			if let problem = problem {
 				do {
@@ -110,6 +112,14 @@ class SwiftCoderViewController: NSViewController {
 		}
 	}
 	
+	@available(macOS 10.12.2, *)
+	func recenterScrubber() {
+		if let scrubber = self.scrubber as? NSScrubber {
+			scrubber.selectedIndex = problemIndex
+			scrubber.scrollItem(at: problemIndex, to: .center)
+		}
+	}
+	
 	let userDefaults = UserDefaults.standard
 	let problemMenu: NSMenu = NSMenu(title: "Problems")
 	
@@ -129,6 +139,9 @@ class SwiftCoderViewController: NSViewController {
 		}
 		
 		problemIndex = index
+		if #available(OSX 10.12.2, *) {
+			recenterScrubber()
+		}
 		
 		inputTextView.text = ""
 		
@@ -229,7 +242,9 @@ class SwiftCoderViewController: NSViewController {
 		//		NSApp.mainMenu?.addItem(codeMenuItem)
 	}
 	
-	func setupProblemMenu() {
+	func setupProblemMenuAndScrubber() {
+		
+		// Setup problem menu
 		
 		problemMenu.removeAllItems()
 		problemMenu.addItem(withTitle: "Previous", action: #selector(previousButtonPressed(sender:)), keyEquivalent: "\u{001c}")
@@ -263,11 +278,22 @@ class SwiftCoderViewController: NSViewController {
 			NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
 		}
 		
+		// Setup scrubber
+		if #available(OSX 10.12.2, *) {
+			if let scrubber = self.scrubber as? NSScrubber {
+				scrubber.reloadData()
+				scrubber.selectedIndex = problemIndex
+			}
+		}
+		
 	}
 	
 	@objc func problemMenuItemSelected(_ sender: NSMenuItem) {
 		if let index = sender.representedObject as? Int {
 			problemIndex = index
+			if #available(OSX 10.12.2, *) {
+				recenterScrubber()
+			}
 		}
 	}
 	
@@ -362,14 +388,23 @@ class SwiftCoderViewController: NSViewController {
 	
 	@IBAction func nextButtonPressed(sender: AnyObject) {
 		problemIndex += 1
+		if #available(OSX 10.12.2, *) {
+			recenterScrubber()
+		}
 	}
 	
 	@IBAction func previousButtonPressed(sender: AnyObject) {
 		problemIndex -= 1
+		if #available(OSX 10.12.2, *) {
+			recenterScrubber()
+		}
 	}
 	
 	@objc func randomButtonPressed(sender: AnyObject) {
 		problemIndex = problems.indices.randomElement() ?? 0
+		if #available(OSX 10.12.2, *) {
+			recenterScrubber()
+		}
 	}
 	
 	@IBAction func goButtonPressed(sender: AnyObject) {
@@ -641,9 +676,10 @@ class SwiftCoderViewController: NSViewController {
 	override func makeTouchBar() -> NSTouchBar? {
 		let mainBar = NSTouchBar()
 		mainBar.delegate = self
-		mainBar.defaultItemIdentifiers = [.go, .commentUncomment]
-		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment]
+		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .fixedSpaceLarge, .problems]
+		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .problems]
 		mainBar.customizationRequiredItemIdentifiers = [.go]
+		mainBar.customizationIdentifier = "com.josh.birnholz.SwiftCoder.main-touch-bar"
 		
 		return mainBar
 	}
@@ -654,6 +690,7 @@ class SwiftCoderViewController: NSViewController {
 extension NSTouchBarItem.Identifier {
 	static let go = NSTouchBarItem.Identifier("com.josh.birnholz.SwiftCoder.go")
 	static let commentUncomment = NSTouchBarItem.Identifier("com.josh.birnholz.SwiftCoder.comment")
+	static let problems = NSTouchBarItem.Identifier("com.josh.birnholz.SwiftCoder.problems")
 }
 
 @available(OSX 10.12.2, *)
@@ -671,9 +708,61 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 			item.view = NSButton(title: "▶", target: self, action: #selector(goButtonPressed(sender:)))
 			item.customizationLabel = "Go"
 			return item
+		case .problems:
+			let item = NSCustomTouchBarItem(identifier: identifier)
+			let scrubber = NSScrubber()
+			scrubber.scrubberLayout = NSScrubberFlowLayout()
+			scrubber.register(NSScrubberTextItemView.self, forItemIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ProblemScrubberItemIdentifier"))
+			scrubber.mode = .free
+			scrubber.backgroundColor = #colorLiteral(red: 0.2117426097, green: 0.2117787898, blue: 0.2117346823, alpha: 1)
+			scrubber.selectionOverlayStyle = NSScrubberSelectionStyle.outlineOverlay
+			scrubber.delegate = self
+			scrubber.dataSource = self
+			item.view = scrubber
+			scrubber.bind(.selectedIndex, to: self, withKeyPath: #keyPath(problemIndex), options: nil)
+			self.scrubber = scrubber
+			return item
 		default:
 			return nil
 		}
+	}
+	
+}
+
+@available(OSX 10.12.2, *)
+extension SwiftCoderViewController: NSScrubberDelegate {
+	func scrubber(_ scrubber: NSScrubber, didSelectItemAt selectedIndex: Int) {
+		problemIndex = selectedIndex
+	}
+}
+
+@available(OSX 10.12.2, *)
+extension SwiftCoderViewController: NSScrubberDataSource {
+	
+	func numberOfItems(for scrubber: NSScrubber) -> Int {
+		return problemList.problems.count
+	}
+	
+	func scrubber(_ scrubber: NSScrubber, viewForItemAt index: Int) -> NSScrubberItemView {
+		let itemView = scrubber.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ProblemScrubberItemIdentifier"), owner: self) as! NSScrubberTextItemView
+		itemView.title = problemList.problems[index].title
+		
+		return itemView
+	}
+	
+}
+
+@available(OSX 10.12.2, *)
+extension SwiftCoderViewController: NSScrubberFlowLayoutDelegate {
+	
+	func scrubber(_ scrubber: NSScrubber, layout: NSScrubberFlowLayout, sizeForItemAt itemIndex: Int) -> NSSize {
+		let font = NSFont.systemFont(ofSize: 15)
+		let title = problemList.problems[itemIndex].title as NSString
+		var size = title.size(withAttributes: [.font: font])
+		size.width += 48
+		size.height = 30
+		
+		return size
 	}
 	
 }
