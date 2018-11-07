@@ -207,6 +207,12 @@ class LocalCodeController: CodeController {
 		DispatchQueue.global(qos: .userInteractive).async {
 			let result: CompilationResult
 			
+			defer {
+				DispatchQueue.main.async {
+					completion(result)
+				}
+			}
+			
 			do {
 				// Try compiling code on its own. If there are compile errors, they will be thrown
 				let filePath = self.baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
@@ -236,7 +242,6 @@ class LocalCodeController: CodeController {
 							} catch {
 								
 							}
-							
 						}
 					}
 					
@@ -251,10 +256,6 @@ class LocalCodeController: CodeController {
 				result = CompilationResult.failure(error)
 			} catch {
 				result = .internalError(error)
-			}
-			
-			DispatchQueue.main.async {
-				completion(result)
 			}
 		}
 	}

@@ -58,9 +58,7 @@ class SwiftCoderViewController: NSViewController {
 			
 			userDefaults.set(problemList?.rawValue ?? "", forKey: "problemList")
 			
-			if problemMenu != nil {
-				setupProblemMenu()
-			}
+			setupProblemMenu()
 		}
 	}
 	
@@ -113,12 +111,10 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	let userDefaults = UserDefaults.standard
-	var problemMenu: NSMenu!
+	let problemMenu: NSMenu = NSMenu(title: "Problems")
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-//		outputTableView.rowSizeStyle = .medium
 		
 		if let key = userDefaults.string(forKey: "problemList"), let list = ProblemSet(rawValue: key) {
 			problemList = list
@@ -144,21 +140,10 @@ class SwiftCoderViewController: NSViewController {
 		
 		inputTextView.needsDisplay = true
 		
-//		inputTextView.textStorage!.font = NSFont(name: "Menlo", size: 13)
 		let font = NSFont(name: "Menlo", size: 13)!
 		let attributes: [NSAttributedString.Key : Any] = [.font : font, .foregroundColor: NSColor.labelColor]
 		
-		
-//		inputTextView.typingAttributes = attributes
 		outputField.typingAttributes = attributes
-		
-//		inputTextView.isAutomaticQuoteSubstitutionEnabled = false
-//		inputTextView.isAutomaticDataDetectionEnabled = false
-//		inputTextView.isAutomaticLinkDetectionEnabled = false
-//		inputTextView.isAutomaticTextReplacementEnabled = false
-//		inputTextView.isAutomaticDashSubstitutionEnabled = false
-//		inputTextView.isAutomaticSpellingCorrectionEnabled = false
-//		inputTextView.isRichText = false
 		
 		inputTextView.delegate = self
 		inputTextView.theme = SourceCodeThemes.swiftBook
@@ -172,14 +157,16 @@ class SwiftCoderViewController: NSViewController {
 		}
 		if #available(OSX 10.12.2, *) {
 			inputTextView.contentTextView.isAutomaticTextCompletionEnabled = false
-			// TODO - disable touch bar
 		}
-		
-		// Setup menus
+		inputTextView.contentTextView.isAutomaticQuoteSubstitutionEnabled = false
+		inputTextView.contentTextView.isAutomaticDataDetectionEnabled = false
+		inputTextView.contentTextView.isAutomaticLinkDetectionEnabled = false
+		inputTextView.contentTextView.isAutomaticTextReplacementEnabled = false
+		inputTextView.contentTextView.isAutomaticDashSubstitutionEnabled = false
+		inputTextView.contentTextView.isAutomaticSpellingCorrectionEnabled = false
+		inputTextView.contentTextView.isRichText = false
 		
 		setupCodeMenu()
-		
-		setupProblemMenu()
 		
 	}
 	
@@ -243,9 +230,6 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	func setupProblemMenu() {
-		if problemMenu == nil {
-			problemMenu = NSMenu(title: "Problems")
-		}
 		
 		problemMenu.removeAllItems()
 		problemMenu.addItem(withTitle: "Previous", action: #selector(previousButtonPressed(sender:)), keyEquivalent: "\u{001c}")
@@ -453,6 +437,7 @@ class SwiftCoderViewController: NSViewController {
 							} else {
 								self.outputStatusTextField.textColor = NSColor(red:0.095, green:0.627, blue:0.109, alpha:1)
 							}
+							
 							self.outputStatusTextField.stringValue = "✓ All correct"
 						} else if numSuccesses > testResults.count / 2 {
 							if #available(OSX 10.13, *) {
