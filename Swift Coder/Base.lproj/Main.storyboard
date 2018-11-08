@@ -403,7 +403,7 @@
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="tQs-VH-Mgc" customClass="SyntaxTextView" customModule="SavannaKit">
                                         <rect key="frame" x="0.0" y="115" width="640" height="387"/>
                                     </customView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="foS-hP-CIy">
+                                    <stackView distribution="fillEqually" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="foS-hP-CIy">
                                         <rect key="frame" x="0.0" y="29" width="316" height="78"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zzV-vL-4fV">
