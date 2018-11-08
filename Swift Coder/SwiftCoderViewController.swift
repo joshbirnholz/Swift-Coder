@@ -65,13 +65,15 @@ class SwiftCoderViewController: NSViewController {
 	
 	lazy var maxScrubberItemWidth: CGFloat = 0
 	
+	var scrubberShouldAffectProblemIndex = true
+	
 	var problemList: ProblemSet! {
 		didSet {
 			if oldValue != nil {
 				problemIndex = 0
 			}
 			
-			userDefaults.set(problemList?.rawValue ?? "", forKey: "problemList")
+			userDefaults.set(problemList?.rawValue, forKey: "problemList")
 			
 			setupProblemMenuAndScrubber()
 			
@@ -88,23 +90,14 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	@objc var problemIndex: Int = 0 {
-		didSet {
-			if let problem = problem {
-				do {
-					try codeController.saveCode(inputTextView.text, for: problem)
-				} catch {
-					NSAlert(error: error).runModal()
-				}
-			}
-			if !problems.indices.contains(problemIndex) {
-				problem = problems.last
-			} else {
-				problem = problems[problemIndex]
+		willSet {
+			guard let problem = problem else { return }
+			do {
+				try codeController.saveCode(inputTextView.text, for: problem)
+			} catch {
+				NSAlert(error: error).runModal()
 			}
 		}
-	}
-	
-	var problem: Problem! {
 		didSet {
 			userDefaults.set(problemIndex, forKey: "problemIndex")
 			nextButton.isEnabled = problemIndex + 1 < problems.count
@@ -122,10 +115,19 @@ class SwiftCoderViewController: NSViewController {
 			
 			promptTextField.stringValue = [problem.prompt, problem.testCases.prefix(problem.eulerMode ? 0 : 3).enumerated().map( { index, _ in
 				problem.expectationString(testCaseIndex: index)
-			}).joined(separator: "\n")].compactMap { $0
-				!= "" ? $0 : nil }.joined(separator: "\n\n")
+			}).joined(separator: "\n")].compactMap { $0 != "" ? $0 : nil }.joined(separator: "\n\n")
 			
 			inputTextView.text = codeController.loadCode(for: problem)
+		}
+	}
+	
+	var problem: Problem! {
+		get {
+			if let problemList = problemList, problemList.problems.indices.contains(problemIndex) {
+				return problemList.problems[problemIndex]
+			} else {
+				return problemList.problems.last
+			}
 		}
 	}
 	
@@ -148,14 +150,6 @@ class SwiftCoderViewController: NSViewController {
 		}
 		
 		problemIndex = index
-		
-		inputTextView.text = ""
-		
-		if !problems.indices.contains(problemIndex) {
-			problem = problems.last
-		} else {
-			problem = problems[problemIndex]
-		}
 		
 		inputTextView.needsDisplay = true
 		
@@ -297,21 +291,6 @@ class SwiftCoderViewController: NSViewController {
 		scrubber.selectedIndex = problemIndex
 	}
 	
-	@objc func problemMenuItemSelected(_ sender: NSMenuItem) {
-		if let index = sender.representedObject as? Int {
-			problemIndex = index
-			if #available(OSX 10.12.2, *) {
-				problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
-			}
-		}
-	}
-	
-	@objc func problemSetMenuItemSelected(_ sender: NSMenuItem) {
-		if let selectedSet = sender.representedObject as? ProblemSet {
-			self.problemList = selectedSet
-		}
-	}
-	
 	/// Comments or uncomments all selected lines.
 	@objc @IBAction func commentUncommentSelectedLines(_ sender: Any?) {
 		let selectedRange = Range(inputTextView.contentTextView.selectedRange())!
@@ -395,25 +374,35 @@ class SwiftCoderViewController: NSViewController {
 		return commented
 	}
 	
-	@IBAction func nextButtonPressed(sender: AnyObject) {
-		problemIndex += 1
+	func updateProblemIndex(to newValue: Int) {
+		scrubberShouldAffectProblemIndex = false
+		problemIndex = newValue
 		if #available(OSX 10.12.2, *) {
 			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
 		}
+		scrubberShouldAffectProblemIndex = true
+	}
+	
+	@IBAction func nextButtonPressed(sender: AnyObject) {
+		updateProblemIndex(to: problemIndex + 1)
 	}
 	
 	@IBAction func previousButtonPressed(sender: AnyObject) {
-		problemIndex -= 1
-		if #available(OSX 10.12.2, *) {
-			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
-		}
+		updateProblemIndex(to: problemIndex - 1)
 	}
 	
 	@objc func randomButtonPressed(sender: AnyObject) {
-		problemIndex = problems.indices.randomElement() ?? 0
-		if #available(OSX 10.12.2, *) {
-			// TODO: Why isn't this scrolling the scrubber on the touch bar to the correct index?
-			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
+		updateProblemIndex(to: problems.indices.randomElement() ?? 0)
+	}
+	
+	@objc func problemMenuItemSelected(_ sender: NSMenuItem) {
+		guard let index = sender.representedObject as? Int else { return }
+		updateProblemIndex(to: index)
+	}
+	
+	@objc func problemSetMenuItemSelected(_ sender: NSMenuItem) {
+		if let selectedSet = sender.representedObject as? ProblemSet {
+			self.problemList = selectedSet
 		}
 	}
 	
@@ -751,6 +740,7 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSScrubberDelegate {
 	func scrubber(_ scrubber: NSScrubber, didSelectItemAt selectedIndex: Int) {
+		guard scrubberShouldAffectProblemIndex else { return }
 		problemIndex = selectedIndex
 	}
 }
