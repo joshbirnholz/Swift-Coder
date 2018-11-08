@@ -398,7 +398,7 @@ class SwiftCoderViewController: NSViewController {
 	
 	@objc func problemSetMenuItemSelected(_ sender: NSMenuItem) {
 		if let selectedSet = sender.representedObject as? ProblemSet {
-			self.problemIndexPath.list = selectedSet
+			self.problemIndexPath = ProblemIndexPath(list: selectedSet, index: 0)
 		}
 	}
 	
@@ -672,8 +672,8 @@ class SwiftCoderViewController: NSViewController {
 		let mainBar = NSTouchBar()
 		mainBar.delegate = self
 		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .problems]
-		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .problems]
-		mainBar.customizationRequiredItemIdentifiers = [.go]
+		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .problems, .characterPicker]
+		mainBar.customizationRequiredItemIdentifiers = []
 		mainBar.principalItemIdentifier = .problems
 		mainBar.customizationIdentifier = "com.josh.birnholz.SwiftCoder.main-touch-bar"
 		
