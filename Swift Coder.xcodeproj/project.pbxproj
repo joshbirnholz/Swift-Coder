@@ -67,6 +67,13 @@
 			remoteGlobalIDString = 540FFFF32124BB6600284D48;
 			remoteInfo = SavannaKit;
 		};
+		54462CF82194BD4C001FE457 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 546885721CC2BA0C003F3614 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 540FFFF32124BB6600284D48;
+			remoteInfo = SavannaKit;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -323,6 +330,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				54462CF92194BD4C001FE457 /* PBXTargetDependency */,
 			);
 			name = SourceEditor;
 			productName = SourceEditor;
@@ -511,6 +519,11 @@
 			isa = PBXTargetDependency;
 			target = 540FFFF32124BB6600284D48 /* SavannaKit */;
 			targetProxy = 540FFFF92124BB6600284D48 /* PBXContainerItemProxy */;
+		};
+		54462CF92194BD4C001FE457 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 540FFFF32124BB6600284D48 /* SavannaKit */;
+			targetProxy = 54462CF82194BD4C001FE457 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -713,6 +726,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 			};
