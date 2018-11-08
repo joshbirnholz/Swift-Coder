@@ -26,9 +26,9 @@ public class SwiftLexer: SourceCodeRegexLexer {
 		
 		generators.append(regexGenerator("\\b(println|print)(?=\\()", tokenType: .identifier))
 		
-		generators.append(regexGenerator("(?<=(\\s|\\[|,|:))\\d+", tokenType: .number))
+		generators.append(regexGenerator("(?<=(\\s|\\[|,|:))(\\d|\\.|_)+", tokenType: .number))
 		
-		generators.append(regexGenerator("\\.\\w+", tokenType: .identifier))
+		generators.append(regexGenerator("\\.[A-Za-z_]+\\w*", tokenType: .identifier))
 		
 		let keywords = "as associatedtype break case catch class continue convenience default defer deinit else enum extension fallthrough false fileprivate final for func get guard if import in init inout internal is lazy let mutating nil nonmutating open operator override private protocol public repeat required rethrows return required self set static struct subscript super switch throw throws true try typealias unowned var weak where while".components(separatedBy: " ")
 		
@@ -43,18 +43,18 @@ public class SwiftLexer: SourceCodeRegexLexer {
 		
 		// Block comment
 		generators.append(regexGenerator("(/\\*)(.*)(\\*/)", options: [.dotMatchesLineSeparators], tokenType: .comment))
-
+		
 		// Single-line string literal
 		generators.append(regexGenerator("(\"|@\")[^\"\\n]*(@\"|\")", tokenType: .string))
 		
 		// Multi-line string literal
 		generators.append(regexGenerator("(\"\"\")(.*?)(\"\"\")", options: [.dotMatchesLineSeparators], tokenType: .string))
-
+		
 		// Editor placeholder
 		var editorPlaceholderPattern = "(<#)[^\"\\n]*"
 		editorPlaceholderPattern += "(#>)"
 		generators.append(regexGenerator(editorPlaceholderPattern, tokenType: .editorPlaceholder))
-
+		
 		return generators.compactMap( { $0 })
 	}()
 	
