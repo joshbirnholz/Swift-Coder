@@ -67,6 +67,8 @@ class SwiftCoderViewController: NSViewController {
 	
 	var scrubberShouldAffectProblemIndex = true
 	
+	var finishedLoadingView = false
+	
 	var problemList: ProblemSet! {
 		didSet {
 			if oldValue != nil {
@@ -91,7 +93,7 @@ class SwiftCoderViewController: NSViewController {
 	
 	@objc var problemIndex: Int = 0 {
 		willSet {
-			guard let problem = problem else { return }
+			guard let problem = problem, finishedLoadingView else { return }
 			do {
 				try codeController.saveCode(inputTextView.text, for: problem)
 			} catch {
@@ -180,6 +182,8 @@ class SwiftCoderViewController: NSViewController {
 		inputTextView.contentTextView.isRichText = false
 		
 		setupCodeMenu()
+		
+		finishedLoadingView = true
 		
 	}
 	
@@ -374,6 +378,9 @@ class SwiftCoderViewController: NSViewController {
 		return commented
 	}
 	
+	/// Use this function to set the problem index and update the scrubber correctly.
+	///
+	/// Just changing the problem index on its own can lead to the problem index being set incorrectly, because scrolling the scrubber on the Touch Bar triggers didSelectItem, which sets the problem index again (to an incorrect value, for some reason). This method ensures that the scrubber doesn't affect the problem index by automatically setting `scrubberShouldAffectProblemIndex` to true.
 	func updateProblemIndex(to newValue: Int) {
 		scrubberShouldAffectProblemIndex = false
 		problemIndex = newValue

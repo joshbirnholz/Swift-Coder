@@ -270,7 +270,12 @@ class LocalCodeController: CodeController {
 		
 		//reading
 		do {
-			return try String(contentsOfFile: file)
+			let code = try String(contentsOfFile: file)
+			if code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+				return problem.startingCode
+			} else {
+				return code
+			}
 		}
 		catch {
 			return problem.startingCode
