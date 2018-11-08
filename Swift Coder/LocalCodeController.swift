@@ -9,11 +9,63 @@
 import Foundation
 
 class LocalCodeController: CodeController {
-
+	
+	enum PathError: Error {
+		case swift
+		case swiftc
+		case sdk
+		case xcode
+		
+		var name: String {
+			switch self {
+			case .swift, .swiftc: return "the Swift executable"
+			case .sdk: return "the macOS SDK"
+			case .xcode: return "Xcode"
+			}
+		}
+		
+		var localizedDescription: String {
+			return "Couldn't reach \(name). Make sure your Xcode path is set correctly.\n\n"
+		}
+	}
+	
+	public var logCommands: Bool = false
+	
 	public let baseDirectory: URL
 	public let tempDirectory: URL
+	public var xcodeURL: URL {
+		didSet {
+			print("Xcode URL set to:", xcodeURL)
+		}
+	}
 	
-	private init() {
+	private func swiftPath() throws -> String {
+		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift").path
+		guard FileManager.default.fileExists(atPath: path) else {
+			throw PathError.swift
+		}
+		return path
+	}
+	
+	private func swiftcPath() throws -> String {
+		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc").path
+		guard FileManager.default.fileExists(atPath: path) else {
+			throw PathError.swiftc
+		}
+		return path
+	}
+	
+	private func sdkPath() throws -> String {
+		let path = xcodeURL.appendingPathComponent("Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk").path
+		guard FileManager.default.fileExists(atPath: path) else {
+			throw PathError.sdk
+		}
+		return path
+	}
+	
+	private init(xcodeURL: URL = URL(fileURLWithPath: "/Applications/Xcode.app")) {
+		self.xcodeURL = xcodeURL
+		
 		guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Swift Coder", isDirectory: true) else {
 			fatalError("Couldn't get application support directory")
 		}
@@ -33,6 +85,10 @@ class LocalCodeController: CodeController {
 		} catch {
 			fatalError("Couldn't get temp directory")
 		}
+		
+		print(xcodeURL.path)
+		print(baseDirectory.path)
+		print(tempDirectory.path)
 	}
 	
 	public static let shared = LocalCodeController()
@@ -53,7 +109,9 @@ class LocalCodeController: CodeController {
 		let errpipe = Pipe()
 		task.standardError = errpipe
 		
-		print("Launching \(launchPath) \(arguments.joined(separator: " "))")
+		if logCommands {
+			print("$ \(launchPath) \(arguments.map { $0.contains(" ") ? "\"\($0)\"" : $0 }.joined(separator: " "))")
+		}
 		task.launch()
 		
 		var output: String?
@@ -106,27 +164,36 @@ class LocalCodeController: CodeController {
 		}
 	}
 	
-	@discardableResult private func swiftc(filePath: String, outputPath: String) throws -> (output: String, exitCode: Int32) {
+	/// Executes a Swift source code file, throwing any compilation errors, and returning the output.
+	@discardableResult private func swift(filePath: String, arguments: [String] = []) throws -> (output: String, exitCode: Int32) {
+		print("Running \(filePath)")
+		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
+		return try execute(launchPath: swiftPath(), arguments: ["-sdk", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk", filePath] + arguments)
+	}
+	
+	/// Compiles a Swift source code file to the given output path, throwing any compilation errors.
+	/// The default output path is /dev/null, which will disregard away the executable.
+	@discardableResult private func swiftc(filePath: String, outputPath: String = "/dev/null") throws -> (output: String, exitCode: Int32) {
 		print("Compiling \(filePath)")
-		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
-//		return try execute(command: "xcrun -sdk macosx swiftc \(filePath) -o \(outputPath)")
+		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
+		return try execute(launchPath: swiftcPath(), arguments: ["-sdk", sdkPath(), filePath, "-o", outputPath])
 	}
 	
 	fileprivate func runTest(index: Int, for problem: Problem) throws -> CompilationResult.TestResult {
 		var success = false
 		let testCase = problem.testCases[index]
 		
-		print("Running \(problem.functionCall(with: testCase.arguments))")
+//		print("Running \(problem.functionCall(with: testCase.arguments))")
 		
 		let command = testCase.arguments.map {
 			($0 == "" ? "String.empty" : $0).data(using: .utf8)!.base64EncodedString()
-		}.joined(separator: " ")
+		}
 		
 		let startTime = Date()
 		
 		do {
-			let path = tempDirectory.appendingPathComponent("runnable_\(problem.functionName)", isDirectory: false).path
-			let runResult = try execute(launchPath: path, command: command, timeout: 10)
+			let path = tempDirectory.appendingPathComponent("runnable_\(problem.functionName).swift", isDirectory: false).path
+			let runResult = try swift(filePath: path, arguments: command)
 			
 			let runTime = Date().timeIntervalSince(startTime)
 			
@@ -156,51 +223,6 @@ class LocalCodeController: CodeController {
 		
 	}
 	
-	/// Compiles and runs code with specific given parameters.
-	///
-	/// - Parameters:
-	///   - code: The code to compile and run
-	///   - problem: The problem to run code for
-	///   - parameters: The parameters to use when calling the function
-	///   - completion: A completion handler with a `Result<String>` containing either the output of the program, a `CompilationError`, or an `Error`.
-	func run(_ code: String, for problem: Problem, with parameters: [LosslessStringConvertible], completion: @escaping Result<String>.Handler) {
-		print("Running custom test case")
-		
-		let parameters = parameters.map { String(describing: $0) }
-		
-		print("Running \(problem.functionCall(with: parameters))")
-		
-		let command = parameters.map {
-			($0 == "" ? "String.empty" : $0).data(using: .utf8)!.base64EncodedString()
-		}.joined(separator: " ")
-		
-		DispatchQueue.global(qos: .userInteractive).async {
-			completion(Result {
-				// Try compiling code on its own. If there are compile errors, they will be thrown
-				let filePath = self.baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
-				let outputPath = self.tempDirectory.appendingPathComponent(problem.functionName).path
-				try self.swiftc(filePath: filePath, outputPath: outputPath)
-				
-				// If successful, compile runnable tester
-				let runnableProgramFilePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
-				let runnableProgramOutputPath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName).path
-				let runnableProgram = problem.runnableVersionForCode(code: code)
-				
-				// Write runnable tester
-//				try FileManager.default.removeItem(atPath: runnableProgramFile)
-				try runnableProgram.write(toFile: runnableProgramFilePath, atomically: true, encoding: .utf8)
-				
-				try self.swiftc(filePath: runnableProgramFilePath, outputPath: runnableProgramOutputPath)
-				
-				// Run it
-				let runResult = try self.execute(launchPath: "runnable_\(problem.functionName)", command: command, timeout: 10)
-				
-				return runResult.output
-			})
-		}
-		
-	}
-	
 	/// Be sure to save the code first before calling test!
 	func test(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ()) {
 		
@@ -216,20 +238,18 @@ class LocalCodeController: CodeController {
 			do {
 				// Try compiling code on its own. If there are compile errors, they will be thrown
 				let filePath = self.baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
-				let outputPath = self.tempDirectory.appendingPathComponent(problem.functionName).path
-				try self.swiftc(filePath: filePath, outputPath: outputPath)
+				try self.swift(filePath: filePath)
 				
 				// If successful, compile runnable tester
 				let runnableProgramFilePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
-				let runnableProgramOutputPath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName).path
 				let runnableProgram = problem.runnableVersionForCode(code: code)
 				
 				do {
 					// Write runnable tester
-//					try? FileManager.default.removeItem(atPath: runnableProgramFile)
 					try runnableProgram.write(toFile: runnableProgramFilePath, atomically: true, encoding: .utf8)
 					
-					try self.swiftc(filePath: runnableProgramFilePath, outputPath: runnableProgramOutputPath)
+					// Check for compile errors in the runnable testers, throw an error if any are found
+					try self.swiftc(filePath: runnableProgramFilePath)
 					
 					var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count)
 					let queue = OperationQueue()
@@ -280,6 +300,10 @@ class LocalCodeController: CodeController {
 		catch {
 			return problem.startingCode
 		}
+	}
+	
+	private func handleUncaughtException(_ exception: NSException) {
+		
 	}
 	
 }

@@ -32,7 +32,6 @@ protocol CodeController {
 	func test(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ())
 	func saveCode(_ code: String, for problem: Problem) throws
 	func loadCode(for problem: Problem) -> String
-	func run(_ code: String, for problem: Problem, with parameters: [LosslessStringConvertible], completion: @escaping Result<String>.Handler)
 }
 
 enum CompilationResult {

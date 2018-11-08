@@ -212,7 +212,6 @@ class SwiftCoderViewController: NSViewController {
 	func setupCodeMenu() {
 		let codeMenu = NSMenu(title: "Code")
 		codeMenu.addItem(withTitle: "Save and Run", action: #selector(goButtonPressed(sender:)), keyEquivalent: "\u{000d}")
-		//		codeMenu.addItem(withTitle: "Run With…", action: #selector(runTestWithCustomParameters), keyEquivalent: "")
 		codeMenu.addItem(withTitle: "Start Over", action: #selector(startOver(sender:)), keyEquivalent: "")
 		codeMenu.addItem(.separator())
 		codeMenu.addItem(withTitle: "Comment/Uncomment", action: #selector(commentUncommentSelectedLines(_:)), keyEquivalent: "/")
@@ -439,6 +438,8 @@ class SwiftCoderViewController: NSViewController {
 							case .timeout:
 								self.outputField.string = "It took too long to test your code."
 							}
+						} else if let error = error as? LocalCodeController.PathError {
+							self.outputField.string = error.localizedDescription
 						} else {
 							self.outputField.string = error.localizedDescription
 						}
@@ -500,126 +501,6 @@ class SwiftCoderViewController: NSViewController {
 				self.outputStatusTextField.stringValue =  "Error saving your code:"
 				self.outputField.string = error.localizedDescription
 			}
-		}
-		
-	}
-	
-	// This has problems, but also is completely unnecessary
-	@objc func runTestWithCustomParameters() {
-		let alert = NSAlert()
-		alert.messageText = problem.title
-		
-		alert.addButton(withTitle: "Run")
-		alert.addButton(withTitle: "Cancel")
-		
-		let templateFrame = NSRect(x: 0, y: 0, width: 250, height: 24)
-		
-		var views: [NSView] = []
-		
-//		let runStackView = NSStackView(frame: frame)
-//
-//		let outputTF = NSTextField(labelWithString: "")
-//		let runButton = NSButton(title: "Run", target: nil, action: nil)
-//
-//		outputTF.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 10), for: .horizontal)
-//
-//		runStackView.addArrangedSubview(outputTF)
-//		runStackView.addArrangedSubview(runButton)
-//
-//		views.append(runStackView)
-		
-		let initialCount = views.count
-		
-		views.append(contentsOf: problem.parameters.reversed().enumerated().map { (index, parameter) in
-			switch parameter.type {
-			case "String":
-				let tf = NSTextField(frame: templateFrame)
-				tf.placeholderString = parameter.name
-				return tf
-			case "Bool":
-				let checkbox = NSButton(checkboxWithTitle: parameter.name, target: nil, action: nil)
-				checkbox.frame = templateFrame
-				return checkbox
-			case "Int":
-				return TextFieldStepperView(frame: templateFrame, name: parameter.name)
-			default:
-				return NSTextField(frame: templateFrame)
-			}
-		})
-		
-		let spacing = 6
-		
-		let stackView = NSStackView(frame: NSRect(x: 0, y: 0, width: 250, height: views.reduce(CGFloat(spacing*(views.count-1)), {
-			return $0 + $1.frame.height
-		})))
-		views.reversed().forEach(stackView.addArrangedSubview)
-		
-		stackView.orientation = .vertical
-		stackView.spacing = CGFloat(spacing)
-		stackView.alignment = .left
-		
-		alert.accessoryView = stackView
-		alert.beginSheetModal(for: NSApp.mainWindow!) { response in
-			guard response == NSApplication.ModalResponse.alertFirstButtonReturn else {
-				return
-			}
-			
-			// Get parameters
-			
-			let parameters: [String] = self.problem.parameters.reversed().enumerated().map { (index, parameter) in
-				let view = views[index+initialCount]
-				switch parameter.type {
-				case "String":
-					return (view as! NSTextField).stringValue
-				case "Bool":
-					return (view as! NSButton).state == NSControl.StateValue.on ? "true" : "false"
-				case "Int":
-					return String(describing: (view as! TextFieldStepperView).value)
-				default:
-					return ""
-				}
-			}.reversed()
-			
-			print(parameters)
-			
-			// Run code
-			
-			let code = self.inputTextView.text
-			
-			do {
-				try self.codeController.saveCode(code, for: self.problem)
-			} catch {
-				let alert = NSAlert(error: error)
-				alert.runModal()
-				return
-			}
-			
-			self.codeController.run(code, for: self.problem, with: parameters) { (result) in
-				DispatchQueue.main.async {
-					do {
-						let output = try result.unwrap()
-						
-						let alert = NSAlert()
-						alert.messageText = self.problem.functionCall(with: parameters)
-						alert.informativeText = output
-						alert.runModal()
-					} catch let error as CompilationError {
-						let alert = NSAlert()
-						alert.messageText = "There was an error running your code."
-//						alert.informativeText = error.localizedDescription
-						let label = NSTextField(wrappingLabelWithString: error.localizedDescription)
-						label.font = NSFont(name: "Menlo", size: 12)!
-						alert.accessoryView = label
-						
-						alert.runModal()
-					} catch {
-						let alert = NSAlert(error: error)
-						alert.runModal()
-					}
-				}
-			}
-
-			
 		}
 		
 	}
@@ -866,10 +747,6 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 					return false
 				}
 			}
-		}
-		
-		if menuItem.action == #selector(runTestWithCustomParameters) {
-			return problem.parameters.count > 0
 		}
 		
 		if #available(OSX 10.14, *) {
