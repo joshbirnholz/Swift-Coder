@@ -10,6 +10,11 @@ import Cocoa
 import SavannaKit
 import SourceEditor
 
+struct ProblemIndexPath: Equatable {
+	var list: ProblemSet
+	var index: Int
+}
+
 class SwiftCoderViewController: NSViewController {
 	
 	let codeController: CodeController = LocalCodeController.shared
@@ -69,31 +74,16 @@ class SwiftCoderViewController: NSViewController {
 	
 	var finishedLoadingView = false
 	
-	var problemList: ProblemSet! {
-		didSet {
-			if oldValue != nil {
-				problemIndex = 0
-			}
-			
-			userDefaults.set(problemList?.rawValue, forKey: "problemList")
-			
-			setupProblemMenuAndScrubber()
-			
-			if #available(macOS 10.12.2, *) {
-				updateScrubber()
-			}
-		}
-	}
-	
 	var testResults: [CompilationResult.TestResult] = []
 	
 	var problems: [Problem] {
-		return problemList.problems
+		return problemIndexPath.list.problems
 	}
 	
-	@objc var problemIndex: Int = 0 {
+	var problemIndexPath: ProblemIndexPath! {
 		willSet {
-			guard let problem = problem, finishedLoadingView else { return }
+			guard finishedLoadingView else { return }
+			guard let problem = problem else { return }
 			do {
 				try codeController.saveCode(inputTextView.text, for: problem)
 			} catch {
@@ -101,9 +91,18 @@ class SwiftCoderViewController: NSViewController {
 			}
 		}
 		didSet {
-			userDefaults.set(problemIndex, forKey: "problemIndex")
-			nextButton.isEnabled = problemIndex + 1 < problems.count
-			previousButton.isEnabled = problemIndex - 1 >= 0
+			if problemIndexPath.list != oldValue?.list {
+				setupProblemMenuAndScrubber()
+				
+				if #available(macOS 10.12.2, *) {
+					updateScrubber()
+				}
+			}
+			
+			userDefaults.set(problemIndexPath.list.rawValue, forKey: "problemList")
+			userDefaults.set(problemIndexPath.index, forKey: "problemIndex")
+			nextButton.isEnabled = problemIndexPath.index + 1 < problems.count
+			previousButton.isEnabled = problemIndexPath.index - 1 >= 0
 			
 			showSolutionButton.isHidden = problem.solution == nil
 			helpButton.isHidden = problem.hint == nil
@@ -125,10 +124,10 @@ class SwiftCoderViewController: NSViewController {
 	
 	var problem: Problem! {
 		get {
-			if let problemList = problemList, problemList.problems.indices.contains(problemIndex) {
-				return problemList.problems[problemIndex]
+			if let problemIndexPath = problemIndexPath, problemIndexPath.list.problems.indices.contains(problemIndexPath.index) {
+				return problemIndexPath.list.problems[problemIndexPath.index]
 			} else {
-				return problemList.problems.last
+				return problemIndexPath.list.problems.first
 			}
 		}
 	}
@@ -139,19 +138,9 @@ class SwiftCoderViewController: NSViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		if let key = userDefaults.string(forKey: "problemList"), let list = ProblemSet(rawValue: key) {
-			problemList = list
-		} else {
-			problemList = ProblemSet.allCases.first
-		}
-		
-		var index = userDefaults.integer(forKey: "problemIndex")
-		
-		if index > problems.count {
-			index = problems.count - 1
-		}
-		
-		problemIndex = index
+		let list = userDefaults.string(forKey: "problemList").flatMap(ProblemSet.init) ?? ProblemSet.allCases.first!
+		let index = userDefaults.integer(forKey: "problemIndex")
+		problemIndexPath = ProblemIndexPath(list: list, index: index)
 		
 		inputTextView.needsDisplay = true
 		
@@ -292,7 +281,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		maxScrubberItemWidth = problems.enumerated().map { width(forItemAt: $0.offset) }.max() ?? 0
 		scrubber.reloadData()
-		scrubber.selectedIndex = problemIndex
+		scrubber.selectedIndex = problemIndexPath.index
 	}
 	
 	/// Comments or uncomments all selected lines.
@@ -383,19 +372,19 @@ class SwiftCoderViewController: NSViewController {
 	/// Just changing the problem index on its own can lead to the problem index being set incorrectly, because scrolling the scrubber on the Touch Bar triggers didSelectItem, which sets the problem index again (to an incorrect value, for some reason). This method ensures that the scrubber doesn't affect the problem index by automatically setting `scrubberShouldAffectProblemIndex` to true.
 	func updateProblemIndex(to newValue: Int) {
 		scrubberShouldAffectProblemIndex = false
-		problemIndex = newValue
+		problemIndexPath.index = newValue
 		if #available(OSX 10.12.2, *) {
-			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
+			problemScrubber?.animator().scrollItem(at: problemIndexPath.index, to: .center)
 		}
 		scrubberShouldAffectProblemIndex = true
 	}
 	
 	@IBAction func nextButtonPressed(sender: AnyObject) {
-		updateProblemIndex(to: problemIndex + 1)
+		updateProblemIndex(to: problemIndexPath.index + 1)
 	}
 	
 	@IBAction func previousButtonPressed(sender: AnyObject) {
-		updateProblemIndex(to: problemIndex - 1)
+		updateProblemIndex(to: problemIndexPath.index - 1)
 	}
 	
 	@objc func randomButtonPressed(sender: AnyObject) {
@@ -409,7 +398,7 @@ class SwiftCoderViewController: NSViewController {
 	
 	@objc func problemSetMenuItemSelected(_ sender: NSMenuItem) {
 		if let selectedSet = sender.representedObject as? ProblemSet {
-			self.problemList = selectedSet
+			self.problemIndexPath.list = selectedSet
 		}
 	}
 	
@@ -421,7 +410,7 @@ class SwiftCoderViewController: NSViewController {
 		assistantView = .textField
 		
 		let code = self.inputTextView.text
-		let startedProblemIndex = self.problemIndex
+		let startedProblemIndex = self.problemIndexPath
 		
 		do {
 			try self.codeController.saveCode(code, for: self.problem)
@@ -429,7 +418,7 @@ class SwiftCoderViewController: NSViewController {
 			self.codeController.test(code, for: self.problem) { (result) in
 				
 				print("Ended")
-				guard self.problemIndex == startedProblemIndex else {
+				guard self.problemIndexPath == startedProblemIndex else {
 					return
 				}
 				DispatchQueue.main.async {
@@ -748,7 +737,7 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 extension SwiftCoderViewController: NSScrubberDelegate {
 	func scrubber(_ scrubber: NSScrubber, didSelectItemAt selectedIndex: Int) {
 		guard scrubberShouldAffectProblemIndex else { return }
-		problemIndex = selectedIndex
+		problemIndexPath.index = selectedIndex
 	}
 }
 
@@ -756,12 +745,12 @@ extension SwiftCoderViewController: NSScrubberDelegate {
 extension SwiftCoderViewController: NSScrubberDataSource {
 
 	func numberOfItems(for scrubber: NSScrubber) -> Int {
-		return problemList.problems.count
+		return problemIndexPath.list.problems.count
 	}
 
 	func scrubber(_ scrubber: NSScrubber, viewForItemAt index: Int) -> NSScrubberItemView {
 		let itemView = scrubber.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ProblemScrubberItemIdentifier"), owner: self) as! NSScrubberTextItemView
-		itemView.title = problemList.problems[index].title
+		itemView.title = problemIndexPath.list.problems[index].title
 		return itemView
 	}
 
@@ -859,20 +848,20 @@ extension SwiftCoderViewController: NSTableViewDelegate {
 extension SwiftCoderViewController: NSMenuItemValidation {
 	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		if menuItem.action == #selector(previousButtonPressed(sender:)) {
-			return problemIndex - 1 >= 0
+			return problemIndexPath.index - 1 >= 0
 		}
 		
 		if menuItem.action == #selector(nextButtonPressed(sender:)) {
-			return problemIndex + 1 < problems.count
+			return problemIndexPath.index + 1 < problems.count
 		}
 		
 		if menuItem.action == #selector(problemMenuItemSelected(_:)) {
-			menuItem.state = (menuItem.representedObject as? Int) == problemIndex ? .on : .off
+			menuItem.state = (menuItem.representedObject as? Int) == problemIndexPath.index ? .on : .off
 		}
 		
 		if menuItem.action == #selector(problemSetMenuItemSelected(_:)) {
 			if let problemSet = menuItem.representedObject as? ProblemSet {
-				menuItem.state = problemSet == problemList ? .on : .off
+				menuItem.state = problemSet == problemIndexPath.list ? .on : .off
 				if problemSet.problems.isEmpty {
 					return false
 				}
