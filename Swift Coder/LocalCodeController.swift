@@ -25,7 +25,7 @@ class LocalCodeController: CodeController {
 		}
 		
 		var localizedDescription: String {
-			return "Couldn't reach \(name). Make sure your Xcode path is set correctly.\n\n"
+			return "Couldn't reach \(name). Make sure Xcode is installed and the path is set correctly.\n\n"
 		}
 	}
 	
