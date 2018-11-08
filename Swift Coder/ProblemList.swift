@@ -6,7 +6,7 @@
 //  Copyright © 2016 Josh Birnholz. All rights reserved.
 //
 
-enum ProblemSet: String, CaseIterable {
+public enum ProblemSet: String, CaseIterable {
 	case codingBatWarmup1 = "CodingBat: Warmup-1"
 	case codingBatWarmup2 = "CodingBat: Warmup-2"
 	case codingBatString1 = "CodingBat: String-1"
@@ -19,6 +19,8 @@ enum ProblemSet: String, CaseIterable {
 	case codingBatArray3 = "CodingBat: Array-3"
 	case codingBatAP1 = "CodingBat: AP-1"
 	case codingBatRecursion1 = "CodingBat: Recursion-1"
+	case codingBatFunctional1 = "CodingBat: Functional-1"
+	case codingBatFunctional2 = "CodingBat: Functional-2"
 	case projectEuler = "Project Euler"
 	
 	var problems: [Problem] {
@@ -39,7 +41,11 @@ enum ProblemSet: String, CaseIterable {
 		case .codingBatArray2:
 			return codingBatArray2Problems
 		case .codingBatArray3:
-			return codingBatArray3roblems
+			return codingBatArray3Problems
+		case .codingBatFunctional1:
+			return codingBatFunctional1Problems
+		case .codingBatFunctional2:
+			return codingBatFunctional2Problems
 		}
 	}
 }
@@ -4695,7 +4701,7 @@ fileprivate let codingBatArray2Problems: [Problem] = [
 ]
 
 // MARK: Array-3
-fileprivate let codingBatArray3roblems: [Problem] = [
+fileprivate let codingBatArray3Problems: [Problem] = [
 	Problem(
 		title: "maxSpan",
 		returnType: Int.self,
@@ -4915,6 +4921,393 @@ fileprivate let codingBatRecursion1Problems: [Problem] = [
 		],
 		eulerMode: false
 	)
+]
+
+// MARK: Functional-1
+
+fileprivate let codingBatFunctional1Problems = [
+	Problem(
+		title: "doubling",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of integers, return an array where each integer is multiplied by 2.",
+		solution: """
+		func doubling(nums: [Int]) -> [Int] {
+			return nums.map { n in n * 2 }
+		}
+		""",
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [2, 4, 6], arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: [12, 16, 12, 16, -2], arguments: [6, 8, 6, 8, -1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [10], arguments: [5]),
+			Problem.TestCase(expectation: [10, 20], arguments: [5, 10]),
+			Problem.TestCase(expectation: [16, -10, 14, 6, 218], arguments: [8, -5, 7, 3, 109]),
+			Problem.TestCase(expectation: [12, -6, 24, 46, 8, 2, 38, 22, 4, 6, 4], arguments: [6, -3, 12, 23, 4, 1, 19, 11, 2, 3, 2]),
+			Problem.TestCase(expectation: [6, 2, 8, 2, 10, 18], arguments: [3, 1, 4, 1, 5, 9])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "square",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of integers, return an array where each integer is multiplied with itself.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 4, 9], arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: [36, 64, 36, 64, 1], arguments: [6, 8, -6, -8, 1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [144], arguments: [12]),
+			Problem.TestCase(expectation: [25, 100], arguments: [5, 10]),
+			Problem.TestCase(expectation: [36, 9, 144, 529, 16, 1, 361, 121, 4, 9, 4], arguments: [6, -3, 12, 23, 4, 1, 19, 11, 2, 3, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "addStar",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array where each string has \"*\" added at its end.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a*", "bb*", "ccc*"], arguments: ["a", "bb", "ccc"]),
+			Problem.TestCase(expectation: ["hello*", "there*"], arguments: ["hello", "there"]),
+			Problem.TestCase(expectation: ["**"], arguments: ["*"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["kittens*", "and*", "chocolate*", "and*"], arguments: ["kittens", "and", "chocolate", "and"]),
+			Problem.TestCase(expectation: ["empty*", "string*", "*"], arguments: ["empty", "string", ""])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "copies3",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array where each string is replaced by 3 copies of the string concatenated together.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["aaa", "bbbbbb", "ccccccccc"], arguments: ["a", "bb", "ccc"]),
+			Problem.TestCase(expectation: ["242424", "aaa", ""], arguments: ["24", "a", ""]),
+			Problem.TestCase(expectation: ["hellohellohello", "theretherethere"], arguments: ["hello", "there"]),
+			Problem.TestCase(expectation: ["nonono"], arguments: ["no"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["thisthisthis", "andandand", "thatthatthat", "andandand"], arguments: ["this", "and", "that", "and"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "moreY",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array where each string has \"y\" added at its start and end.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["yay", "yby", "ycy"], arguments: ["a", "b", "c"]),
+			Problem.TestCase(expectation: ["yhelloy", "ytherey"], arguments: ["hello", "there"]),
+			Problem.TestCase(expectation: ["yyayy"], arguments: ["yay"]),
+			Problem.TestCase(expectation: ["yy", "yay", "yxxy"], arguments: ["", "a", "xx"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["yxxy", "yyyy", "yzzy"], arguments: ["xx", "yy", "zz"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "math1",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of integers, return an array where each integer is added to 1 and the result is multiplied by 10.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [20, 30, 40], arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: [70, 90, 70, 90, 20], arguments: [6, 8, 6, 8, 1]),
+			Problem.TestCase(expectation: [110], arguments: [10]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [60, 110], arguments: [5, 10]),
+			Problem.TestCase(expectation: [0, -10, -20, -10, 0], arguments: [-1, -2, -3, -2, -1]),
+			Problem.TestCase(expectation: [70, -20, 130, 240, 50, 20, 200, 120, 30, 40, 30], arguments: [6, -3, 12, 23, 4, 1, 19, 11, 2, 3, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "rightDigit",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of non-negative integers, return an integer array of the rightmost digits. (Note: use %)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 2, 3], arguments: [1, 22, 93]),
+			Problem.TestCase(expectation: [6, 8, 6, 8, 1], arguments: [16, 8, 886, 8, 1]),
+			Problem.TestCase(expectation: [0, 0], arguments: [10, 0]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [5, 0], arguments: [5, 10]),
+			Problem.TestCase(expectation: [5, 0, 0, 0, 0], arguments: [5, 50, 500, 5000, 5000]),
+			Problem.TestCase(expectation: [6, 3, 2, 3, 4, 1, 9, 9, 2, 3, 2], arguments: [6, 23, 12, 23, 4, 1, 19, 1119, 2, 3, 2])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "lower",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array where each string is converted to lower case (Note: String lowercased() method).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["hello", "hi"], arguments: ["Hello", "Hi"]),
+			Problem.TestCase(expectation: ["aaa", "bbb", "ccc"], arguments: ["AAA", "BBB", "ccc"]),
+			Problem.TestCase(expectation: ["kitten", "chocolate"], arguments: ["KitteN", "ChocolaTE"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["empty", ""], arguments: ["EMPTY", ""]),
+			Problem.TestCase(expectation: ["aax", "byb", "ycc", "zzz"], arguments: ["aaX", "bYb", "Ycc", "ZZZ"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "noX",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array where each string has all its \"x\" removed.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a", "bb", "c"], arguments: ["ax", "bb", "cx"]),
+			Problem.TestCase(expectation: ["a", "bb", "c"], arguments: ["xxax", "xbxbx", "xxcx"]),
+			Problem.TestCase(expectation: [""], arguments: ["x"]),
+			Problem.TestCase(expectation: [""], arguments: [""]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["the", "tai"], arguments: ["the", "taxi"]),
+			Problem.TestCase(expectation: ["the", "tai"], arguments: ["the", "xxtxaxixxx"]),
+			Problem.TestCase(expectation: ["this", "is", "the", ""], arguments: ["this", "is", "the", "x"])
+		],
+		eulerMode: false
+	)
+]
+
+// MARK: Functional-2
+
+fileprivate let codingBatFunctional2Problems = [
+	Problem(
+		title: "noNeg",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of integers, return an array of the integers, omitting any that are less than 0.",
+		solution: """
+		func noNeg(nums: [Int]) -> [Int] {
+			return nums.filter { n in n >= 0 }
+		}
+		""",
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1], arguments: [1, -2]),
+			Problem.TestCase(expectation: [3, 3], arguments: [-3, -3, 3, 3]),
+			Problem.TestCase(expectation: [Int](), arguments: [-1, -1, -1]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [0, 1, 2], arguments: [0, 1, 2]),
+			Problem.TestCase(expectation: [3, 1, 4], arguments: [3, -10, 1, -1, 4, -400]),
+			Problem.TestCase(expectation: [3, 1, 5], arguments: [-1, 3, 1, -1, -10, -100, -111, 5])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "no9",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of non-negative integers, return an array of those numbers except omitting any that end with 9. (Note: % by 10)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [1, 2], arguments: [1, 2, 19]),
+			Problem.TestCase(expectation: [3], arguments: [9, 19, 29, 3]),
+			Problem.TestCase(expectation: [1, 2, 3], arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: [45, 90, 28, 13, 0], arguments: [45, 99, 90, 28, 13, 999, 0]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [Int](), arguments: [9]),
+			Problem.TestCase(expectation: [0, 0], arguments: [0, 9, 0])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "noTeen",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of integers, return an array of those numbers, omitting any that are between 13 and 19 inclusive.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [12, 20], arguments: [12, 13, 19, 20]),
+			Problem.TestCase(expectation: [1, 1], arguments: [1, 14, 1]),
+			Problem.TestCase(expectation: [Int](), arguments: [15]),
+			Problem.TestCase(expectation: [-15], arguments: [-15]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [0, 1, 2, -3], arguments: [0, 1, 2, -3]),
+			Problem.TestCase(expectation: [21], arguments: [15, 17, 19, 21, 19]),
+			Problem.TestCase(expectation: [-16, 2, 3, 25], arguments: [-16, 2, 15, 3, 16, 25])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "noZ",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array of the strings, omitting any string that contains a \"z\". (Note: the str.contains(x) method returns a boolean)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["aaa", "bbb"], arguments: ["aaa", "bbb", "aza"]),
+			Problem.TestCase(expectation: ["hi"], arguments: ["hziz", "hzello", "hi"]),
+			Problem.TestCase(expectation: ["hello", "are"], arguments: ["hello", "howz", "are", "youz"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: [""], arguments: [""]),
+			Problem.TestCase(expectation: ["x", "y"], arguments: ["x", "y", "z"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "noLong",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array of the strings, omitting any string length 4 or more.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["not", "too"], arguments: ["this", "not", "too", "long"]),
+			Problem.TestCase(expectation: ["a", "bbb"], arguments: ["a", "bbb", "cccc"]),
+			Problem.TestCase(expectation: [String](), arguments: ["cccc", "cccc", "cccc"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: [""], arguments: [""]),
+			Problem.TestCase(expectation: [""], arguments: ["empty", "", "empty"]),
+			Problem.TestCase(expectation: ["a"], arguments: ["a"]),
+			Problem.TestCase(expectation: ["bbb", "***", "333"], arguments: ["aaaa", "bbb", "***", "333"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "no34",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array of the strings, omitting any string length 3 or 4.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a", "bb"], arguments: ["a", "bb", "ccc"]),
+			Problem.TestCase(expectation: ["a", "bb"], arguments: ["a", "bb", "ccc", "dddd"]),
+			Problem.TestCase(expectation: ["apple"], arguments: ["ccc", "dddd", "apple"]),
+			Problem.TestCase(expectation: [String](), arguments: ["this", "not", "too", "long"]),
+			Problem.TestCase(expectation: ["a", "xx"], arguments: ["a", "bbb", "cccc", "xx"]),
+			Problem.TestCase(expectation: ["xxxxxxx"], arguments: ["dddd", "ddd", "xxxxxxx"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: [""], arguments: [""]),
+			Problem.TestCase(expectation: ["empty", "", "empty"], arguments: ["empty", "", "empty"]),
+			Problem.TestCase(expectation: ["a"], arguments: ["a"]),
+			Problem.TestCase(expectation: ["*****"], arguments: ["aaaa", "bbb", "*****", "333"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "noYY",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return an array where each string has \"y\" added at its end, omitting any resulting strings that contain \"yy\" as a substring anywhere.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["ay", "by", "cy"], arguments: ["a", "b", "c"]),
+			Problem.TestCase(expectation: ["ay", "by"], arguments: ["a", "b", "cy"]),
+			Problem.TestCase(expectation: ["xxy", "yay", "zzy"], arguments: ["xx", "ya", "zz"]),
+			Problem.TestCase(expectation: ["xxy", "zzy"], arguments: ["xx", "yay", "zz"]),
+			Problem.TestCase(expectation: ["zzzy"], arguments: ["yyx", "y", "zzz"]),
+			Problem.TestCase(expectation: ["helloy", "therey"], arguments: ["hello", "there"]),
+			Problem.TestCase(expectation: ["yay"], arguments: ["ya"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["y"], arguments: [""]),
+			Problem.TestCase(expectation: ["xxy", "zzy"], arguments: ["xx", "yy", "zz"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "two2",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of non-negative integers, return an array of those numbers multiplied by 2, omitting any of the resulting numbers that end in 2.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [4, 6], arguments: [1, 2, 3]),
+			Problem.TestCase(expectation: [4], arguments: [2, 6, 11]),
+			Problem.TestCase(expectation: [0], arguments: [0]),
+			Problem.TestCase(expectation: [Int](), arguments: [Int]()),
+			Problem.TestCase(expectation: [Int](), arguments: [1, 11, 111, 16]),
+			Problem.TestCase(expectation: [4, 6, 10, 14], arguments: [2, 3, 5, 7, 11]),
+			Problem.TestCase(expectation: [6, 8, 198, 0], arguments: [3, 1, 4, 1, 6, 99, 0])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "square56",
+		returnType: [Int].self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of integers, return an array of those numbers squared and the product added to 10, omitting any of the resulting numbers that end in 5 or 6.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: [19, 11], arguments: [3, 1, 4]),
+			Problem.TestCase(expectation: [11], arguments: [1]),
+			Problem.TestCase(expectation: [14], arguments: [2]),
+			Problem.TestCase(expectation: [19], arguments: [3]),
+			Problem.TestCase(expectation: [Int](), arguments: [4]),
+			Problem.TestCase(expectation: [Int](), arguments: [5]),
+			Problem.TestCase(expectation: [Int](), arguments: [6]),
+			Problem.TestCase(expectation: [59], arguments: [7]),
+			Problem.TestCase(expectation: [11, 14, 19, 59], arguments: [1, 2, 3, 4, 5, 6, 7]),
+			Problem.TestCase(expectation: [19, 11, 11, 91], arguments: [3, -1, -4, 1, 5, 9])
+		],
+		eulerMode: false
+	)
+
 ]
 
 // MARK: - Project Euler

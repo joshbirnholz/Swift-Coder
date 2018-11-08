@@ -124,7 +124,8 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		"float": "Float",
 		"double[]": "[Double]",
 		"float[]": "[Float]",
-		"void": "Void"
+		"void": "Void",
+		"List<String>": "[String]"
 	]
 	
 	override init() {
@@ -235,7 +236,9 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		"int": "return 0;",
 		"boolean": "return false;",
 		"String[]": "String[] myArray = { }; return myArray;",
-		"int[]": "int[] myArray = { }; return myArray;"
+		"int[]": "int[] myArray = { }; return myArray;",
+		"List<Integer>": "List<Integer> myList = null; return myList;",
+		"List<String>": "List<String> myList = null; return myList;"
 		};
 		
 		var sampleCode = document.ace_editor.getValue();
@@ -300,7 +303,7 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 }
 
 let tester1 = CodingBatQuestionTester()
-tester1.load(url: URL(string: "https://codingbat.com/prob/p193817")!) { problemInfoResult in
+tester1.load(url: URL(string: "https://codingbat.com/prob/p132748")!) { problemInfoResult in
 	doOnMainThread {
 		do {
 			let problemInfo: CodingBatQuestionTester.ProblemInfo = try problemInfoResult.unwrap()
