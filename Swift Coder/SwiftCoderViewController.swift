@@ -50,7 +50,20 @@ class SwiftCoderViewController: NSViewController {
 	@IBOutlet weak var tableScrollView: NSScrollView!
 	@IBOutlet weak var helpButton: NSButton!
 	
-	var scrubber: NSView?
+	var untypedProblemScrubber: NSView? {
+		didSet {
+			if #available(macOS 10.12.2, *) {
+				updateScrubber()
+			}
+		}
+	}
+	
+	@available(macOS 10.12.2, *)
+	var problemScrubber: NSScrubber? {
+		return untypedProblemScrubber as? NSScrubber
+	}
+	
+	lazy var maxScrubberItemWidth: CGFloat = 0
 	
 	var problemList: ProblemSet! {
 		didSet {
@@ -61,6 +74,10 @@ class SwiftCoderViewController: NSViewController {
 			userDefaults.set(problemList?.rawValue ?? "", forKey: "problemList")
 			
 			setupProblemMenuAndScrubber()
+			
+			if #available(macOS 10.12.2, *) {
+				updateScrubber()
+			}
 		}
 	}
 	
@@ -112,14 +129,6 @@ class SwiftCoderViewController: NSViewController {
 		}
 	}
 	
-	@available(macOS 10.12.2, *)
-	func recenterScrubber() {
-		if let scrubber = self.scrubber as? NSScrubber {
-			scrubber.selectedIndex = problemIndex
-			scrubber.scrollItem(at: problemIndex, to: .center)
-		}
-	}
-	
 	let userDefaults = UserDefaults.standard
 	let problemMenu: NSMenu = NSMenu(title: "Problems")
 	
@@ -139,9 +148,6 @@ class SwiftCoderViewController: NSViewController {
 		}
 		
 		problemIndex = index
-		if #available(OSX 10.12.2, *) {
-			recenterScrubber()
-		}
 		
 		inputTextView.text = ""
 		
@@ -278,21 +284,24 @@ class SwiftCoderViewController: NSViewController {
 			NSApp.mainMenu?.insertItem(problemMenuItem, at: NSApp.mainMenu!.items.count-1)
 		}
 		
-		// Setup scrubber
-		if #available(OSX 10.12.2, *) {
-			if let scrubber = self.scrubber as? NSScrubber {
-				scrubber.reloadData()
-				scrubber.selectedIndex = problemIndex
-			}
+	}
+	
+	@available(macOS 10.12.2, *)
+	func updateScrubber() {
+		guard let scrubber = problemScrubber else {
+			return
 		}
 		
+		maxScrubberItemWidth = problems.enumerated().map { width(forItemAt: $0.offset) }.max() ?? 0
+		scrubber.reloadData()
+		scrubber.selectedIndex = problemIndex
 	}
 	
 	@objc func problemMenuItemSelected(_ sender: NSMenuItem) {
 		if let index = sender.representedObject as? Int {
 			problemIndex = index
 			if #available(OSX 10.12.2, *) {
-				recenterScrubber()
+				problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
 			}
 		}
 	}
@@ -304,7 +313,7 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	/// Comments or uncomments all selected lines.
-	@objc func commentUncommentSelectedLines(_ sender: Any?) {
+	@objc @IBAction func commentUncommentSelectedLines(_ sender: Any?) {
 		let selectedRange = Range(inputTextView.contentTextView.selectedRange())!
 		let firstSelectedLineNumber = inputTextView.text[inputTextView.text.startIndex ..< inputTextView.text.index(inputTextView.text.startIndex, offsetBy: selectedRange.lowerBound)].components(separatedBy: "\n").count
 
@@ -389,21 +398,22 @@ class SwiftCoderViewController: NSViewController {
 	@IBAction func nextButtonPressed(sender: AnyObject) {
 		problemIndex += 1
 		if #available(OSX 10.12.2, *) {
-			recenterScrubber()
+			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
 		}
 	}
 	
 	@IBAction func previousButtonPressed(sender: AnyObject) {
 		problemIndex -= 1
 		if #available(OSX 10.12.2, *) {
-			recenterScrubber()
+			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
 		}
 	}
 	
 	@objc func randomButtonPressed(sender: AnyObject) {
 		problemIndex = problems.indices.randomElement() ?? 0
 		if #available(OSX 10.12.2, *) {
-			recenterScrubber()
+			// TODO: Why isn't this scrolling the scrubber on the touch bar to the correct index?
+			problemScrubber?.animator().scrollItem(at: problemIndex, to: .center)
 		}
 	}
 	
@@ -676,9 +686,10 @@ class SwiftCoderViewController: NSViewController {
 	override func makeTouchBar() -> NSTouchBar? {
 		let mainBar = NSTouchBar()
 		mainBar.delegate = self
-		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .fixedSpaceLarge, .problems]
+		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .problems]
 		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .problems]
 		mainBar.customizationRequiredItemIdentifiers = [.go]
+		mainBar.principalItemIdentifier = .problems
 		mainBar.customizationIdentifier = "com.josh.birnholz.SwiftCoder.main-touch-bar"
 		
 		return mainBar
@@ -688,25 +699,27 @@ class SwiftCoderViewController: NSViewController {
 
 @available(OSX 10.12.2, *)
 extension NSTouchBarItem.Identifier {
-	static let go = NSTouchBarItem.Identifier("com.josh.birnholz.SwiftCoder.go")
-	static let commentUncomment = NSTouchBarItem.Identifier("com.josh.birnholz.SwiftCoder.comment")
-	static let problems = NSTouchBarItem.Identifier("com.josh.birnholz.SwiftCoder.problems")
+	static let go = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.go")
+	static let commentUncomment = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.comment-uncommon")
+	static let problems = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.problems")
 }
 
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSTouchBarDelegate {
-	
+
 	func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
 		switch identifier {
 		case .commentUncomment:
 			let item = NSCustomTouchBarItem(identifier: identifier)
 			item.view = NSButton(title: "//", target: self, action: #selector(commentUncommentSelectedLines(_:)))
 			item.customizationLabel = "Comment/Uncomment"
+			item.visibilityPriority = .low
 			return item
 		case .go:
 			let item = NSCustomTouchBarItem(identifier: identifier)
-			item.view = NSButton(title: "▶", target: self, action: #selector(goButtonPressed(sender:)))
+			item.view = NSButton(image: NSImage(named: NSImage.touchBarPlayTemplateName)!, target: self, action: #selector(goButtonPressed(sender:)))
 			item.customizationLabel = "Go"
+			item.visibilityPriority = .high
 			return item
 		case .problems:
 			let item = NSCustomTouchBarItem(identifier: identifier)
@@ -714,19 +727,25 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 			scrubber.scrubberLayout = NSScrubberFlowLayout()
 			scrubber.register(NSScrubberTextItemView.self, forItemIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ProblemScrubberItemIdentifier"))
 			scrubber.mode = .free
-			scrubber.backgroundColor = #colorLiteral(red: 0.2117426097, green: 0.2117787898, blue: 0.2117346823, alpha: 1)
-			scrubber.selectionOverlayStyle = NSScrubberSelectionStyle.outlineOverlay
+			scrubber.isContinuous = true
+			scrubber.backgroundColor = .controlColor
+			scrubber.selectionOverlayStyle = .outlineOverlay
+			scrubber.floatsSelectionViews = true
 			scrubber.delegate = self
 			scrubber.dataSource = self
+			scrubber.showsArrowButtons = false
+			scrubber.showsAdditionalContentIndicators = true
+			scrubber.itemAlignment = .center
 			item.view = scrubber
-			scrubber.bind(.selectedIndex, to: self, withKeyPath: #keyPath(problemIndex), options: nil)
-			self.scrubber = scrubber
+			item.visibilityPriority = .high
+			item.customizationLabel = "Problems"
+			self.untypedProblemScrubber = scrubber
 			return item
 		default:
 			return nil
 		}
 	}
-	
+
 }
 
 @available(OSX 10.12.2, *)
@@ -738,34 +757,37 @@ extension SwiftCoderViewController: NSScrubberDelegate {
 
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSScrubberDataSource {
-	
+
 	func numberOfItems(for scrubber: NSScrubber) -> Int {
 		return problemList.problems.count
 	}
-	
+
 	func scrubber(_ scrubber: NSScrubber, viewForItemAt index: Int) -> NSScrubberItemView {
 		let itemView = scrubber.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ProblemScrubberItemIdentifier"), owner: self) as! NSScrubberTextItemView
 		itemView.title = problemList.problems[index].title
-		
 		return itemView
 	}
-	
+
 }
 
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSScrubberFlowLayoutDelegate {
-	
-	func scrubber(_ scrubber: NSScrubber, layout: NSScrubberFlowLayout, sizeForItemAt itemIndex: Int) -> NSSize {
-		let font = NSFont.systemFont(ofSize: 15)
-		let title = problemList.problems[itemIndex].title as NSString
-		var size = title.size(withAttributes: [.font: font])
-		size.width += 48
-		size.height = 30
-		
-		return size
+
+	// Helper method, not actually a delegate method
+	func width(forItemAt itemIndex: Int) -> CGFloat {
+		let font = NSFont.systemFont(ofSize: 0)
+		let title = problems[itemIndex].title as NSString
+		return title.size(withAttributes: [.font: font]).width + 48
 	}
 	
+	func scrubber(_ scrubber: NSScrubber, layout: NSScrubberFlowLayout, sizeForItemAt itemIndex: Int) -> NSSize {
+		//		let width = self.width(forItemAt: itemIndex)
+		let width = maxScrubberItemWidth
+		return NSSize(width: width, height: 30)
+	}
+
 }
+
 
 extension SwiftCoderViewController: NSTableViewDataSource {
 	
@@ -834,20 +856,6 @@ extension SwiftCoderViewController: NSTableViewDelegate {
 	func tableView(_ tableView: NSTableView, shouldSelect tableColumn: NSTableColumn?) -> Bool {
 		return false
 	}
-	
-//	func tableView(_ tableView: NSTableView, toolTipFor cell: NSCell, rect: NSRectPointer, tableColumn: NSTableColumn?, row: Int, mouseLocation: NSPoint) -> String {
-//		
-//		if tableColumn == tableView.tableColumns[0] {
-//			return problem.expectationString(testCaseIndex: row)
-//		} else if tableColumn == tableView.tableColumns[1] {
-//			return testResults[row].run
-//		} else if tableColumn == tableView.tableColumns[2] || tableColumn == tableView.tableColumns[3] {
-//			return testResults[row].success ? "OK" : "X"
-//		} else {
-//			return ""
-//		}
-//		
-//	}
 	
 }
 

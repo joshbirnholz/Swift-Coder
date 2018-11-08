@@ -11,21 +11,21 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 	
-	func applicationDidFinishLaunching(aNotification: NSNotification) {
+	func applicationDidFinishLaunching(_ notification: Notification) {
 		// Insert code here to initialize your application
-		
+
 		if #available(OSX 10.12.2, *) {
 			NSApplication.shared.isAutomaticCustomizeTouchBarMenuItemEnabled = true
 		}
-		
+
 	}
-	
-	func applicationWillTerminate(aNotification: NSNotification) {
+
+	func applicationWillTerminate(_ notification: Notification) {
 		// Insert code here to tear down your application
 	}
 	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 		return true
 	}
-	
+
 }
