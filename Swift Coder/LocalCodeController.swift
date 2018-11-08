@@ -40,6 +40,10 @@ class LocalCodeController: CodeController {
 	}
 	
 	private func swiftPath() throws -> String {
+		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
+			throw PathError.xcode
+		}
+		
 		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift").path
 		guard FileManager.default.fileExists(atPath: path) else {
 			throw PathError.swift
@@ -48,6 +52,10 @@ class LocalCodeController: CodeController {
 	}
 	
 	private func swiftcPath() throws -> String {
+		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
+			throw PathError.xcode
+		}
+		
 		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc").path
 		guard FileManager.default.fileExists(atPath: path) else {
 			throw PathError.swiftc
@@ -56,6 +64,10 @@ class LocalCodeController: CodeController {
 	}
 	
 	private func sdkPath() throws -> String {
+		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
+			throw PathError.xcode
+		}
+		
 		let path = xcodeURL.appendingPathComponent("Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk").path
 		guard FileManager.default.fileExists(atPath: path) else {
 			throw PathError.sdk
