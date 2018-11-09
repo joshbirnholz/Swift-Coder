@@ -26,7 +26,7 @@ private struct SwiftCoderTheme: SourceCodeTheme {
 		return Color(red: 100/255, green: 100/255, blue: 100/255, alpha: 1.0)
 	}
 	
-	public let lineNumbersStyle: LineNumbersStyle? = LineNumbersStyle(font: Font(name: "SF Mono Medium", size: 12)!, textColor: lineNumbersColor)
+	public let lineNumbersStyle: LineNumbersStyle? = LineNumbersStyle(font: Font(name: "SF Mono Medium", size: 12) ?? Font(name: "Monaco", size: 12)!, textColor: lineNumbersColor)
 	
 	public let gutterStyle: GutterStyle = GutterStyle(backgroundColor: NSColor.controlColor, minimumWidth: 32)
 	
@@ -87,7 +87,7 @@ private struct SwiftBookColorTheme: SourceCodeTheme {
 		}
 	}()
 	
-	public let lineNumbersStyle: LineNumbersStyle? = LineNumbersStyle(font: Font(name: "SF Mono Medium", size: 13)!, textColor: lineNumbersColor)
+	public let lineNumbersStyle: LineNumbersStyle? = LineNumbersStyle(font: Font(name: "SF Mono Medium", size: 13) ?? Font(name: "Menlo", size: 13)!, textColor: lineNumbersColor)
 	
 	private static let gutterColor: Color = {
 		if #available(OSX 10.13, *) {
