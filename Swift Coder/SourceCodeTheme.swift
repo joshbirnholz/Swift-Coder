@@ -11,9 +11,14 @@ import SavannaKit
 import SourceEditor
 
 public struct SourceCodeThemes {
+	/// The default theme provided by SavannaKit
 	static let `default`: SourceCodeTheme = DefaultSourceCodeTheme()
+	/// The color scheme used on CodingBat.com
 	static let codingBat: SourceCodeTheme = SwiftCoderTheme()
-	static let swiftBook: SourceCodeTheme = SwiftBookColorTheme()
+	/// A theme based on the language guide at swift.org and Apple's WWDC 2018 slides.
+	///
+	/// This theme changes dynamically changes with the appearance (macOS Mojave's dark mode)
+	static let dynamicSwiftBook: SourceCodeTheme = SwiftBookColorTheme()
 }
 
 private struct SwiftCoderTheme: SourceCodeTheme {

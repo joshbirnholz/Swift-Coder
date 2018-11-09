@@ -150,7 +150,7 @@ class SwiftCoderViewController: NSViewController {
 		outputField.typingAttributes = attributes
 		
 		inputTextView.delegate = self
-		inputTextView.theme = SourceCodeThemes.swiftBook
+		inputTextView.theme = SourceCodeThemes.dynamicSwiftBook
 		inputTextView.scrollView.scrollerKnobStyle = NSScroller.KnobStyle.default
 		inputTextView.wantsLayer = true
 		inputTextView.layer?.borderWidth = 1

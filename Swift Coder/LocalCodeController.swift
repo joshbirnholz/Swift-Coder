@@ -6,7 +6,7 @@
 //  Copyright © 2018 Josh Birnholz. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
 class LocalCodeController: CodeController {
 	
@@ -44,7 +44,10 @@ class LocalCodeController: CodeController {
 	
 	public static let shared = LocalCodeController()
 	
+	private let isSandboxed = ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
+	
 	private init() {
+		print("Sandboxed:", isSandboxed)
 		guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Swift Coder", isDirectory: true) else {
 			fatalError("Couldn't get application support directory")
 		}
@@ -74,9 +77,8 @@ class LocalCodeController: CodeController {
 		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
 			throw PathError.xcode
 		}
-		print(xcodeURL.path)
+		
 		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift").path
-		print(path)
 		guard FileManager.default.fileExists(atPath: path) else {
 			throw PathError.swift
 		}
@@ -179,18 +181,18 @@ class LocalCodeController: CodeController {
 	}
 	
 	/// Executes a Swift source code file, throwing any compilation errors, and returning the output.
-	@discardableResult private func swift(filePath: String, arguments: [String] = []) throws -> (output: String, exitCode: Int32) {
+	@discardableResult private func swift(filePath: String, arguments: [String] = [], timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		print("Running \(filePath)")
 		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
-		return try execute(launchPath: swiftPath(), arguments: ["-sdk", sdkPath(), filePath] + arguments)
+		return try execute(launchPath: swiftPath(), arguments: ["-sdk", sdkPath(), filePath] + arguments, timeout: timeout)
 	}
 	
 	/// Compiles a Swift source code file to the given output path, throwing any compilation errors.
 	/// The default output path is /dev/null, which will disregard away the executable.
-	@discardableResult private func swiftc(filePath: String, outputPath: String = "/dev/null") throws -> (output: String, exitCode: Int32) {
+	@discardableResult private func swiftc(filePath: String, outputPath: String = "/dev/null", timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		print("Compiling \(filePath)")
 		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
-		return try execute(launchPath: swiftcPath(), arguments: ["-sdk", sdkPath(), filePath, "-o", outputPath])
+		return try execute(launchPath: swiftcPath(), arguments: ["-sdk", sdkPath(), filePath, "-o", outputPath], timeout: timeout)
 	}
 	
 	fileprivate func runTest(index: Int, for problem: Problem) throws -> CompilationResult.TestResult {
@@ -206,8 +208,16 @@ class LocalCodeController: CodeController {
 		let startTime = Date()
 		
 		do {
-			let path = tempDirectory.appendingPathComponent("runnable_\(problem.functionName).swift", isDirectory: false).path
-			let runResult = try swift(filePath: path, arguments: command)
+			
+			let runResult: (output: String, exitCode: Int32)
+
+			if self.isSandboxed {
+				let path = tempDirectory.appendingPathComponent("runnable_\(problem.functionName).swift", isDirectory: false).path
+				runResult = try swift(filePath: path, arguments: command, timeout: 10)
+			} else {
+				let path = tempDirectory.appendingPathComponent("runnable_\(problem.functionName)").path
+				runResult = try execute(launchPath: path, arguments: command, timeout: 10)
+			}
 			
 			let runTime = Date().timeIntervalSince(startTime)
 			
@@ -255,15 +265,16 @@ class LocalCodeController: CodeController {
 				try self.swift(filePath: filePath)
 				
 				// If successful, compile runnable tester
-				let runnableProgramFilePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
+				let runnableProgramSourcePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
+				let runnableProgramExecutablePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName).path
 				let runnableProgram = problem.runnableVersionForCode(code: code)
 				
 				do {
 					// Write runnable tester
-					try runnableProgram.write(toFile: runnableProgramFilePath, atomically: true, encoding: .utf8)
+					try runnableProgram.write(toFile: runnableProgramSourcePath, atomically: true, encoding: .utf8)
 					
 					// Check for compile errors in the runnable testers, throw an error if any are found
-					try self.swiftc(filePath: runnableProgramFilePath)
+					try self.swiftc(filePath: runnableProgramSourcePath, outputPath: self.isSandboxed ? "/dev/null" : runnableProgramExecutablePath)
 					
 					var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count)
 					let queue = OperationQueue()
