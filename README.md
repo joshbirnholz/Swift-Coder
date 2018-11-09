@@ -1,4 +1,4 @@
-# Swift-Coder
+# Swift Coder
 
 ## Learn programming with Swift, using problems from [CodingBat](https://www.codingbat.com) and [Project Euler](http://projecteuler.net)!
 
