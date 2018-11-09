@@ -839,7 +839,7 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 		
 		if menuItem.action == #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeFalse) {
 			menuItem.state = codeController.stringIntSubscriptAPIShouldUseStringReturnType ? .off : .on
-		}		
+		}
 		
 		return true
 	}
