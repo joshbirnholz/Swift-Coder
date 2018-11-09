@@ -303,7 +303,7 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 }
 
 let tester1 = CodingBatQuestionTester()
-tester1.load(url: URL(string: "https://codingbat.com/prob/p132748")!) { problemInfoResult in
+tester1.load(url: URL(string: "https://codingbat.com/prob/p147538")!) { problemInfoResult in
 	doOnMainThread {
 		do {
 			let problemInfo: CodingBatQuestionTester.ProblemInfo = try problemInfoResult.unwrap()
