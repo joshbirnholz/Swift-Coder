@@ -17,7 +17,7 @@ struct ProblemIndexPath: Equatable {
 
 class SwiftCoderViewController: NSViewController {
 	
-	let codeController: CodeController = LocalCodeController.shared
+	let codeController = LocalCodeController.shared
 	let lexer = SwiftLexer()
 	
 	enum AssistantView: CaseIterable {
@@ -172,7 +172,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		setupCodeMenu()
 		setupHelpMenu()
-		setupXcodePathMenuItem()
+		setupAppMenu()
 		
 		finishedLoadingView = true
 		
@@ -190,9 +190,9 @@ class SwiftCoderViewController: NSViewController {
 		
 		do {
 			// Delete temporary files
-			try FileManager.default.removeItem(at: (codeController as! LocalCodeController).tempDirectory)
+			try FileManager.default.removeItem(at: codeController.tempDirectory)
 		} catch {
-			NSLog("Error: Could not delete contents of \((codeController as! LocalCodeController).tempDirectory.path): \(error)")
+			NSLog("Error: Could not delete contents of \(codeController.tempDirectory.path): \(error)")
 		}
 	}
 	
@@ -204,10 +204,23 @@ class SwiftCoderViewController: NSViewController {
 		helpMenu.insertItem(withTitle: "Swift Language Guide", action: #selector(openLanguageGuide), keyEquivalent: "", at: helpMenu.items.count)
 	}
 	
-	func setupXcodePathMenuItem() {
+	func setupAppMenu() {
 		guard let appMenu = NSApp.mainMenu?.items.first?.submenu else { return }
 		
 		let index = appMenu.indexOfItem(withTitle: "Preferences…")
+		
+		let returnTypeMenu = NSMenu(title: "Subscript Return Type")
+		let returnTypeMenuItem = NSMenuItem(title: "Subscript Return Type", action: nil, keyEquivalent: "")
+		
+		returnTypeMenu.addItem(withTitle: "String", action: #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeTrue), keyEquivalent: "")
+		returnTypeMenu.addItem(withTitle: "Substring", action: #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeFalse), keyEquivalent: "")
+		
+		returnTypeMenuItem.submenu = returnTypeMenu
+		
+		appMenu.insertItem(returnTypeMenuItem, at: index)
+		
+		appMenu.insertItem(withTitle: "Enable String Int Subscript API", action: #selector(toggleStringIntSubscriptAPI), keyEquivalent: "", at: index)
+		
 		
 		appMenu.insertItem(withTitle: "Set Xcode Path…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
 		
@@ -224,9 +237,21 @@ class SwiftCoderViewController: NSViewController {
 		
 		openPanel.begin { (response) in
 			if let url = openPanel.url, response == .OK {
-				LocalCodeController.shared.xcodeURL = url
+				self.codeController.xcodeURL = url
 			}
 		}
+	}
+	
+	@objc func toggleStringIntSubscriptAPI() {
+		codeController.includeStringIntSubscriptAPI.toggle()
+	}
+	
+	@objc func setStringIntSubscriptAPIShouldUseStringReturnTypeTrue() {
+		codeController.stringIntSubscriptAPIShouldUseStringReturnType = true
+	}
+	
+	@objc func setStringIntSubscriptAPIShouldUseStringReturnTypeFalse() {
+		codeController.stringIntSubscriptAPIShouldUseStringReturnType = false
 	}
 	
 	@objc func openLanguageGuide() {
@@ -454,10 +479,8 @@ class SwiftCoderViewController: NSViewController {
 		let code = self.inputTextView.text
 		let startedProblemIndex = self.problemIndexPath
 		
-		do {
-			try self.codeController.saveCode(code, for: self.problem)
-			
-			self.codeController.test(code, for: self.problem) { (result) in
+		do {			
+			try self.codeController.saveAndTest(code, for: self.problem) { (result) in
 				
 				print("Ended")
 				guard self.problemIndexPath == startedProblemIndex else {
@@ -806,6 +829,17 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 			}
 		}
 		
+		if menuItem.action == #selector(toggleStringIntSubscriptAPI) {
+			menuItem.state = codeController.includeStringIntSubscriptAPI ? .on : .off
+		}
+		
+		if menuItem.action == #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeTrue) {
+			menuItem.state = codeController.stringIntSubscriptAPIShouldUseStringReturnType ? .on : .off
+		}
+		
+		if menuItem.action == #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeFalse) {
+			menuItem.state = codeController.stringIntSubscriptAPIShouldUseStringReturnType ? .off : .on
+		}		
 		
 		return true
 	}

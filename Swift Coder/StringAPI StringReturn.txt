@@ -1,0 +1,39 @@
+extension StringProtocol where Self: RangeReplaceableCollection {
+	subscript(_ index: Int) -> Character {
+		get {
+			let index = self.index(self.startIndex, offsetBy: index)
+			return self[index]
+		}
+		set {
+			let index = self.index(self.startIndex, offsetBy: index)
+			replaceSubrange(index..<self.index(after: index), with: String(newValue))
+		}
+	}
+	
+	subscript(_ range: Range<Int>) -> String {
+		get {
+			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			return String(self[start ..< end])
+		}
+		set {
+			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			replaceSubrange(start ..< end, with: newValue)
+		}
+	}
+	
+	subscript(_ range: ClosedRange<Int>) -> String {
+		get {
+			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			return String(self[start ... end])
+		}
+		set {
+			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			replaceSubrange(start ... end, with: newValue)
+		}
+	}
+}
+

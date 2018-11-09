@@ -1,8 +1,8 @@
 //
-//  CodeController.swift
+//  CompilationResult.swift
 //  Swift Coder
 //
-//  Created by Josh Birnholz on 8/14/18.
+//  Created by Josh Birnholz on 11/9/18.
 //  Copyright © 2018 Josh Birnholz. All rights reserved.
 //
 
@@ -24,18 +24,8 @@ enum CompilationError: Error {
 	
 }
 
-struct TimeoutError: Error {
-	init() { }
-}
-
-protocol CodeController {
-	func test(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ())
-	func saveCode(_ code: String, for problem: Problem) throws
-	func loadCode(for problem: Problem) -> String
-}
-
 enum CompilationResult {
-
+	
 	struct TestResult {
 		enum Successful: String {
 			case ok = "OK"

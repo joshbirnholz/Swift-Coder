@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class LocalCodeController: CodeController {
+class LocalCodeController {
 	
 	enum PathError: Error {
 		case swift
@@ -39,6 +39,24 @@ class LocalCodeController: CodeController {
 		}
 		set {
 			UserDefaults.standard.set(newValue, forKey: "xcodeURL")
+		}
+	}
+	
+	public var includeStringIntSubscriptAPI: Bool {
+		get {
+			return UserDefaults.standard.bool(forKey: #function)
+		}
+		set {
+			UserDefaults.standard.set(newValue, forKey: #function)
+		}
+	}
+	
+	public var stringIntSubscriptAPIShouldUseStringReturnType: Bool {
+		get {
+			return UserDefaults.standard.bool(forKey: #function)
+		}
+		set {
+			UserDefaults.standard.set(newValue, forKey: #function)
 		}
 	}
 	
@@ -107,11 +125,6 @@ class LocalCodeController: CodeController {
 			throw PathError.sdk
 		}
 		return path
-	}
-	
-	private func execute(launchPath: String = "/usr/bin/env", command: String, timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
-		let arguments = command.split(separator: " ").map(String.init)
-		return try execute(launchPath: launchPath, arguments: arguments, timeout: timeout)
 	}
 	
 	private func execute(launchPath: String = "/usr/bin/env", arguments: [String], timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
@@ -195,9 +208,10 @@ class LocalCodeController: CodeController {
 		return try execute(launchPath: swiftcPath(), arguments: ["-sdk", sdkPath(), filePath, "-o", outputPath], timeout: timeout)
 	}
 	
-	fileprivate func runTest(index: Int, for problem: Problem) throws -> CompilationResult.TestResult {
+	fileprivate func runTest(testCase: Problem.TestCase, for problem: Problem) throws -> CompilationResult.TestResult {
 		var success = false
-		let testCase = problem.testCases[index]
+		
+		precondition(problem.testCases.contains(testCase), "Trying to test a case from a different problem")
 		
 //		print("Running \(problem.functionCall(with: testCase.arguments))")
 		
@@ -244,11 +258,12 @@ class LocalCodeController: CodeController {
 			throw error
 		}
 		
-		
 	}
 	
 	/// Be sure to save the code first before calling test!
-	func test(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ()) {
+	func saveAndTest(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ()) throws {
+		
+		try self.saveCode(code, for: problem)
 		
 		DispatchQueue.global(qos: .userInteractive).async {
 			let result: CompilationResult
@@ -261,13 +276,29 @@ class LocalCodeController: CodeController {
 			
 			do {
 				// Try compiling code on its own. If there are compile errors, they will be thrown
-				let filePath = self.baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
+				let filePath = self.tempDirectory.appendingPathComponent(problem.functionName + ".swift").path
+				let code: String = try {
+					var c = "import Foundation\n\n"
+					
+					if self.includeStringIntSubscriptAPI {
+						let resourceName = self.stringIntSubscriptAPIShouldUseStringReturnType ? "StringAPI StringReturn" : "StringAPI"
+						let apiPath = Bundle.main.url(forResource: resourceName, withExtension: "txt")!.path
+						let stringAPI = try String(contentsOfFile: apiPath)
+						
+						c += stringAPI
+					}
+					
+					return c + code
+				}()
+				
+				try code.write(toFile: filePath, atomically: true, encoding: .utf8)
+				
 				try self.swift(filePath: filePath)
 				
 				// If successful, compile runnable tester
 				let runnableProgramSourcePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName + ".swift").path
 				let runnableProgramExecutablePath = self.tempDirectory.appendingPathComponent("runnable_" + problem.functionName).path
-				let runnableProgram = problem.runnableVersionForCode(code: code)
+				let runnableProgram = self.runnableProblemCode(for: problem, code: code)
 				
 				do {
 					// Write runnable tester
@@ -283,9 +314,9 @@ class LocalCodeController: CodeController {
 					let operations = (0 ..< problem.testCases.count).map { i in
 						BlockOperation {
 							do {
-								results[i] = try self.runTest(index: i, for: problem)
+								results[i] = try self.runTest(testCase: problem.testCases[i], for: problem)
 							} catch {
-								
+								results[i] = CompilationResult.TestResult(run: "error testing code: \(error.localizedDescription)", success: CompilationResult.TestResult.Successful.error, runTime: 0)
 							}
 						}
 					}
@@ -327,8 +358,122 @@ class LocalCodeController: CodeController {
 		}
 	}
 	
-	private func handleUncaughtException(_ exception: NSException) {
+	private func runnableProblemCode(for problem: Problem, code: String) -> String {
+		let printReplacement = """
+		func print(_ items: Any..., separator: String = "", terminator: String = "") {
 		
+		}
+		
+
+		"""
+		
+		var runnableCode = code + "\n\n"
+		
+		runnableCode += printReplacement
+		
+		if problem.parameters.contains(where: { $0.type == "String" }) {
+			runnableCode += """
+			extension String {
+				static var empty: String {
+					return ""
+				}
+			}
+			
+			
+			"""
+		}
+		
+		if problem.parameters.contains(where: { ($0.type.first == "[" && $0.type.last == "]") || $0.type.last == ">" }) {
+			runnableCode += """
+			typealias RegexMatch = (range: Range<String.Index>, value: String)
+			
+			extension String {
+				
+				func matches(forRegex regex: String) -> [(fullMatch: RegexMatch, groups: [RegexMatch])] {
+					do {
+						let regex = try NSRegularExpression(pattern: regex)
+						let results = regex.matches(in: self, range: NSRange(startIndex..., in: self))
+						return results.map { result in
+							let fullMatchRange = Range(result.range, in: self)!
+							let groups: [RegexMatch]
+							
+							if result.numberOfRanges > 1 {
+								groups = (1 ..< result.numberOfRanges).compactMap { i in
+									guard let range = Range(result.range(at: i), in: self) else {
+										return nil
+									}
+									let value = String(self[range])
+									return (range: range, value: value)
+								}
+							} else {
+								groups = []
+							}
+							
+							let fullMatch = (range: fullMatchRange, value: String(self[fullMatchRange]))
+							
+							return (fullMatch, groups)
+						}
+					} catch {
+						return []
+					}
+				}
+				
+			}
+			
+			extension Array: LosslessStringConvertible where Element: LosslessStringConvertible {
+				public init?(_ description: String) {
+					if let arr = description.matches(forRegex: "\\\\[(.*)]").first?.groups.first?.value.split(separator: ",").compactMap({
+						Element($0.trimmingCharacters(in: .whitespacesAndNewlines))}) {
+						if Element.self == String.self {
+							self = (arr as! [String]).map {
+								String($0[$0.index(after: $0.startIndex)..<$0.index(before: $0.endIndex)])
+								} as! [Element]
+						} else {
+							self = arr
+						}
+					} else {
+						return nil
+					}
+				}
+			}
+			
+			"""
+			
+		}
+		
+		for (index, parameter) in problem.parameters.enumerated() {
+			
+			switch parameter.type {
+			case "String":
+				// Don't need to convert type, so no need for optional checking with a string.
+				runnableCode += """
+				guard let __param\(index): \(parameter.type) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap({ $0 == "String.empty" ? "" : $0 }) else {
+					Swift.print("Incorrect argument type")
+					exit(-1)
+				}
+				
+				
+				"""
+			default:
+				runnableCode += """
+				guard let __param\(index): \(parameter.type) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap(\(parameter.type).init) else {
+				Swift.print("Incorrect argument type")
+					exit(-1)
+				}
+				
+				
+				"""
+				
+			}
+		}
+		
+		runnableCode += """
+		let __result: \(problem.returnType) = \(problem.functionName)(\(problem.parameters.enumerated().map { index, parameter in "\(parameter.name): __param\(index)" }.joined(separator: ", ")))
+		
+		Swift.print(__result)
+		"""
+		
+		return runnableCode
 	}
 	
 }
