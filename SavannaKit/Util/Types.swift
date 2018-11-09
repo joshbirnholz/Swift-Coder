@@ -13,8 +13,6 @@ public class NoTouchBarTextView: NSTextView {
 	override public func makeTouchBar() -> NSTouchBar? {
 		return nil
 	}
-	
-	
 }
 
 #if os(macOS)

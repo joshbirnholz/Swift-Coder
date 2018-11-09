@@ -25,7 +25,7 @@ class LocalCodeController: CodeController {
 		}
 		
 		var localizedDescription: String {
-			return "Couldn't reach \(name). Make sure Xcode is installed and the path is set correctly.\n\n"
+			return "Couldn't reach \(name). Make sure Xcode is installed and the path is set correctly.\n\nDownload Xcode:\nhttps://developer.apple.com/xcode/\nhttps://itunes.apple.com/us/app/xcode/id497799835?mt=12"
 		}
 	}
 	
@@ -34,17 +34,49 @@ class LocalCodeController: CodeController {
 	public let baseDirectory: URL
 	public let tempDirectory: URL
 	public var xcodeURL: URL {
-		didSet {
-			print("Xcode URL set to:", xcodeURL)
+		get {
+			return UserDefaults.standard.url(forKey: "xcodeURL") ?? URL(fileURLWithPath: "/Applications/Xcode.app")
 		}
+		set {
+			UserDefaults.standard.set(newValue, forKey: "xcodeURL")
+		}
+	}
+	
+	public static let shared = LocalCodeController()
+	
+	private init() {
+		guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Swift Coder", isDirectory: true) else {
+			fatalError("Couldn't get application support directory")
+		}
+		
+		if !FileManager.default.fileExists(atPath: dir.path) {
+			do {
+				try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: nil)
+			} catch {
+				fatalError("Couldn't get application support directory")
+			}
+		}
+		
+		baseDirectory = dir
+		
+		do {
+			tempDirectory = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: dir, create: true)
+		} catch {
+			fatalError("Couldn't get temp directory")
+		}
+		
+		print(xcodeURL.path)
+		print(baseDirectory.path)
+		print(tempDirectory.path)
 	}
 	
 	private func swiftPath() throws -> String {
 		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
 			throw PathError.xcode
 		}
-		
+		print(xcodeURL.path)
 		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift").path
+		print(path)
 		guard FileManager.default.fileExists(atPath: path) else {
 			throw PathError.swift
 		}
@@ -74,36 +106,6 @@ class LocalCodeController: CodeController {
 		}
 		return path
 	}
-	
-	private init(xcodeURL: URL = URL(fileURLWithPath: "/Applications/Xcode.app")) {
-		self.xcodeURL = xcodeURL
-		
-		guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Swift Coder", isDirectory: true) else {
-			fatalError("Couldn't get application support directory")
-		}
-		
-		if !FileManager.default.fileExists(atPath: dir.path) {
-			do {
-				try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: nil)
-			} catch {
-				fatalError("Couldn't get application support directory")
-			}
-		}
-		
-		baseDirectory = dir
-		
-		do {
-			tempDirectory = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: dir, create: true)
-		} catch {
-			fatalError("Couldn't get temp directory")
-		}
-		
-		print(xcodeURL.path)
-		print(baseDirectory.path)
-		print(tempDirectory.path)
-	}
-	
-	public static let shared = LocalCodeController()
 	
 	private func execute(launchPath: String = "/usr/bin/env", command: String, timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		let arguments = command.split(separator: " ").map(String.init)
@@ -180,7 +182,7 @@ class LocalCodeController: CodeController {
 	@discardableResult private func swift(filePath: String, arguments: [String] = []) throws -> (output: String, exitCode: Int32) {
 		print("Running \(filePath)")
 		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
-		return try execute(launchPath: swiftPath(), arguments: ["-sdk", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk", filePath] + arguments)
+		return try execute(launchPath: swiftPath(), arguments: ["-sdk", sdkPath(), filePath] + arguments)
 	}
 	
 	/// Compiles a Swift source code file to the given output path, throwing any compilation errors.
