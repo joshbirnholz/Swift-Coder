@@ -171,6 +171,8 @@ class SwiftCoderViewController: NSViewController {
 		inputTextView.contentTextView.isRichText = false
 		
 		setupCodeMenu()
+		setupHelpMenu()
+		setupXcodePathMenuItem()
 		
 		finishedLoadingView = true
 		
@@ -188,10 +190,51 @@ class SwiftCoderViewController: NSViewController {
 		
 		do {
 			// Delete temporary files
-			try FileManager.default.removeItem(at: LocalCodeController.shared.tempDirectory)
+			try FileManager.default.removeItem(at: (codeController as! LocalCodeController).tempDirectory)
 		} catch {
-			NSLog("Error: Could not delete contents of \(LocalCodeController.shared.tempDirectory.path): \(error)")
+			NSLog("Error: Could not delete contents of \((codeController as! LocalCodeController).tempDirectory.path): \(error)")
 		}
+	}
+	
+	func setupHelpMenu() {
+		guard let helpMenu = NSApp.mainMenu?.item(withTitle: "Help")?.submenu else { return }
+		
+		helpMenu.insertItem(.separator(), at: helpMenu.items.count)
+		helpMenu.insertItem(withTitle: "Swift Guided Tour", action: #selector(openGuidedTour), keyEquivalent: "", at: helpMenu.items.count)
+		helpMenu.insertItem(withTitle: "Swift Language Guide", action: #selector(openLanguageGuide), keyEquivalent: "", at: helpMenu.items.count)
+	}
+	
+	func setupXcodePathMenuItem() {
+		guard let appMenu = NSApp.mainMenu?.items.first?.submenu else { return }
+		
+		let index = appMenu.indexOfItem(withTitle: "Preferences…")
+		
+		appMenu.insertItem(withTitle: "Set Xcode Path…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
+		
+	}
+	
+	@objc func setXcodePath() {
+		let openPanel = NSOpenPanel()
+		openPanel.canChooseDirectories = false
+		openPanel.canChooseFiles = true
+		openPanel.allowsMultipleSelection = false
+		openPanel.allowsOtherFileTypes = false
+		openPanel.allowedFileTypes = ["app"]
+		openPanel.directoryURL = FileManager.default.urls(for: FileManager.SearchPathDirectory.applicationDirectory, in: .systemDomainMask).first
+		
+		openPanel.begin { (response) in
+			if let url = openPanel.url, response == .OK {
+				LocalCodeController.shared.xcodeURL = url
+			}
+		}
+	}
+	
+	@objc func openLanguageGuide() {
+		NSWorkspace.shared.open(URL(string: "https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html")!)
+	}
+	
+	@objc func openGuidedTour() {
+		NSWorkspace.shared.open(URL(string: "https://docs.swift.org/swift-book/GuidedTour/GuidedTour.html")!)
 	}
 	
 	@objc @available(OSX 10.14, *)
@@ -553,7 +596,7 @@ class SwiftCoderViewController: NSViewController {
 		let mainBar = NSTouchBar()
 		mainBar.delegate = self
 		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .problems]
-		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .problems, .characterPicker]
+		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .characterPicker, .problems]
 		mainBar.customizationRequiredItemIdentifiers = []
 		mainBar.principalItemIdentifier = .problems
 		mainBar.customizationIdentifier = "com.josh.birnholz.SwiftCoder.main-touch-bar"
