@@ -3992,7 +3992,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given two strings, return true if either of the strings appears at the very end of the other string, ignoring upper/lower case differences (in other words, the computation should not be \"case sensitive\"). Note: str.toLowerCase() returns the lowercase version of a string.",
+		prompt: "Given two strings, return true if either of the strings appears at the very end of the other string, ignoring upper/lower case differences (in other words, the computation should not be \"case sensitive\"). Note: str.lowercased() returns the lowercase version of a string.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4046,7 +4046,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Return true if the given string contains a \"bob\" string, but where the middle 'o' char can be any char.",
+		prompt: "Return true if the given string contains a \"bob\" string, but where the middle 'o' char can be any character.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4153,7 +4153,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and an int n, return a string made of the first n characters of the string, followed by the first n-1 characters of the string, and so on. You may assume that n is between 0 and the length of the string, inclusive (i.e. n >= 0 and n <= str.length()).",
+		prompt: "Given a string and an int n, return a string made of the first n characters of the string, followed by the first n-1 characters of the string, and so on. You may assume that n is between 0 and the length of the string, inclusive (i.e. n >= 0 and n <= str.count).",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4202,7 +4202,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string, consider the prefix string made of the first N chars of the string. Does that prefix string appear somewhere else in the string? Assume that the string is not empty and that N is in the range 1..str.length().",
+		prompt: "Given a string, consider the prefix string made of the first N chars of the string. Does that prefix string appear somewhere else in the string? Assume that the string is not empty and that N is in the range 1..<str.count.",
 		solution: nil,
 		hint: nil,
 		testCases: [

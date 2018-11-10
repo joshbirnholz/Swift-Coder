@@ -37,3 +37,21 @@ extension StringProtocol where Self: RangeReplaceableCollection {
 	}
 }
 
+extension String {
+	public static func +(lhs: String, rhs: Character) -> String {
+		return lhs + String(rhs)
+	}
+	public static func +=(lhs: inout String, rhs: Character) {
+		lhs += String(rhs)
+	}
+}
+
+extension Substring {
+	public static func +(lhs: Substring, rhs: Character) -> Substring {
+		return lhs + String(rhs)
+	}
+	public static func +=(lhs: inout Substring, rhs: Character) {
+		lhs += String(rhs)
+	}
+}
+
