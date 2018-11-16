@@ -92,7 +92,7 @@ class SwiftCoderViewController: NSViewController {
 		}
 		didSet {
 			if problemIndexPath.list != oldValue?.list {
-				setupProblemMenuAndScrubber()
+				setupProblemMenu()
 				
 				if #available(macOS 10.12.2, *) {
 					updateScrubber()
@@ -108,15 +108,14 @@ class SwiftCoderViewController: NSViewController {
 			helpButton.isHidden = problem.hint == nil
 			
 			titleTextField.stringValue = problem.title
+			updateWindowTitle()
 			
 			outputStatusTextField.stringValue = ""
 			outputField.string = ""
 			
 			assistantView = .textField
 			
-			promptTextField.stringValue = [problem.prompt, problem.testCases.prefix(problem.eulerMode ? 0 : 3).enumerated().map( { index, _ in
-				problem.expectationString(testCaseIndex: index)
-			}).joined(separator: "\n")].compactMap { $0 != "" ? $0 : nil }.joined(separator: "\n\n")
+			promptTextField.stringValue = [problem.prompt, problem.testCases.prefix(problem.eulerMode ? 0 : 3).map{ problem.expectationString(testCase: $0) }.joined(separator: "\n")].compactMap { $0 != "" ? $0 : nil }.joined(separator: "\n\n")
 			
 			inputTextView.text = codeController.loadCode(for: problem)
 		}
@@ -139,7 +138,7 @@ class SwiftCoderViewController: NSViewController {
 		super.viewDidLoad()
 		
 		let list = userDefaults.string(forKey: "problemList").flatMap(ProblemSet.init) ?? ProblemSet.allCases.first!
-		let index = userDefaults.integer(forKey: "problemIndex")
+		let index = min(userDefaults.integer(forKey: "problemIndex"), list.problems.count-1)
 		problemIndexPath = ProblemIndexPath(list: list, index: index)
 		
 		inputTextView.needsDisplay = true
@@ -196,6 +195,16 @@ class SwiftCoderViewController: NSViewController {
 		}
 	}
 	
+	override func viewWillAppear() {
+		super.viewWillAppear()
+		
+		updateWindowTitle()
+	}
+	
+	func updateWindowTitle() {
+		view.window?.title = "\(problemIndexPath.list.rawValue) > \(problem.title)"
+	}
+	
 	func setupHelpMenu() {
 		guard let helpMenu = NSApp.mainMenu?.item(withTitle: "Help")?.submenu else { return }
 		
@@ -209,17 +218,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		let index = appMenu.indexOfItem(withTitle: "Preferences…")
 		
-		let returnTypeMenu = NSMenu(title: "Subscript Return Type")
-		let returnTypeMenuItem = NSMenuItem(title: "Subscript Return Type", action: nil, keyEquivalent: "")
-		
-		returnTypeMenu.addItem(withTitle: "String", action: #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeTrue), keyEquivalent: "")
-		returnTypeMenu.addItem(withTitle: "Substring", action: #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeFalse), keyEquivalent: "")
-		
-		returnTypeMenuItem.submenu = returnTypeMenu
-		
-		appMenu.insertItem(returnTypeMenuItem, at: index)
-		
-		appMenu.insertItem(withTitle: "Enable String Int Subscript API", action: #selector(toggleStringIntSubscriptAPI), keyEquivalent: "", at: index)
+		appMenu.insertItem(withTitle: "Enable String Integer Subscripts", action: #selector(toggleStringIntSubscriptAPI), keyEquivalent: "", at: index)
 		
 		
 		appMenu.insertItem(withTitle: "Set Xcode Path…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
@@ -244,14 +243,6 @@ class SwiftCoderViewController: NSViewController {
 	
 	@objc func toggleStringIntSubscriptAPI() {
 		codeController.includeStringIntSubscriptAPI.toggle()
-	}
-	
-	@objc func setStringIntSubscriptAPIShouldUseStringReturnTypeTrue() {
-		codeController.stringIntSubscriptAPIShouldUseStringReturnType = true
-	}
-	
-	@objc func setStringIntSubscriptAPIShouldUseStringReturnTypeFalse() {
-		codeController.stringIntSubscriptAPIShouldUseStringReturnType = false
 	}
 	
 	@objc func openLanguageGuide() {
@@ -286,7 +277,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		if #available(OSX 10.14, *) {
 			let appearanceMenu = NSMenu(title: "Appearance")
-			appearanceMenu.addItem(withTitle: "Default", action: #selector(setDefaultAppearance), keyEquivalent: "")
+			appearanceMenu.addItem(withTitle: "Automatic", action: #selector(setDefaultAppearance), keyEquivalent: "")
 			appearanceMenu.addItem(withTitle: "Light", action: #selector(setLightAppearance), keyEquivalent: "")
 			appearanceMenu.addItem(withTitle: "Dark", action: #selector(setDarkAppearance), keyEquivalent: "")
 			let appearanceMenuItem = NSMenuItem(title: "Appearance", action: nil, keyEquivalent: "")
@@ -302,9 +293,7 @@ class SwiftCoderViewController: NSViewController {
 		//		NSApp.mainMenu?.addItem(codeMenuItem)
 	}
 	
-	func setupProblemMenuAndScrubber() {
-		
-		// Setup problem menu
+	func setupProblemMenu() {
 		
 		problemMenu.removeAllItems()
 		problemMenu.addItem(withTitle: "Previous", action: #selector(previousButtonPressed(sender:)), keyEquivalent: "\u{001c}")
@@ -499,8 +488,13 @@ class SwiftCoderViewController: NSViewController {
 						
 						if let error = error as? CompilationError {
 							switch error {
-							case .error(let output):
-								self.outputField.string = output
+							case .error(let contents):
+								switch contents {
+								case .compilerMessages(let messages):
+									self.outputField.string = messages.map { $0.description }.joined(separator: "\n")
+								case .text(let string):
+									self.outputField.string = string
+								}
 							case .timeout:
 								self.outputField.string = "It took too long to test your code."
 							}
@@ -519,8 +513,14 @@ class SwiftCoderViewController: NSViewController {
 						}
 						self.outputStatusTextField.stringValue =  "Compile problems:"
 						switch compilationError {
-						case .error(let output):
-							self.outputField.string = output
+						case .error(let contents):
+							switch contents {
+							case .compilerMessages(let messages):
+								// The messages array contains all of the compile-time errors produced by the user's code.
+								self.outputField.string = messages.filter { $0.messageType != .note }.map { "\($0.messageType == .error ? "🛑" : "⚠️") line \($0.line): \($0.message)" }.joined(separator: "\n\n")
+							case .text(let string):
+								self.outputField.string = string
+							}
 						case .timeout:
 							self.outputField.string = "Your code took too long to compile."
 						}
@@ -753,12 +753,12 @@ extension SwiftCoderViewController: NSTableViewDelegate {
 		
 		if tableColumn == tableView.tableColumns[0] {
 			let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ExpectedCellID"), owner: nil) as! NSTableCellView
-			cell.textField?.stringValue = problem.expectationString(testCaseIndex: row)
+			cell.textField?.stringValue = problem.expectationString(testCase: problem.testCases[row])
 			
 			return cell
 		} else if tableColumn == tableView.tableColumns[1] {
 			let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "RunCellID"), owner: nil) as! NSTableCellView
-			cell.textField?.stringValue = result.run
+			cell.textField?.stringValue = returnTypeNeedsSurroundingQuotesForDisplay(problem.actualReturnType) ? "\"\(result.run)\"" : result.run
 			
 			return cell
 		} else if tableColumn == tableView.tableColumns[2] {
@@ -831,14 +831,6 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 		
 		if menuItem.action == #selector(toggleStringIntSubscriptAPI) {
 			menuItem.state = codeController.includeStringIntSubscriptAPI ? .on : .off
-		}
-		
-		if menuItem.action == #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeTrue) {
-			menuItem.state = codeController.stringIntSubscriptAPIShouldUseStringReturnType ? .on : .off
-		}
-		
-		if menuItem.action == #selector(setStringIntSubscriptAPIShouldUseStringReturnTypeFalse) {
-			menuItem.state = codeController.stringIntSubscriptAPIShouldUseStringReturnType ? .off : .on
 		}
 		
 		return true

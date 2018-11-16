@@ -10,13 +10,23 @@ import Foundation
 
 enum CompilationError: Error {
 	
-	case error(String)
+	enum ErrorContents {
+		case compilerMessages([CompilerMessage])
+		case text(String)
+	}
+	
+	case error(ErrorContents)
 	case timeout
 	
 	var localizedDescription: String {
 		switch self {
-		case .error(let errorOutput):
-			return errorOutput
+		case .error(let contents):
+			switch contents {
+			case .compilerMessages(let messages):
+				return messages.map { $0.description }.joined(separator: "\n")
+			case .text(let string):
+				return string
+			}
 		case .timeout:
 			return "error: timeout"
 		}
