@@ -9,7 +9,7 @@ extension StringProtocol where Self: RangeReplaceableCollection {
 			replaceSubrange(index..<self.index(after: index), with: String(newValue))
 		}
 	}
-	
+
 	subscript(_ range: Range<Int>) -> Self.SubSequence {
 		get {
 			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
@@ -22,7 +22,7 @@ extension StringProtocol where Self: RangeReplaceableCollection {
 			replaceSubrange(start ..< end, with: newValue)
 		}
 	}
-	
+
 	subscript(_ range: ClosedRange<Int>) -> Self.SubSequence {
 		get {
 			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
@@ -35,6 +35,39 @@ extension StringProtocol where Self: RangeReplaceableCollection {
 			replaceSubrange(start ... end, with: newValue)
 		}
 	}
+
+	subscript(_ range: PartialRangeFrom<Int>) -> Self.SubSequence {
+		get {
+			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+			return self[start...]
+		}
+		set {
+			let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+			replaceSubrange(start..., with: newValue)
+		}
+	}
+
+	subscript(_ range: PartialRangeUpTo<Int>) -> Self.SubSequence {
+		get {
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			return self[..<end]
+		}
+		set {
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			replaceSubrange(..<end, with: newValue)
+		}
+	}
+
+	subscript(_ range: PartialRangeThrough<Int>) -> Self.SubSequence {
+		get {
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			return self[...end]
+		}
+		set {
+			let end = self.index(self.startIndex, offsetBy: range.upperBound)
+			replaceSubrange(...end, with: newValue)
+		}
+	}
 }
 
 extension String {
@@ -44,6 +77,9 @@ extension String {
 	public static func +=(lhs: inout String, rhs: Character) {
 		lhs += String(rhs)
 	}
+	public static func +(lhs: Character, rhs: String) -> String {
+		return String(lhs) + rhs
+	}
 }
 
 extension Substring {
@@ -52,6 +88,9 @@ extension Substring {
 	}
 	public static func +=(lhs: inout Substring, rhs: Character) {
 		lhs += String(rhs)
+	}
+	public static func +(lhs: Character, rhs: Substring) -> Substring {
+		return String(lhs) + rhs
 	}
 }
 
