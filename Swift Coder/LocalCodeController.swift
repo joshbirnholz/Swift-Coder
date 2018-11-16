@@ -51,15 +51,6 @@ class LocalCodeController {
 		}
 	}
 	
-	public var stringIntSubscriptAPIShouldUseStringReturnType: Bool {
-		get {
-			return UserDefaults.standard.bool(forKey: #function)
-		}
-		set {
-			UserDefaults.standard.set(newValue, forKey: #function)
-		}
-	}
-	
 	public static let shared = LocalCodeController()
 	
 	private let isSandboxed = ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
@@ -127,6 +118,30 @@ class LocalCodeController {
 		return path
 	}
 	
+	private let stringAPI: String = {
+		let apiPath = Bundle.main.url(forResource: "StringAPI", withExtension: "txt")!.path
+		let stringAPI = try? String(contentsOfFile: apiPath)
+		return stringAPI ?? ""
+	}()
+	
+	private let codePrefix = "import Foundation\n\n"
+	
+	private lazy var codePrefixLineCount: Int = {
+		var lineCount = 0
+		(codePrefix as NSString).enumerateLines { _, _ in
+			lineCount += 1
+		}
+		return lineCount
+	}()
+	
+	private lazy var stringAPILineCount: Int = {
+		var lineCount = 0
+		(stringAPI as NSString).enumerateLines { _, _ in
+			lineCount += 1
+		}
+		return lineCount
+	}()
+	
 	private func execute(launchPath: String = "/usr/bin/env", arguments: [String], timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		
 		let task = Process()
@@ -156,7 +171,8 @@ class LocalCodeController {
 			}
 		}
 		
-		output = String(data: outpipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+		// call dropLast() on the resulting string to get rid of the trailing newline (but don't get rid of ALL trailing whitespace because it may be intentional
+		output = String(data: outpipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8).map { String($0.dropLast()) }
 		
 		if error != "timeout" {
 			error = String(data: errpipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -170,17 +186,13 @@ class LocalCodeController {
 		
 		if let error = error {
 			if error.lowercased().contains("error") {
-				var actualErrorText = error.replacingOccurrences(of: baseDirectory.path + "/", with: "").replacingOccurrences(of: tempDirectory.path + "/", with: "")
-				var lines = actualErrorText.split(separator: "\n")
+				let messages = self.messages(from: error)
 				
-				for (index, line) in lines.enumerated() {
-					if let range = line.range(of: ".swift:") {
-						lines[index] = "line " + line[range.upperBound...]
-					}
+				if messages.isEmpty {
+					throw CompilationError.error(.text(error))
+				} else {
+					throw CompilationError.error(.compilerMessages(messages))
 				}
-				
-				actualErrorText = lines.joined(separator: "\n")
-				throw CompilationError.error(actualErrorText)
 			} else if error == "timeout" {
 				throw CompilationError.timeout
 			}
@@ -193,10 +205,28 @@ class LocalCodeController {
 		}
 	}
 	
+	func messages(from compilerError: String) -> [CompilerMessage] {
+		let compilerError = compilerError.replacingOccurrences(of: baseDirectory.path + "/", with: "").replacingOccurrences(of: tempDirectory.path + "/", with: "")
+		
+		return compilerError.matches(forRegex: "(^[a-zA-Z0-9_]+\\.[a-zA-Z]+):(\\d+):(\\d+): ([a-zA-Z]+): (\\V+)\\n(.+?(?=^[a-zA-Z0-9_]+\\.[a-zA-Z]+|\\z))", options: [.anchorsMatchLines, .dotMatchesLineSeparators]).compactMap { match in
+			let file = match.groups[0]
+			let line = match.groups[1]
+			let char = match.groups[2]
+			let type = match.groups[3]
+			let info = match.groups[4]
+			let help = match.groups[5]
+			guard let lineNumber = Int(line.value), let charNumber = Int(char.value), let messageType = CompilerMessage.MessageType(rawValue: type.value) else { return nil }
+			
+			// The user doesn't see the "import Foundation" lines or the added String API that are prepended to their code, so subtract the lines from the displayed line number so that what they see matches up with the code they wrote.
+			let lineNumberModifier = file.value.hasPrefix("runnable") ? 0 : codePrefixLineCount + (includeStringIntSubscriptAPI ? stringAPILineCount : 0)
+			
+			return CompilerMessage(file: file.value, line: lineNumber - lineNumberModifier, character: charNumber, messageType: messageType, message: info.value, helpText: help.value)
+		}
+	}
+	
 	/// Executes a Swift source code file, throwing any compilation errors, and returning the output.
 	@discardableResult private func swift(filePath: String, arguments: [String] = [], timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		print("Running \(filePath)")
-		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
 		return try execute(launchPath: swiftPath(), arguments: ["-sdk", sdkPath(), filePath] + arguments, timeout: timeout)
 	}
 	
@@ -204,15 +234,10 @@ class LocalCodeController {
 	/// The default output path is /dev/null, which will disregard away the executable.
 	@discardableResult private func swiftc(filePath: String, outputPath: String = "/dev/null", timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		print("Compiling \(filePath)")
-		//		return try execute(arguments: ["xcrun", "-sdk", "macosx", "swiftc", filePath, "-o", outputPath])
 		return try execute(launchPath: swiftcPath(), arguments: ["-sdk", sdkPath(), filePath, "-o", outputPath], timeout: timeout)
 	}
 	
 	fileprivate func runTest(testCase: Problem.TestCase, for problem: Problem) throws -> CompilationResult.TestResult {
-		var success = false
-		
-		precondition(problem.testCases.contains(testCase), "Trying to test a case from a different problem")
-		
 //		print("Running \(problem.functionCall(with: testCase.arguments))")
 		
 		let command = testCase.arguments.map {
@@ -237,19 +262,25 @@ class LocalCodeController {
 			
 			print("Finished Running \(problem.functionCall(with: testCase.arguments))")
 			
-			let output = problem.returnType == "String" ? "\"" + runResult.output + "\"" : runResult.output
-			
-			if output == testCase.expectation {
-				success = true
+			guard let typedOutput = problem.actualReturnType.init(runResult.output)?.asEquatable() else {
+					return CompilationResult.TestResult(run: runResult.output, success: .error, runTime: runTime)
 			}
 			
-			return CompilationResult.TestResult(run: output, success: success ? .ok : .failure, runTime: runTime)
+			let success = typedOutput == testCase.actualExpectation
+			
+			return CompilationResult.TestResult(run: String(describing: typedOutput), success: success ? .ok : .failure, runTime: runTime)
 		} catch let error as CompilationError {
 			let runTime = Date().timeIntervalSince(startTime)
 			
 			switch error {
-			case .error(let errorOutput):
-				return CompilationResult.TestResult(run: errorOutput.components(separatedBy: "\n").filter { !$0.contains("runnable_") }.joined(separator: "\n"), success: .error, runTime: runTime)
+			case .error(let contents):
+				switch contents {
+				case .compilerMessages(let messages):
+					return CompilationResult.TestResult(run: messages.map { $0.description }.joined(separator: "\n"), success: .error, runTime: runTime)
+				case .text(let string):
+					return CompilationResult.TestResult(run: string.components(separatedBy: "\n").filter { !$0.contains("runnable_") }.joined(separator: "\n"), success: .error, runTime: runTime)
+				}
+//				return CompilationResult.TestResult(run: "\(messages.count)", success: .error, runTime: runTime)
 			case .timeout:
 				return CompilationResult.TestResult(run: "error: timeout", success: .error, runTime: runTime)
 			}
@@ -277,15 +308,11 @@ class LocalCodeController {
 			do {
 				// Try compiling code on its own. If there are compile errors, they will be thrown
 				let filePath = self.tempDirectory.appendingPathComponent(problem.functionName + ".swift").path
-				let code: String = try {
-					var c = "import Foundation\n\n"
+				let code: String = {
+					var c = self.codePrefix
 					
 					if self.includeStringIntSubscriptAPI {
-						let resourceName = self.stringIntSubscriptAPIShouldUseStringReturnType ? "StringAPI StringReturn" : "StringAPI"
-						let apiPath = Bundle.main.url(forResource: resourceName, withExtension: "txt")!.path
-						let stringAPI = try String(contentsOfFile: apiPath)
-						
-						c += stringAPI
+						c += self.stringAPI
 					}
 					
 					return c + code
@@ -306,31 +333,36 @@ class LocalCodeController {
 					
 					// Check for compile errors in the runnable testers, throw an error if any are found
 					try self.swiftc(filePath: runnableProgramSourcePath, outputPath: self.isSandboxed ? "/dev/null" : runnableProgramExecutablePath)
-					
-					var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count)
-					let queue = OperationQueue()
-					queue.qualityOfService = .userInteractive
-					
-					let operations = (0 ..< problem.testCases.count).map { i in
-						BlockOperation {
-							do {
-								results[i] = try self.runTest(testCase: problem.testCases[i], for: problem)
-							} catch {
-								results[i] = CompilationResult.TestResult(run: "error testing code: \(error.localizedDescription)", success: CompilationResult.TestResult.Successful.error, runTime: 0)
-							}
+				} catch {
+					// Problem compiling runnable tester
+					result = .internalError(error)
+					return
+				}
+				
+				var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count)
+				let queue = OperationQueue()
+				queue.qualityOfService = .userInteractive
+				
+				let operations = (0 ..< problem.testCases.count).map { i in
+					BlockOperation {
+						do {
+							results[i] = try self.runTest(testCase: problem.testCases[i], for: problem)
+						} catch {
+							// Runtime errors caused by user code
+							results[i] = CompilationResult.TestResult(run: "error testing code: \(error.localizedDescription)", success: .error, runTime: 0)
 						}
 					}
-					
-					queue.addOperations(operations, waitUntilFinished: true)
-					
-					result = .success(results)
-					
-				} catch {
-					result = .internalError(error)
 				}
+				
+				queue.addOperations(operations, waitUntilFinished: true)
+				
+				result = .success(results)
+				
 			} catch let error as CompilationError {
+				// Compile-time errors caused by user code
 				result = CompilationResult.failure(error)
 			} catch {
+				// Unknown error
 				result = .internalError(error)
 			}
 		}
@@ -371,7 +403,7 @@ class LocalCodeController {
 		
 		runnableCode += printReplacement
 		
-		if problem.parameters.contains(where: { $0.type == "String" }) {
+		if problem.parameters.contains(where: { $0.actualType == String.self }) {
 			runnableCode += """
 			extension String {
 				static var empty: String {
@@ -383,57 +415,50 @@ class LocalCodeController {
 			"""
 		}
 		
-		if problem.parameters.contains(where: { ($0.type.first == "[" && $0.type.last == "]") || $0.type.last == ">" }) {
+		let returnType = String(describing: problem.actualReturnType)
+		var addedCoders = false
+		
+		if returnType.contains("Array") || problem.parameters.contains(where: { String(describing: $0.actualType).contains("Array") }) {
 			runnableCode += """
-			typealias RegexMatch = (range: Range<String.Index>, value: String)
+			let decoder = JSONDecoder()
+			let encoder = JSONEncoder()
 			
-			extension String {
-				
-				func matches(forRegex regex: String) -> [(fullMatch: RegexMatch, groups: [RegexMatch])] {
-					do {
-						let regex = try NSRegularExpression(pattern: regex)
-						let results = regex.matches(in: self, range: NSRange(startIndex..., in: self))
-						return results.map { result in
-							let fullMatchRange = Range(result.range, in: self)!
-							let groups: [RegexMatch]
-							
-							if result.numberOfRanges > 1 {
-								groups = (1 ..< result.numberOfRanges).compactMap { i in
-									guard let range = Range(result.range(at: i), in: self) else {
-										return nil
-									}
-									let value = String(self[range])
-									return (range: range, value: value)
-								}
-							} else {
-								groups = []
-							}
-							
-							let fullMatch = (range: fullMatchRange, value: String(self[fullMatchRange]))
-							
-							return (fullMatch, groups)
-						}
-					} catch {
-						return []
-					}
+			extension Array: LosslessStringConvertible where Element: Codable {
+				public init?(_ description: String) {
+					guard let data = description.data(using: .utf8) else { return nil }
+					guard let arr = try? decoder.decode([Element].self, from: data) else { return nil }
+			
+					self = arr
 				}
-				
+				var stringRepresentation: String {
+					return (try? encoder.encode(self)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]"
+				}
 			}
 			
-			extension Array: LosslessStringConvertible where Element: LosslessStringConvertible {
+			"""
+			addedCoders = true
+		}
+		
+		if returnType.contains("Dictionary") || problem.parameters.contains(where: { String(describing: $0.actualType).contains("Dictionary") }) {
+			if !addedCoders {
+				runnableCode += """
+				let decoder = JSONDecoder()
+				let encoder = JSONEncoder()
+				
+				
+				"""
+			}
+			
+			runnableCode += """
+			extension Dictionary: LosslessStringConvertible where Key: Codable, Value: Codable & Equatable {
 				public init?(_ description: String) {
-					if let arr = description.matches(forRegex: "\\\\[(.*)]").first?.groups.first?.value.split(separator: ",").compactMap({
-						Element($0.trimmingCharacters(in: .whitespacesAndNewlines))}) {
-						if Element.self == String.self {
-							self = (arr as! [String]).map {
-								String($0[$0.index(after: $0.startIndex)..<$0.index(before: $0.endIndex)])
-								} as! [Element]
-						} else {
-							self = arr
-						}
-					} else {
-						return nil
-					}
+					guard let data = description.data(using: .utf8) else { return nil }
+					guard let arr = try? decoder.decode([Key: Value].self, from: data) else { return nil }
+			
+					self = arr
+				}
+				var stringRepresentation: String {
+					return (try? encoder.encode(self)).flatMap { String(data: $0, encoding: .utf8) } ?? "[:]"
 				}
 			}
 			
@@ -467,10 +492,12 @@ class LocalCodeController {
 			}
 		}
 		
+		let needsStringRepresentationPrinted = returnType.contains("Array") || returnType.contains("Dictionary")
+		
 		runnableCode += """
 		let __result: \(problem.returnType) = \(problem.functionName)(\(problem.parameters.enumerated().map { index, parameter in "\(parameter.name): __param\(index)" }.joined(separator: ", ")))
 		
-		Swift.print(__result)
+		Swift.print(__result\(needsStringRepresentationPrinted ? ".stringRepresentation" : ""))
 		"""
 		
 		return runnableCode

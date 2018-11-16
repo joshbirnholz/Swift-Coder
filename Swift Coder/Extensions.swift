@@ -117,9 +117,9 @@ typealias Match = (range: Range<String.Index>, value: String)
 
 extension String {
 	
-	func matches(forRegex regex: String) -> [(fullMatch: Match, groups: [Match])] {
+	func matches(forRegex regex: String, options: NSRegularExpression.Options = []) -> [(fullMatch: Match, groups: [Match])] {
 		do {
-			let regex = try NSRegularExpression(pattern: regex)
+			let regex = try NSRegularExpression(pattern: regex, options: options)
 			let results = regex.matches(in: self, range: NSRange(startIndex..., in: self))
 			return results.map { result in
 				let fullMatchRange = Range(result.range, in: self)!
@@ -148,19 +148,28 @@ extension String {
 	
 }
 
-extension Array: LosslessStringConvertible where Element: LosslessStringConvertible {
-	public init?(_ description: String) {
-		if let arr = description.matches(forRegex: "\\[(.*)]").first?.groups.first?.value.split(separator: ",").compactMap({
-			Element($0.trimmingCharacters(in: .whitespacesAndNewlines))}) {
-			if Element.self == String.self {
-				self = (arr as! [String]).map {
-					String($0[$0.index(after: $0.startIndex)..<$0.index(before: $0.endIndex)])
-					} as! [Element]
-			} else {
-				self = arr
+extension StringProtocol {
+	/// Shouldn't work if `open` == `close`
+	func character(atIndex i: Index, isContainedWithin open: Character, and close: Character) -> Bool {
+		let pre = self[startIndex ..< i]
+		let post = self[i...]
+		
+		let precededByOpenBeforeClosed: Bool = {
+			guard let lastOpenIndex = pre.lastIndex(of: open) else { return false }
+			if let lastClosedIndex = pre.lastIndex(of: close) {
+				return lastOpenIndex > lastClosedIndex
 			}
-		} else {
-			return nil
-		}
+			return true
+		}()
+		
+		let followedByClosedBeforeOpen: Bool = {
+			guard let firstClosedIndex = post.firstIndex(of: close) else { return false }
+			if let firstOpenIndex = post.firstIndex(of: open) {
+				return firstClosedIndex < firstOpenIndex
+			}
+			return true
+		}()
+		
+		return precededByOpenBeforeClosed && followedByClosedBeforeOpen
 	}
 }
