@@ -6,33 +6,45 @@
 //  Copyright © 2016 Josh Birnholz. All rights reserved.
 //
 
+
 public enum ProblemSet: String, CaseIterable {
-	case codingBatWarmup1 = "CodingBat: Warmup-1"
-	case codingBatWarmup2 = "CodingBat: Warmup-2"
-	case codingBatString1 = "CodingBat: String-1"
-	case codingBatArray1 = "CodingBat: Array-1"
-	case codingBatLogic1 = "CodingBat: Logic-1"
-	case codingBatLogic2 = "CodingBat: Logic-2"
-	case codingBatString2 = "CodingBat: String-2"
-	case codingBatString3 = "CodingBat: String-3"
-	case codingBatArray2 = "CodingBat: Array-2"
-	case codingBatArray3 = "CodingBat: Array-3"
-	case codingBatAP1 = "CodingBat: AP-1"
-	case codingBatRecursion1 = "CodingBat: Recursion-1"
-	case codingBatFunctional1 = "CodingBat: Functional-1"
-	case codingBatFunctional2 = "CodingBat: Functional-2"
+	case codingBatWarmup1 = "Warmup-1"
+	case codingBatWarmup2 = "Warmup-2"
+	case codingBatString1 = "String-1"
+	case codingBatArray1 = "Array-1"
+	case codingBatLogic1 = "Logic-1"
+	case codingBatLogic2 = "Logic-2"
+	case codingBatString2 = "String-2"
+	case codingBatString3 = "String-3"
+	case codingBatArray2 = "Array-2"
+	case codingBatArray3 = "Array-3"
+	case codingBatAP1 = "AP-1"
+	case codingBatRecursion1 = "Recursion-1"
+	case codingBatRecursion2 = "Recursion-2"
+	case codingBatDictionary1 = "Dictionary-1"
+	case codingBatDictionary2 = "Dictionary-2"
+	case codingBatFunctional1 = "Functional-1"
+	case codingBatFunctional2 = "Functional-2"
 	case projectEuler = "Project Euler"
 	
 	var problems: [Problem] {
 		switch self {
-		case .codingBatWarmup1: return codingBatWarmup1Problems
-		case .codingBatWarmup2: return codingBatWarmup2Problems
-		case .codingBatLogic1: return codingBatLogic1Problems
-		case .codingBatArray1: return codingBatArray1Problems
-		case .codingBatString1: return codingBatString1Problems
-		case .codingBatLogic2: return codingBatLogic2Problems
-		case .codingBatAP1: return codingBatAP1Problems
-		case .codingBatRecursion1: return codingBatRecursion1Problems
+		case .codingBatWarmup1:
+			return codingBatWarmup1Problems
+		case .codingBatWarmup2:
+			return codingBatWarmup2Problems
+		case .codingBatLogic1:
+			return codingBatLogic1Problems
+		case .codingBatArray1:
+			return codingBatArray1Problems
+		case .codingBatString1:
+			return codingBatString1Problems
+		case .codingBatLogic2:
+			return codingBatLogic2Problems
+		case .codingBatAP1:
+			return codingBatAP1Problems
+		case .codingBatRecursion1:
+			return codingBatRecursion1Problems
 		case .projectEuler: return eulerProblems
 		case .codingBatString2:
 			return codingBatString2Problems
@@ -46,6 +58,12 @@ public enum ProblemSet: String, CaseIterable {
 			return codingBatFunctional1Problems
 		case .codingBatFunctional2:
 			return codingBatFunctional2Problems
+		case .codingBatRecursion2:
+			return codingBatRecursion2Problems
+		case .codingBatDictionary1:
+			return codingBatDictionary1Problems
+		case .codingBatDictionary2:
+			return codingBatDictionary2Problems
 		}
 	}
 }
@@ -53,7 +71,7 @@ public enum ProblemSet: String, CaseIterable {
 // MARK: - CodingBat
 
 // MARK: Warmup1
-fileprivate let codingBatWarmup1Problems = [
+fileprivate let codingBatWarmup1Problems: [Problem] = [
 	Problem(
 		title: "sleepIn",
 		returnType: Bool.self,
@@ -324,7 +342,7 @@ func nearHundred(n: Int) -> Bool {
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, we'll say that the front is the first 3 chars of the string. If the string length is less than 3, the front is whatever is there. Return a new string which is 3 copies of the front.",
+		prompt: "Given a string, we'll say that the front is the first 3 characters of the string. If the string length is less than 3, the front is whatever is there. Return a new string which is 3 copies of the front.",
 		solution: """
 		func front3(str: String) -> String {
 			let front = String(str.prefix(3))
@@ -712,7 +730,7 @@ func nearHundred(n: Int) -> Bool {
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Return true if the given string contains between 1 and 3 'e' chars.",
+		prompt: "Return true if the given string contains between 1 and 3 'e' characters.",
 		solution: """
 		func stringE(str: String) -> Bool {
 			var count = 0
@@ -767,7 +785,7 @@ func nearHundred(n: Int) -> Bool {
 	]
 
 // MARK: Warmup-2
-fileprivate let codingBatWarmup2Problems = [
+fileprivate let codingBatWarmup2Problems: [Problem] = [
 	Problem(
 		title: "stringTimes",
 		returnType: String.self,
@@ -809,7 +827,7 @@ fileprivate let codingBatWarmup2Problems = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and a non-negative int n, we'll say that the front of the string is the first 3 chars, or whatever is there if the string is less than length 3. Return n copies of the front;",
+		prompt: "Given a string and a non-negative int n, we'll say that the front of the string is the first 3 characters, or whatever is there if the string is less than length 3. Return n copies of the front;",
 		solution: """
 		func frontTimes(str: String, n: Int) -> String {
 			let front = String(str.prefix(3))
@@ -991,7 +1009,7 @@ fileprivate let codingBatWarmup2Problems = [
 ]
 
 // MARK: Logic-1
-fileprivate let codingBatLogic1Problems = [
+fileprivate let codingBatLogic1Problems: [Problem] = [
 	Problem(title: "cigarParty",
 			returnType: Bool.self,
 			parameters: [
@@ -1819,7 +1837,7 @@ fileprivate let codingBatLogic1Problems = [
 	]
 
 // MARK: Array-1
-fileprivate let codingBatArray1Problems = [
+fileprivate let codingBatArray1Problems: [Problem] = [
 	Problem(
 		title: "firstLast6",
 		returnType: Bool.self,
@@ -2376,7 +2394,7 @@ fileprivate let codingBatArray1Problems = [
 ]
 
 // MARK: String-1
-fileprivate let codingBatString1Problems = [
+fileprivate let codingBatString1Problems: [Problem] = [
 	Problem(
 		title: "helloName",
 		returnType: String.self,
@@ -2485,7 +2503,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a new string made of 3 copies of the last 2 chars of the original string. The string length will be at least 2.",
+		prompt: "Given a string, return a new string made of 3 copies of the last 2 characters of the original string. The string length will be at least 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2503,7 +2521,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return the string made of its first two chars, so the String \"Hello\" yields \"He\". If the string is shorter than length 2, return whatever there is, so \"X\" yields \"X\", and the empty string \"\" yields the empty string \"\".",
+		prompt: "Given a string, return the string made of its first two characters, so the String \"Hello\" yields \"He\". If the string is shorter than length 2, return whatever there is, so \"X\" yields \"X\", and the empty string \"\" yields the empty string \"\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2613,7 +2631,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a \"rotated left 2\" version where the first 2 chars are moved to the end. The string length will be at least 2.",
+		prompt: "Given a string, return a \"rotated left 2\" version where the first 2 characters are moved to the end. The string length will be at least 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2634,7 +2652,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a \"rotated right 2\" version where the last 2 chars are moved to the start. The string length will be at least 2.",
+		prompt: "Given a string, return a \"rotated right 2\" version where the last 2 characters are moved to the start. The string length will be at least 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2664,7 +2682,7 @@ fileprivate let codingBatString1Problems = [
 			Problem.TestCase(expectation: "h", arguments: "oh", false),
 			Problem.TestCase(expectation: "x", arguments: "x", true),
 			Problem.TestCase(expectation: "x", arguments: "x", false),
-			Problem.TestCase(expectation: "j", arguments: "java", true),
+			Problem.TestCase(expectation: "s", arguments: "swift", true),
 			Problem.TestCase(expectation: "e", arguments: "chocolate", false),
 			Problem.TestCase(expectation: "1", arguments: "1234", true),
 			Problem.TestCase(expectation: "e", arguments: "code", false)
@@ -2697,7 +2715,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string of even length, return a string made of the middle two chars, so the string \"string\" yields \"ri\". The string length will be at least 2.",
+		prompt: "Given a string of even length, return a string made of the middle two characters, so the string \"string\" yields \"ri\". The string length will be at least 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2738,7 +2756,7 @@ fileprivate let codingBatString1Problems = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and an int n, return a string made of the first and last n chars from the string. The string length will be at least n.",
+		prompt: "Given a string and an int n, return a string made of the first and last n characters from the string. The string length will be at least n.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2759,7 +2777,7 @@ fileprivate let codingBatString1Problems = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "index", type: Int.self)
 		],
-		prompt: "Given a string and an index, return a string length 2 starting at the given index. If the index is too big or too small to define a string length 2, use the first 2 chars. The string length will be at least 2.",
+		prompt: "Given a string and an index, return a string length 2 starting at the given index. If the index is too big or too small to define a string length 2, use the first 2 characters. The string length will be at least 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2827,7 +2845,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a string length 2 made of its first 2 chars. If the string length is less than 2, use '@' for the missing chars.",
+		prompt: "Given a string, return a string length 2 made of its first 2 characters. If the string length is less than 2, use '@' for the missing characters.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2852,7 +2870,7 @@ fileprivate let codingBatString1Problems = [
 		solution: nil,
 		hint: nil,
 		testCases: [
-			Problem.TestCase(expectation: "ls", arguments: "last", "chars"),
+			Problem.TestCase(expectation: "ls", arguments: "last", "characters"),
 			Problem.TestCase(expectation: "yt", arguments: "yo", "swift"),
 			Problem.TestCase(expectation: "h@", arguments: "hi", ""),
 			Problem.TestCase(expectation: "@o", arguments: "", "hello"),
@@ -2871,7 +2889,7 @@ fileprivate let codingBatString1Problems = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given two strings, append them together (known as \"concatenation\") and return the result. However, if the concatenation creates a double-char, then omit one of the chars, so \"abc\" and \"cat\" yields \"abcat\".",
+		prompt: "Given two strings, append them together (known as \"concatenation\") and return the result. However, if the concatenation creates a double-char, then omit one of the characters, so \"abc\" and \"cat\" yields \"abcat\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2890,7 +2908,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string of any length, return a new string where the last 2 chars, if present, are swapped, so \"coding\" yields \"codign\".",
+		prompt: "Given a string of any length, return a new string where the last 2 characters, if present, are swapped, so \"coding\" yields \"codign\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -2932,7 +2950,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return true if the first 2 chars in the string also appear at the end of the string, such as with \"edited\".",
+		prompt: "Given a string, return true if the first 2 characters in the string also appear at the end of the string, such as with \"edited\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -3078,7 +3096,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, if the first or last characters are \"x\", return the string without those \"x\" chars, and otherwise return the string unchanged.",
+		prompt: "Given a string, if the first or last characters are \"x\", return the string without those \"x\" characters, and otherwise return the string unchanged.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -3103,7 +3121,7 @@ fileprivate let codingBatString1Problems = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, if one or both of the first 2 chars is \"x\", return the string without those \"x\" chars, and otherwise return the string unchanged. This is a little harder than it looks.",
+		prompt: "Given a string, if one or both of the first 2 characters is \"x\", return the string without those \"x\" characters, and otherwise return the string unchanged. This is a little harder than it looks.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -3125,7 +3143,7 @@ fileprivate let codingBatString1Problems = [
 	]
 
 // MARK: Logic-2
-fileprivate let codingBatLogic2Problems = [
+fileprivate let codingBatLogic2Problems: [Problem] = [
 	Problem(title: "makeBricks",
 			returnType: Bool.self,
 			parameters: [
@@ -3405,7 +3423,7 @@ fileprivate let codingBatLogic2Problems = [
 	]
 
 // MARK: AP-1
-fileprivate let codingBatAP1Problems = [
+fileprivate let codingBatAP1Problems: [Problem] = [
 	Problem(
 		title: "scoresIncreasing",
 		returnType: Bool.self,
@@ -3894,7 +3912,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a string where for every char in the original, there are two chars.",
+		prompt: "Given a string, return a string where for every char in the original, there are two characters.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4072,7 +4090,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "We'll say that a String is xy-balanced if for all the 'x' chars in the string, there exists a 'y' char somewhere later in the string. So \"xxy\" is balanced, but \"xyx\" is not. One 'y' can balance multiple 'x's. Return true if the given string is xy-balanced.",
+		prompt: "We'll say that a String is xy-balanced if for all the 'x' characters in the string, there exists a 'y' character somewhere later in the string. So \"xxy\" is balanced, but \"xyx\" is not. One 'y' can balance multiple 'x's. Return true if the given string is xy-balanced.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4104,7 +4122,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given two strings, a and b, create a bigger string made of the first char of a, the first char of b, the second char of a, the second char of b, and so on. Any leftover chars go at the end of the result.",
+		prompt: "Given two strings, a and b, create a bigger string made of the first char of a, the first char of b, the second char of a, the second char of b, and so on. Any leftover characters go at the end of the result.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4164,8 +4182,8 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.TestCase(expectation: "", arguments: "Ice Cream", 0),
 			Problem.TestCase(expectation: "xyzxyx", arguments: "xyz", 3),
 			Problem.TestCase(expectation: "", arguments: "", 0),
-			Problem.TestCase(expectation: "JavaJavJaJ", arguments: "Java", 4),
-			Problem.TestCase(expectation: "J", arguments: "Java", 1)
+			Problem.TestCase(expectation: "SwiftSwifSwiSwS", arguments: "Swift", 5),
+			Problem.TestCase(expectation: "S", arguments: "Swift", 1)
 		],
 		eulerMode: false
 	),
@@ -4202,7 +4220,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string, consider the prefix string made of the first N chars of the string. Does that prefix string appear somewhere else in the string? Assume that the string is not empty and that N is in the range 1..<str.count.",
+		prompt: "Given a string, consider the prefix string made of the first N characters of the string. Does that prefix string appear somewhere else in the string? Assume that the string is not empty and that N is in the range 1..<str.count.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4227,7 +4245,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, does \"xyz\" appear in the middle of the string? To define middle, we'll say that the number of chars to the left and right of the \"xyz\" must differ by at most one. This problem is harder than it looks.",
+		prompt: "Given a string, does \"xyz\" appear in the middle of the string? To define middle, we'll say that the number of characters to the left and right of the \"xyz\" must differ by at most one. This problem is harder than it looks.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4286,7 +4304,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Returns true if for every '*' (star) in the string, if there are chars both immediately before and after the star, they are the same.",
+		prompt: "Returns true if for every '*' (star) in the string, if there are characters both immediately before and after the star, they are the same.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4315,7 +4333,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, compute a new string by moving the first char to come after the next two chars, so \"abc\" yields \"bca\". Repeat this process for each subsequent group of 3 chars, so \"abcdef\" yields \"bcaefd\". Ignore any group of fewer than 3 chars at the end.",
+		prompt: "Given a string, compute a new string by moving the first char to come after the next two characters, so \"abc\" yields \"bca\". Repeat this process for each subsequent group of 3 characters, so \"abcdef\" yields \"bcaefd\". Ignore any group of fewer than 3 characters at the end.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4369,7 +4387,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Return a version of the given string, where for every star (*) in the string the star and the chars immediately to its left and right are gone. So \"ab*cd\" yields \"ad\" and \"ab**cd\" also yields \"ad\".",
+		prompt: "Return a version of the given string, where for every star (*) in the string the star and the characters immediately to its left and right are gone. So \"ab*cd\" yields \"ad\" and \"ab**cd\" also yields \"ad\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4401,7 +4419,7 @@ fileprivate let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "word", type: String.self)
 		],
-		prompt: "Given a string and a non-empty word string, return a version of the original String where all chars have been replaced by pluses (\"+\"), except for appearances of the word string which are preserved unchanged.",
+		prompt: "Given a string and a non-empty word string, return a version of the original String where all characters have been replaced by pluses (\"+\"), except for appearances of the word string which are preserved unchanged.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -4450,6 +4468,275 @@ fileprivate let codingBatString2Problems: [Problem] = [
 
 // MARK: String-3
 fileprivate let codingBatString3Problems: [Problem] = [
+	Problem(
+		title: "countYZ",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "Given a string, count the number of words ending in 'y' or 'z' -- so the 'y' in \"heavy\" and the 'z' in \"fez\" count, but not the 'y' in \"yellow\" (not case sensitive). We'll say that a y or z is at the end of a word if there is not an alphabetic letter immediately following it.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 2, arguments: "fez day"),
+			Problem.TestCase(expectation: 2, arguments: "day fez"),
+			Problem.TestCase(expectation: 2, arguments: "day fyyyz"),
+			Problem.TestCase(expectation: 1, arguments: "day yak"),
+			Problem.TestCase(expectation: 1, arguments: "day:yak"),
+			Problem.TestCase(expectation: 2, arguments: "!!day--yaz!!"),
+			Problem.TestCase(expectation: 0, arguments: "yak zak"),
+			Problem.TestCase(expectation: 2, arguments: "DAY abc XYZ"),
+			Problem.TestCase(expectation: 3, arguments: "aaz yyz my"),
+			Problem.TestCase(expectation: 2, arguments: "y2bz"),
+			Problem.TestCase(expectation: 0, arguments: "zxyx")
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "withoutString",
+		returnType: String.self,
+		parameters: [
+			Problem.Parameter(name: "base", type: String.self),
+			Problem.Parameter(name: "remove", type: String.self)
+		],
+		prompt: "Given two strings, base and remove, return a version of the base string where all instances of the remove string have been removed (not case sensitive). You may assume that the remove string is length 1 or more. Remove only non-overlapping instances, so with \"xxx\" removing \"xx\" leaves \"x\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: "He there", arguments: "Hello there", "llo"),
+			Problem.TestCase(expectation: "Hllo thr", arguments: "Hello there", "e"),
+			Problem.TestCase(expectation: "Hello there", arguments: "Hello there", "x"),
+			Problem.TestCase(expectation: "Th a FH", arguments: "This is a FISH", "IS"),
+			Problem.TestCase(expectation: "TH a FH", arguments: "THIS is a FISH", "is"),
+			Problem.TestCase(expectation: "TH a FH", arguments: "THIS is a FISH", "iS"),
+			Problem.TestCase(expectation: "abab", arguments: "abxxxxab", "xx"),
+			Problem.TestCase(expectation: "abxab", arguments: "abxxxab", "xx"),
+			Problem.TestCase(expectation: "abab", arguments: "abxxxab", "x"),
+			Problem.TestCase(expectation: "", arguments: "xxx", "x"),
+			Problem.TestCase(expectation: "x", arguments: "xxx", "xx"),
+			Problem.TestCase(expectation: "xzz", arguments: "xyzzy", "Y"),
+			Problem.TestCase(expectation: "", arguments: "", "x"),
+			Problem.TestCase(expectation: "acac", arguments: "abcabc", "b"),
+			Problem.TestCase(expectation: "AAbb", arguments: "AA22bb", "2"),
+			Problem.TestCase(expectation: "", arguments: "1111", "1"),
+			Problem.TestCase(expectation: "", arguments: "1111", "11"),
+			Problem.TestCase(expectation: "jtx", arguments: "MkjtMkx", "Mk"),
+			Problem.TestCase(expectation: "Hi ", arguments: "Hi HoHo", "Ho")
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "equalIsNot",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "Given a string, return true if the number of appearances of \"is\" anywhere in the string is equal to the number of appearances of \"not\" anywhere in the string (case sensitive).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: false, arguments: "This is not"),
+			Problem.TestCase(expectation: true, arguments: "This is notnot"),
+			Problem.TestCase(expectation: true, arguments: "noisxxnotyynotxisi"),
+			Problem.TestCase(expectation: false, arguments: "noisxxnotyynotxsi"),
+			Problem.TestCase(expectation: true, arguments: "xxxyyyzzzintint"),
+			Problem.TestCase(expectation: true, arguments: ""),
+			Problem.TestCase(expectation: true, arguments: "isisnotnot"),
+			Problem.TestCase(expectation: false, arguments: "isisnotno7Not"),
+			Problem.TestCase(expectation: false, arguments: "isnotis"),
+			Problem.TestCase(expectation: false, arguments: "mis3notpotbotis")
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "gHappy",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "We'll say that a lowercase 'g' in a string is \"happy\" if there is another 'g' immediately to its left or right. Return true if all the g's in the given string are happy.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: "xxggxx"),
+			Problem.TestCase(expectation: false, arguments: "xxgxx"),
+			Problem.TestCase(expectation: false, arguments: "xxggyygxx"),
+			Problem.TestCase(expectation: false, arguments: "g"),
+			Problem.TestCase(expectation: true, arguments: "gg"),
+			Problem.TestCase(expectation: true, arguments: ""),
+			Problem.TestCase(expectation: true, arguments: "xxgggxyz"),
+			Problem.TestCase(expectation: false, arguments: "xxgggxyg"),
+			Problem.TestCase(expectation: true, arguments: "xxgggxygg"),
+			Problem.TestCase(expectation: false, arguments: "mgm"),
+			Problem.TestCase(expectation: true, arguments: "mggm"),
+			Problem.TestCase(expectation: true, arguments: "yyygggxyy")
+		],
+		eulerMode: false
+	),Problem(
+		title: "countTriple",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "We'll say that a \"triple\" in a string is a char appearing three times in a row. Return the number of triples in the given string. The triples may overlap.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 1, arguments: "abcXXXabc"),
+			Problem.TestCase(expectation: 3, arguments: "xxxabyyyycd"),
+			Problem.TestCase(expectation: 0, arguments: "a"),
+			Problem.TestCase(expectation: 0, arguments: ""),
+			Problem.TestCase(expectation: 1, arguments: "XXXabc"),
+			Problem.TestCase(expectation: 2, arguments: "XXXXabc"),
+			Problem.TestCase(expectation: 3, arguments: "XXXXXabc"),
+			Problem.TestCase(expectation: 3, arguments: "222abyyycdXXX"),
+			Problem.TestCase(expectation: 4, arguments: "abYYYabXXXXXab"),
+			Problem.TestCase(expectation: 0, arguments: "abYYXabXXYXXab"),
+			Problem.TestCase(expectation: 0, arguments: "abYYXabXXYXXab"),
+			Problem.TestCase(expectation: 1, arguments: "122abhhh2")
+		],
+		eulerMode: false
+	),Problem(
+		title: "sumDigits",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "Given a string, return the sum of the digits 0-9 that appear in the string, ignoring all other characters. Return 0 if there are no digits in the string. (Note: Int(str) converts a string to an int.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 6, arguments: "aa1bc2d3"),
+			Problem.TestCase(expectation: 8, arguments: "aa11b33"),
+			Problem.TestCase(expectation: 0, arguments: "Chocolate"),
+			Problem.TestCase(expectation: 7, arguments: "5hoco1a1e"),
+			Problem.TestCase(expectation: 12, arguments: "123abc123"),
+			Problem.TestCase(expectation: 0, arguments: ""),
+			Problem.TestCase(expectation: 0, arguments: "Hello"),
+			Problem.TestCase(expectation: 12, arguments: "X1z9b2"),
+			Problem.TestCase(expectation: 14, arguments: "5432a")
+		],
+		eulerMode: false
+	),Problem(
+		title: "sameEnds2",
+		returnType: String.self,
+		parameters: [
+			Problem.Parameter(name: "string", type: String.self)
+		],
+		prompt: "Given a string, return the longest substring that appears at both the beginning and end of the string without overlapping. For example, sameEnds2(string: \"abXab\") is \"ab\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: "ab", arguments: "abXYab"),
+			Problem.TestCase(expectation: "x", arguments: "xx"),
+			Problem.TestCase(expectation: "x", arguments: "xxx"),
+			Problem.TestCase(expectation: "xx", arguments: "xxxx"),
+			Problem.TestCase(expectation: "swift", arguments: "swiftXYZswift"),
+			Problem.TestCase(expectation: "swift", arguments: "swiftswift"),
+			Problem.TestCase(expectation: "", arguments: "xwiftXYZswift"),
+			Problem.TestCase(expectation: "Hello!", arguments: "Hello! and Hello!"),
+			Problem.TestCase(expectation: "", arguments: "x"),
+			Problem.TestCase(expectation: "", arguments: ""),
+			Problem.TestCase(expectation: "", arguments: "abcb"),
+			Problem.TestCase(expectation: "my", arguments: "mymmy")
+		],
+		eulerMode: false
+	),
+	  Problem(
+		title: "mirrorEnds",
+		returnType: String.self,
+		parameters: [
+			Problem.Parameter(name: "string", type: String.self)
+		],
+		prompt: "Given a string, look for a mirror image (backwards) string at both the beginning and end of the given string. In other words, zero or more characters at the very begining of the given string, and at the very end of the string in reverse order (possibly overlapping). For example, the string \"abXYZba\" has the mirror end \"ab\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: "ab", arguments: "abXYZba"),
+			Problem.TestCase(expectation: "a", arguments: "abca"),
+			Problem.TestCase(expectation: "aba", arguments: "aba"),
+			Problem.TestCase(expectation: "", arguments: "abab"),
+			Problem.TestCase(expectation: "xxx", arguments: "xxx"),
+			Problem.TestCase(expectation: "xxYxx", arguments: "xxYxx"),
+			Problem.TestCase(expectation: "Hi ", arguments: "Hi and iH"),
+			Problem.TestCase(expectation: "x", arguments: "x"),
+			Problem.TestCase(expectation: "", arguments: ""),
+			Problem.TestCase(expectation: "123", arguments: "123and then 321"),
+			Problem.TestCase(expectation: "ba", arguments: "band andab")
+		],
+		eulerMode: false
+	),
+	  Problem(
+		title: "maxBlock",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "Given a string, return the length of the largest \"block\" in the string. A block is a run of adjacent characters that are the same.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 2, arguments: "hoopla"),
+			Problem.TestCase(expectation: 3, arguments: "abbCCCddBBBxx"),
+			Problem.TestCase(expectation: 0, arguments: ""),
+			Problem.TestCase(expectation: 1, arguments: "xyz"),
+			Problem.TestCase(expectation: 2, arguments: "xxyz"),
+			Problem.TestCase(expectation: 2, arguments: "xyzz"),
+			Problem.TestCase(expectation: 3, arguments: "abbbcbbbxbbbx"),
+			Problem.TestCase(expectation: 3, arguments: "XXBBBbbxx"),
+			Problem.TestCase(expectation: 4, arguments: "XXBBBBbbxx"),
+			Problem.TestCase(expectation: 4, arguments: "XXBBBbbxxXXXX"),
+			Problem.TestCase(expectation: 4, arguments: "XX2222BBBbbXX2222")
+		],
+		eulerMode: false
+	),
+	  Problem(
+		title: "sumNumbers",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "Given a string, return the sum of the numbers appearing in the string, ignoring all other characters. A number is a series of 1 or more digit characters in a row. (Note: Int(string) converts a string to an int.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 123, arguments: "abc123xyz"),
+			Problem.TestCase(expectation: 44, arguments: "aa11b33"),
+			Problem.TestCase(expectation: 18, arguments: "7 11"),
+			Problem.TestCase(expectation: 0, arguments: "Chocolate"),
+			Problem.TestCase(expectation: 7, arguments: "5hoco1a1e"),
+			Problem.TestCase(expectation: 7, arguments: "5$$1;;1!!"),
+			Problem.TestCase(expectation: 1245, arguments: "a1234bb11"),
+			Problem.TestCase(expectation: 0, arguments: ""),
+			Problem.TestCase(expectation: 25, arguments: "a22bbb3")
+		],
+		eulerMode: false
+	),
+	  Problem(
+		title: "notReplace",
+		returnType: String.self,
+		parameters: [
+			Problem.Parameter(name: "str", type: String.self)
+		],
+		prompt: "Given a string, return a string where every appearance of the lowercase word \"is\" has been replaced with \"is not\". The word \"is\" should not be immediately preceeded or followed by a letter -- so for example the \"is\" in \"this\" does not count.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: "is not test", arguments: "is test"),
+			Problem.TestCase(expectation: "is not-is not", arguments: "is-is"),
+			Problem.TestCase(expectation: "This is not right", arguments: "This is right"),
+			Problem.TestCase(expectation: "This is not isabell", arguments: "This is isabell"),
+			Problem.TestCase(expectation: "", arguments: ""),
+			Problem.TestCase(expectation: "is not", arguments: "is"),
+			Problem.TestCase(expectation: "isis", arguments: "isis"),
+			Problem.TestCase(expectation: "Dis is not bliss is not", arguments: "Dis is bliss is"),
+			Problem.TestCase(expectation: "is not his", arguments: "is his"),
+			Problem.TestCase(expectation: "xis yis", arguments: "xis yis"),
+			Problem.TestCase(expectation: "AAAis is not", arguments: "AAAis is")
+		],
+		eulerMode: false
+	)
+
 ]
 
 // MARK: Array-2
@@ -5455,6 +5742,406 @@ fileprivate let codingBatArray3Problems: [Problem] = [
 	)
 ]
 
+// MARK: Dictionary-1
+
+fileprivate let codingBatDictionary1Problems: [Problem] = [
+	Problem(
+		title: "dictionaryBully",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary, return a copy with the following changes: if the key \"a\" has a value, set the key \"b\" to have that value, and set the key \"a\" to have the value \"\". Basically \"b\" is a bully, taking the value and replacing it with the empty string.",
+		solution: """
+		func dictionaryBully(dictionary: [String : String]) -> [String : String] {
+			var result = dictionary
+			
+			if let a = dictionary["a"] {
+				result["b"] = a
+				result["a"] = ""
+			}
+			
+			return result
+		}
+		""",
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": "", "b": "candy"], arguments: ["a": "candy", "b": "dirt"]),
+			Problem.TestCase(expectation: ["a": "", "b": "candy"], arguments: ["a": "candy"]),
+			Problem.TestCase(expectation: ["a": "", "b": "candy", "c": "meh"], arguments: ["a": "candy", "b": "carrot", "c": "meh"]),
+			Problem.TestCase(expectation: ["b": "carrot"], arguments: ["b": "carrot"]),
+			Problem.TestCase(expectation: ["c": "meh"], arguments: ["c": "meh"]),
+			Problem.TestCase(expectation: ["a": "", "b": "sparkle", "c": "meh"], arguments: ["a": "sparkle", "c": "meh"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "dictionaryShare",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary, return a copy with the following changes: if the key \"a\" has a value, set the key \"b\" to have that same value. In all cases remove the key \"c\", leaving the rest of the dictionary unchanged.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": "aaa", "b": "aaa"], arguments: ["a": "aaa", "b": "bbb", "c": "ccc"]),
+			Problem.TestCase(expectation: ["b": "xyz"], arguments: ["b": "xyz", "c": "ccc"]),
+			Problem.TestCase(expectation: ["a": "aaa", "b": "aaa", "d": "hi"], arguments: ["a": "aaa", "c": "meh", "d": "hi"]),
+			Problem.TestCase(expectation: ["a": "xyz", "b": "xyz", "z": "zzz"], arguments: ["a": "xyz", "b": "1234", "c": "yo", "z": "zzz"]),
+			Problem.TestCase(expectation: ["a": "xyz", "b": "xyz", "d": "ddd", "e": "everything"], arguments: ["a": "xyz", "b": "1234", "c": "yo", "d": "ddd", "e": "everything"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "dictionaryAB",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary, return a copy with the following changes: for this problem the dictionary may or may not contain the \"a\" and \"b\" keys. If both keys are present, append their 2 string values together and store the result under the key \"ab\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": "Hi", "ab": "HiThere", "b": "There"], arguments: ["a": "Hi", "b": "There"]),
+			Problem.TestCase(expectation: ["a": "Hi"], arguments: ["a": "Hi"]),
+			Problem.TestCase(expectation: ["b": "There"], arguments: ["b": "There"]),
+			Problem.TestCase(expectation: ["c": "meh"], arguments: ["c": "meh"]),
+			Problem.TestCase(expectation: ["a": "aaa", "ab": "aaabbb", "b": "bbb", "c": "ccc"], arguments: ["a": "aaa", "ab": "nope", "b": "bbb", "c": "ccc"]),
+			Problem.TestCase(expectation: ["ab": "nope", "b": "bbb", "c": "ccc"], arguments: ["ab": "nope", "b": "bbb", "c": "ccc"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "topping1",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary of food keys and topping values, return a copy of the dictionary with the following changes: if the key \"ice cream\" is present, set its value to \"cherry\". In all cases, set the key \"bread\" to have the value \"butter\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["bread": "butter", "ice cream": "cherry"], arguments: ["ice cream": "peanuts"]),
+			Problem.TestCase(expectation: ["bread": "butter"], arguments: [String: String]()),
+			Problem.TestCase(expectation: ["bread": "butter", "pancake": "syrup"], arguments: ["pancake": "syrup"]),
+			Problem.TestCase(expectation: ["bread": "butter", "ice cream": "cherry"], arguments: ["bread": "dirt", "ice cream": "strawberries"]),
+			Problem.TestCase(expectation: ["bread": "butter", "ice cream": "cherry", "salad": "oil"], arguments: ["bread": "jam", "ice cream": "strawberries", "salad": "oil"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "topping2",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary of food keys and their topping values, return a copy of the dictionary with the following changes: if the key \"ice cream\" has a value, set that as the value for the key \"yogurt\" also. If the key \"spinach\" has a value, change that value to \"nuts\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["yogurt": "cherry", "ice cream": "cherry"], arguments: ["ice cream": "cherry"]),
+			Problem.TestCase(expectation: ["yogurt": "cherry", "spinach": "nuts", "ice cream": "cherry"], arguments: ["spinach": "dirt", "ice cream": "cherry"]),
+			Problem.TestCase(expectation: ["yogurt": "salt"], arguments: ["yogurt": "salt"]),
+			Problem.TestCase(expectation: ["yogurt": "salt", "bread": "butter"], arguments: ["yogurt": "salt", "bread": "butter"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String: String]()),
+			Problem.TestCase(expectation: ["yogurt": "air", "ice cream": "air", "salad": "oil"], arguments: ["ice cream": "air", "salad": "oil"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "topping3",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary of food keys and topping values, return a copy of the dictionary with the following changes: if the key \"potato\" has a value, set that as the value for the key \"fries\". If the key \"salad\" has a value, set that as the value for the key \"spinach\".",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["potato": "ketchup", "fries": "ketchup"], arguments: ["potato": "ketchup"]),
+			Problem.TestCase(expectation: ["potato": "butter", "fries": "butter"], arguments: ["potato": "butter"]),
+			Problem.TestCase(expectation: ["spinach": "oil", "salad": "oil", "potato": "ketchup", "fries": "ketchup"], arguments: ["salad": "oil", "potato": "ketchup"]),
+			Problem.TestCase(expectation: ["toast": "butter", "spinach": "oil", "salad": "oil", "potato": "ketchup", "fries": "ketchup"], arguments: ["toast": "butter", "salad": "oil", "potato": "ketchup"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String: String]()),
+			Problem.TestCase(expectation: ["spinach": "pepper", "salad": "pepper", "fries": "salt"], arguments: ["salad": "pepper", "fries": "salt"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "dictionaryAB2",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary, return a copy with the following changes: if the keys \"a\" and \"b\" are both in the dictionary and have equal values, remove them both.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["c": "cake"], arguments: ["a": "aaa", "b": "aaa", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "aaa", "b": "bbb"], arguments: ["a": "aaa", "b": "bbb"]),
+			Problem.TestCase(expectation: ["a": "aaa", "b": "bbb", "c": "aaa"], arguments: ["a": "aaa", "b": "bbb", "c": "aaa"]),
+			Problem.TestCase(expectation: ["a": "aaa"], arguments: ["a": "aaa"]),
+			Problem.TestCase(expectation: ["b": "bbb"], arguments: ["b": "bbb"]),
+			Problem.TestCase(expectation: ["c": "ccc"], arguments: ["a": "", "b": "", "c": "ccc"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String: String]()),
+			Problem.TestCase(expectation: ["a": "a", "b": "b", "z": "zebra"], arguments: ["a": "a", "b": "b", "z": "zebra"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "dictionaryAB3",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary, return a copy with the following changes: if exactly one of the keys \"a\" or \"b\" has a value in the dictionary (but not both), set the other to have that same value in the dictionary.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": "aaa", "b": "aaa", "c": "cake"], arguments: ["a": "aaa", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "bbb", "b": "bbb", "c": "cake"], arguments: ["b": "bbb", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "aaa", "b": "bbb", "c": "cake"], arguments: ["a": "aaa", "b": "bbb", "c": "cake"]),
+			Problem.TestCase(expectation: ["ccc": "ccc"], arguments: ["ccc": "ccc"]),
+			Problem.TestCase(expectation: ["c": "a", "d": "b"], arguments: ["c": "a", "d": "b"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String: String]()),
+			Problem.TestCase(expectation: ["a": "", "b": ""], arguments: ["a": ""]),
+			Problem.TestCase(expectation: ["a": "", "b": ""], arguments: ["b": ""]),
+			Problem.TestCase(expectation: ["a": "", "b": ""], arguments: ["a": "", "b": ""]),
+			Problem.TestCase(expectation: ["aa": "aa", "a": "apple", "b": "apple", "z": "zzz"], arguments: ["aa": "aa", "a": "apple", "z": "zzz"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "dictionaryAB4",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "dictionary", type: [String: String].self)
+		],
+		prompt: "Given a dictionary, return a copy with the following changes: if the keys \"a\" and \"b\" have values that have different lengths, then set \"c\" to have the longer value. If the values exist and have the same length, change them both to the empty string in the dictionary.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": "aaa", "b": "bb", "c": "aaa"], arguments: ["a": "aaa", "b": "bb", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "aa", "b": "bbb", "c": "bbb"], arguments: ["a": "aa", "b": "bbb", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "aa", "b": "bbb", "c": "bbb"], arguments: ["a": "aa", "b": "bbb"]),
+			Problem.TestCase(expectation: ["a": "aaa"], arguments: ["a": "aaa"]),
+			Problem.TestCase(expectation: ["b": "bbb"], arguments: ["b": "bbb"]),
+			Problem.TestCase(expectation: ["a": "", "b": "", "c": "cake"], arguments: ["a": "aaa", "b": "bbb", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "", "b": "", "c": "cake"], arguments: ["a": "a", "b": "b", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "", "b": "b", "c": "b"], arguments: ["a": "", "b": "b", "c": "cake"]),
+			Problem.TestCase(expectation: ["a": "a", "b": "", "c": "a"], arguments: ["a": "a", "b": "", "c": "cake"]),
+			Problem.TestCase(expectation: ["c": "cat", "d": "dog"], arguments: ["c": "cat", "d": "dog"]),
+			Problem.TestCase(expectation: ["ccc": "ccc"], arguments: ["ccc": "ccc"]),
+			Problem.TestCase(expectation: ["c": "a", "d": "b"], arguments: ["c": "a", "d": "b"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String: String]()),
+			Problem.TestCase(expectation: ["a": "", "z": "z"], arguments: ["a": "", "z": "z"]),
+			Problem.TestCase(expectation: ["b": "", "z": "z"], arguments: ["b": "", "z": "z"])
+		],
+		eulerMode: false
+	)
+]
+
+// MARK: Dictionary-2
+
+fileprivate let codingBatDictionary2Problems: [Problem] = [
+	Problem(
+		title: "word0",
+		returnType: [String: Int].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return a [String : Int] dictionary containing a key for every different string in the array, always with the value 0. For example the string \"hello\" makes the pair \"hello\":0. We'll do more complicated counting later, but for this problem the value is simply 0.",
+		solution: """
+		func word0(strings: [String]) -> [String : Int] {
+			var dictionary: [String: Int] = [:]
+			
+			for string in strings {
+				dictionary[string] = 0
+			}
+			
+			return dictionary
+		}
+		""",
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": 0, "b": 0], arguments: ["a", "b", "a", "b"]),
+			Problem.TestCase(expectation: ["a": 0, "b": 0, "c": 0], arguments: ["a", "b", "a", "c", "b"]),
+			Problem.TestCase(expectation: ["a": 0, "b": 0, "c": 0], arguments: ["c", "b", "a"]),
+			Problem.TestCase(expectation: ["c": 0], arguments: ["c", "c", "c", "c"]),
+			Problem.TestCase(expectation: [String: Int](), arguments: [String]())
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "wordLen",
+		returnType: [String: Int].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return a [String: Int] dictionary containing a key for every different string in the array, and the value is that string's length.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["bb": 2, "a": 1], arguments: ["a", "bb", "a", "bb"]),
+			Problem.TestCase(expectation: ["that": 4, "and": 3, "this": 4], arguments: ["this", "and", "that", "and"]),
+			Problem.TestCase(expectation: ["code": 4, "bug": 3], arguments: ["code", "code", "code", "bug"]),
+			Problem.TestCase(expectation: [String: Int](), arguments: [String]()),
+			Problem.TestCase(expectation: ["z": 1], arguments: ["z"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "pairs",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of non-empty strings, create and return a [String: String] dictionary as follows: for each string add its first character as a key with its last character as the value.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["b": "g", "c": "e"], arguments: ["code", "bug"]),
+			Problem.TestCase(expectation: ["m": "n"], arguments: ["man", "moon", "main"]),
+			Problem.TestCase(expectation: ["g": "d", "m": "n", "n": "t"], arguments: ["man", "moon", "good", "night"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["a": "a", "b": "b"], arguments: ["a", "b"]),
+			Problem.TestCase(expectation: ["a": "d", "c": "s"], arguments: ["are", "codes", "and", "cods"]),
+			Problem.TestCase(expectation: ["a": "e", "b": "a", "c": "e", "t": "a"], arguments: ["apple", "banana", "tea", "coffee"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "wordCount",
+		returnType: [String: Int].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "The classic word-count algorithm: given an array of strings, return a [String: Int] dictionary with a key for each different string, with the value the number of times that string appears in the array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": 2, "b": 2, "c": 1], arguments: ["a", "b", "a", "c", "b"]),
+			Problem.TestCase(expectation: ["a": 1, "b": 1, "c": 1], arguments: ["c", "b", "a"]),
+			Problem.TestCase(expectation: ["c": 4], arguments: ["c", "c", "c", "c"]),
+			Problem.TestCase(expectation: [String: Int](), arguments: [String]()),
+			Problem.TestCase(expectation: ["": 1, "and": 1, "this": 2], arguments: ["this", "and", "this", ""]),
+			Problem.TestCase(expectation: ["x": 2, "X": 1, "y": 1, "Y": 1], arguments: ["x", "y", "x", "Y", "X"]),
+			Problem.TestCase(expectation: ["0": 1, "1": 1, "123": 2], arguments: ["123", "0", "123", "1"]),
+			Problem.TestCase(expectation: ["a": 4, "b": 5, "d": 3, "e": 1, "f": 1, "one": 1, "x": 2, "z": 2, "two": 2], arguments: ["d", "a", "e", "d", "a", "d", "b", "b", "z", "a", "a", "b", "z", "x", "b", "f", "x", "two", "b", "one", "two"]),
+			Problem.TestCase(expectation: ["banana": 2, "apple": 3, "tea": 1, "coffee": 1], arguments: ["apple", "banana", "apple", "apple", "tea", "coffee", "banana"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "firstChar",
+		returnType: [String: String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of non-empty strings, return a [String: String] dictionary with a key for every different first character seen, with the value of all the strings starting with that character appended together in the order they appear in the array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["s": "saltsoda", "t": "teatoast"], arguments: ["salt", "tea", "soda", "toast"]),
+			Problem.TestCase(expectation: ["a": "aaaAA", "b": "bb", "c": "cccCC", "d": "d"], arguments: ["aa", "bb", "cc", "aAA", "cCC", "d"]),
+			Problem.TestCase(expectation: [String: String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["a": "appleaardvark", "b": "bellsbellsbells", "s": "saltsun", "z": "zen"], arguments: ["apple", "bells", "salt", "aardvark", "bells", "sun", "zen", "bells"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "wordAppend",
+		returnType: String.self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Loop over the given array of strings to build a result string like this: when a string appears the 2nd, 4th, 6th, etc. time in the array, append the string to the result. Return the empty string if no string appears a 2nd time.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: "a", arguments: ["a", "b", "a"]),
+			Problem.TestCase(expectation: "aa", arguments: ["a", "b", "a", "c", "a", "d", "a"]),
+			Problem.TestCase(expectation: "a", arguments: ["a", "", "a"]),
+			Problem.TestCase(expectation: "", arguments: [String]()),
+			Problem.TestCase(expectation: "ba", arguments: ["a", "b", "b", "a", "a"]),
+			Problem.TestCase(expectation: "baa", arguments: ["a", "b", "b", "b", "a", "c", "a", "a"]),
+			Problem.TestCase(expectation: "baaba", arguments: ["a", "b", "b", "b", "a", "c", "a", "a", "a", "b", "a"]),
+			Problem.TestCase(expectation: "andornot", arguments: ["not", "and", "or", "and", "this", "and", "or", "that", "not"]),
+			Problem.TestCase(expectation: "", arguments: ["a", "b", "c"]),
+			Problem.TestCase(expectation: "thisandthat", arguments: ["this", "or", "that", "and", "this", "and", "that"]),
+			Problem.TestCase(expectation: "xxyyzzxx", arguments: ["xx", "xx", "yy", "xx", "zz", "yy", "zz", "xx"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "wordMultiple",
+		returnType: [String: Bool].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "Given an array of strings, return a [String: Bool] dictionary where each different string is a key and its value is true if that string appears 2 or more times in the array.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["a": true, "b": true, "c": false], arguments: ["a", "b", "a", "c", "b"]),
+			Problem.TestCase(expectation: ["a": false, "b": false, "c": false], arguments: ["c", "b", "a"]),
+			Problem.TestCase(expectation: ["c": true], arguments: ["c", "c", "c", "c"]),
+			Problem.TestCase(expectation: [String: Bool](), arguments: [String]()),
+			Problem.TestCase(expectation: ["and": false, "this": true], arguments: ["this", "and", "this"]),
+			Problem.TestCase(expectation: ["a": true, "b": true, "d": true, "e": false, "x": false, "z": true], arguments: ["d", "a", "e", "d", "a", "d", "b", "b", "z", "a", "a", "b", "z", "x"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "allSwap",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "We'll say that 2 strings \"match\" if they are non-empty and their first chars are the same. Loop over and then return the given array of non-empty strings as follows: if a string matches an earlier string in the array, swap the 2 strings in the array. When a position in the array has been swapped, it no longer matches anything. Using a dictionary, this can be solved making just one pass over the array. More difficult than it looks.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["ac", "ab"], arguments: ["ab", "ac"]),
+			Problem.TestCase(expectation: ["ay", "by", "cy", "cx", "bx", "ax", "azz", "aaa"], arguments: ["ax", "bx", "cx", "cy", "by", "ay", "aaa", "azz"]),
+			Problem.TestCase(expectation: ["ay", "by", "ax", "bx", "aj", "ai", "by", "bx"], arguments: ["ax", "bx", "ay", "by", "ai", "aj", "bx", "by"]),
+			Problem.TestCase(expectation: ["ay", "bx", "cy", "ax", "cx", "abb", "aaa"], arguments: ["ax", "bx", "cx", "ay", "cy", "aaa", "abb"]),
+			Problem.TestCase(expectation: ["every", "does", "ice", "easy", "it", "eaten"], arguments: ["easy", "does", "it", "every", "ice", "eaten"]),
+			Problem.TestCase(expectation: ["lily", "over", "water", "swims", "of", "list", "words", "wait"], arguments: ["list", "of", "words", "swims", "over", "lily", "water", "wait"]),
+			Problem.TestCase(expectation: ["42", "8", "16", "15", "23", "4"], arguments: ["4", "8", "15", "16", "23", "42"]),
+			Problem.TestCase(expectation: ["aaa"], arguments: ["aaa"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["a", "b", "c", "xx", "yy", "zz"], arguments: ["a", "b", "c", "xx", "yy", "zz"])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "firstSwap",
+		returnType: [String].self,
+		parameters: [
+			Problem.Parameter(name: "strings", type: [String].self)
+		],
+		prompt: "We'll say that 2 strings \"match\" if they are non-empty and their first chars are the same. Loop over and then return the given array of non-empty strings as follows: if a string matches an earlier string in the array, swap the 2 strings in the array. A particular first character can only cause 1 swap, so once a character has caused a swap, its later swaps are disabled. Using a dictionary, this can be solved making just one pass over the array. More difficult than it looks.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: ["ac", "ab"], arguments: ["ab", "ac"]),
+			Problem.TestCase(expectation: ["ay", "by", "cy", "cx", "bx", "ax", "aaa", "azz"], arguments: ["ax", "bx", "cx", "cy", "by", "ay", "aaa", "azz"]),
+			Problem.TestCase(expectation: ["ay", "by", "ax", "bx", "ai", "aj", "bx", "by"], arguments: ["ax", "bx", "ay", "by", "ai", "aj", "bx", "by"]),
+			Problem.TestCase(expectation: ["ay", "bx", "cy", "ax", "cx", "aaa", "abb"], arguments: ["ax", "bx", "cx", "ay", "cy", "aaa", "abb"]),
+			Problem.TestCase(expectation: ["every", "does", "ice", "easy", "it", "eaten"], arguments: ["easy", "does", "it", "every", "ice", "eaten"]),
+			Problem.TestCase(expectation: ["lily", "over", "water", "swims", "of", "list", "words", "wait"], arguments: ["list", "of", "words", "swims", "over", "lily", "water", "wait"]),
+			Problem.TestCase(expectation: ["42", "8", "16", "15", "23", "4"], arguments: ["4", "8", "15", "16", "23", "42"]),
+			Problem.TestCase(expectation: ["aaa"], arguments: ["aaa"]),
+			Problem.TestCase(expectation: [String](), arguments: [String]()),
+			Problem.TestCase(expectation: ["a", "b", "c", "xx", "yy", "zz"], arguments: ["a", "b", "c", "xx", "yy", "zz"])
+		],
+		eulerMode: false
+	)
+
+]
+
 // MARK: Recursion-1
 fileprivate let codingBatRecursion1Problems: [Problem] = [
 	Problem(
@@ -5464,8 +6151,21 @@ fileprivate let codingBatRecursion1Problems: [Problem] = [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
 		prompt: "Given n of 1 or more, return the factorial of n, which is n * (n-1) * (n-2) ... 1. Compute the result recursively (without loops).",
-		solution: nil,
-		hint: nil,
+		solution: """
+		func factorial(n: Int) -> Int {
+			// Base case: if n is 1, we can return the answer directly
+			if n == 1 {
+				return 1
+			}
+			
+			// Recursion: otherwise make a recursive call with n-1
+			// (towards the base caes), i.e. call factorial(n-1).
+			// Assume the recursive call works correctly, and fix up
+			// what it returns to make our result.
+			return n * factorial(n: n-1)
+		}
+		""",
+		hint: "First, detect the \"base case\", a case so simple that the answer can be returned immediately (here when n==1). Otherwise make a recursive call of factorial(n: n-1) (towards the base case). Assume the recursive call returns a correct value, and fix that value up to make our result.",
 		testCases: [
 			Problem.TestCase(expectation: 1, arguments: 1),
 			Problem.TestCase(expectation: 2, arguments: 2),
@@ -5478,12 +6178,971 @@ fileprivate let codingBatRecursion1Problems: [Problem] = [
 			Problem.TestCase(expectation: 479001600, arguments: 12)
 		],
 		eulerMode: false
+	),
+	Problem(
+		title: "bunnyEars",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "bunnies", type: Int.self)
+		],
+		prompt: "We have a number of bunnies and each bunny has two big floppy ears. We want to compute the total number of ears across all the bunnies recursively (without loops or multiplication).",
+		solution: """
+		func bunnyEars(bunnies: Int) -> Int {
+			// Base case: if bunnies==0, just return 0
+			if bunnies == 0 {
+				return 0
+			}
+			
+			// Recursive case: otherwise, make a recursive call
+			// with bunnies-1 (towards the base case), and fix up
+			// what it returns.
+			return 2 + bunnyEars(bunnies: bunnies-1)
+		}
+		""",
+		hint: "First detect the base case (bunnies == 0), and in that case just return 0. Otherwise, make a recursive call to bunnyEars(bunnies: bunnies-1). Trust that the recursive call returns the correct value, and fix it up by adding 2.",
+		testCases: [
+			Problem.TestCase(expectation: 0, arguments: 0),
+			Problem.TestCase(expectation: 2, arguments: 1),
+			Problem.TestCase(expectation: 4, arguments: 2),
+			Problem.TestCase(expectation: 6, arguments: 3),
+			Problem.TestCase(expectation: 8, arguments: 4),
+			Problem.TestCase(expectation: 10, arguments: 5),
+			Problem.TestCase(expectation: 24, arguments: 12),
+			Problem.TestCase(expectation: 100, arguments: 50),
+			Problem.TestCase(expectation: 468, arguments: 234)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "fibonacci",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "The fibonacci sequence is a famous bit of mathematics, and it happens to have a recursive definition. The first two values in the sequence are 0 and 1 (essentially 2 base cases). Each subsequent value is the sum of the previous two values, so the whole sequence is: 0, 1, 1, 2, 3, 5, 8, 13, 21 and so on. Define a recursive fibonacci(n:) method that returns the nth fibonacci number, with n=0 representing the start of the sequence.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 0, arguments: 0),
+			Problem.TestCase(expectation: 1, arguments: 1),
+			Problem.TestCase(expectation: 1, arguments: 2),
+			Problem.TestCase(expectation: 2, arguments: 3),
+			Problem.TestCase(expectation: 3, arguments: 4),
+			Problem.TestCase(expectation: 5, arguments: 5),
+			Problem.TestCase(expectation: 8, arguments: 6),
+			Problem.TestCase(expectation: 13, arguments: 7)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "bunnyEars2",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "bunnies", type: Int.self)
+		],
+		prompt: "We have bunnies standing in a line, numbered 1, 2, ... The odd bunnies (1, 3, ..) have the normal 2 ears. The even bunnies (2, 4, ..) we'll say have 3 ears, because they each have a raised foot. Recursively return the number of \"ears\" in the bunny line 1, 2, ... n (without loops or multiplication).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 0, arguments: 0),
+			Problem.TestCase(expectation: 2, arguments: 1),
+			Problem.TestCase(expectation: 5, arguments: 2),
+			Problem.TestCase(expectation: 7, arguments: 3),
+			Problem.TestCase(expectation: 10, arguments: 4),
+			Problem.TestCase(expectation: 12, arguments: 5),
+			Problem.TestCase(expectation: 15, arguments: 6),
+			Problem.TestCase(expectation: 25, arguments: 10)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "triangle",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "rows", type: Int.self)
+		],
+		prompt: "We have triangle made of blocks. The topmost row has 1 block, the next row down has 2 blocks, the next row has 3 blocks, and so on. Compute recursively (no loops or multiplication) the total number of blocks in such a triangle with the given number of rows.",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 0, arguments: 0),
+			Problem.TestCase(expectation: 1, arguments: 1),
+			Problem.TestCase(expectation: 3, arguments: 2),
+			Problem.TestCase(expectation: 6, arguments: 3),
+			Problem.TestCase(expectation: 10, arguments: 4),
+			Problem.TestCase(expectation: 15, arguments: 5),
+			Problem.TestCase(expectation: 21, arguments: 6),
+			Problem.TestCase(expectation: 28, arguments: 7)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "sumDigits2",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "Given a non-negative int n, return the sum of its digits recursively (no loops). Note that recursion (%) by 10 yields the rightmost digit (126 % 10 is 6), while divide (/) by 10 removes the rightmost digit (126 / 10 is 12).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 9, arguments: 126),
+			Problem.TestCase(expectation: 13, arguments: 49),
+			Problem.TestCase(expectation: 3, arguments: 12),
+			Problem.TestCase(expectation: 1, arguments: 10),
+			Problem.TestCase(expectation: 1, arguments: 1),
+			Problem.TestCase(expectation: 0, arguments: 0),
+			Problem.TestCase(expectation: 10, arguments: 730),
+			Problem.TestCase(expectation: 4, arguments: 1111),
+			Problem.TestCase(expectation: 5, arguments: 11111),
+			Problem.TestCase(expectation: 3, arguments: 10110),
+			Problem.TestCase(expectation: 10, arguments: 235)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "count7",
+		returnType: Int.self,
+		parameters: [
+			Problem.Parameter(name: "n", type: Int.self)
+		],
+		prompt: "Given a non-negative int n, return the count of the occurrences of 7 as a digit, so for example 717 yields 2. (no loops). Note that recursion (%) by 10 yields the rightmost digit (126 % 10 is 6), while divide (/) by 10 removes the rightmost digit (126 / 10 is 12).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: 2, arguments: 717),
+			Problem.TestCase(expectation: 1, arguments: 7),
+			Problem.TestCase(expectation: 0, arguments: 123),
+			Problem.TestCase(expectation: 2, arguments: 77),
+			Problem.TestCase(expectation: 1, arguments: 7123),
+			Problem.TestCase(expectation: 3, arguments: 771237),
+			Problem.TestCase(expectation: 4, arguments: 771737),
+			Problem.TestCase(expectation: 2, arguments: 47571),
+			Problem.TestCase(expectation: 6, arguments: 777777),
+			Problem.TestCase(expectation: 4, arguments: 70701277),
+			Problem.TestCase(expectation: 5, arguments: 777576197),
+			Problem.TestCase(expectation: 0, arguments: 99999),
+			Problem.TestCase(expectation: 1, arguments: 99799)
+		],
+		eulerMode: false
+	),
+		Problem(
+			title: "count8",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "n", type: Int.self)
+			],
+			prompt: "Given a non-negative int n, compute recursively (no loops) the count of the occurrences of 8 as a digit, except that an 8 with another 8 immediately to its left counts double, so 8818 yields 4. Note that recursion (%) by 10 yields the rightmost digit (126 % 10 is 6), while divide (/) by 10 removes the rightmost digit (126 / 10 is 12).",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 1, arguments: 8),
+				Problem.TestCase(expectation: 2, arguments: 818),
+				Problem.TestCase(expectation: 4, arguments: 8818),
+				Problem.TestCase(expectation: 4, arguments: 8088),
+				Problem.TestCase(expectation: 0, arguments: 123),
+				Problem.TestCase(expectation: 2, arguments: 81238),
+				Problem.TestCase(expectation: 6, arguments: 88788),
+				Problem.TestCase(expectation: 1, arguments: 8234),
+				Problem.TestCase(expectation: 1, arguments: 2348),
+				Problem.TestCase(expectation: 3, arguments: 23884),
+				Problem.TestCase(expectation: 0, arguments: 0),
+				Problem.TestCase(expectation: 5, arguments: 1818188),
+				Problem.TestCase(expectation: 5, arguments: 8818181),
+				Problem.TestCase(expectation: 1, arguments: 1080),
+				Problem.TestCase(expectation: 3, arguments: 188),
+				Problem.TestCase(expectation: 9, arguments: 88888),
+				Problem.TestCase(expectation: 2, arguments: 9898),
+				Problem.TestCase(expectation: 1, arguments: 78)
+			],
+			eulerMode: false
+		),
+		Problem(
+			title: "powerN",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "base", type: Int.self),
+				Problem.Parameter(name: "n", type: Int.self)
+			],
+			prompt: "Given base and n that are both 1 or more, compute recursively (no loops) the value of base to the n power, so powerN(base: 3, n: 2) is 9 (3 squared).",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 3, arguments: 3, 1),
+				Problem.TestCase(expectation: 9, arguments: 3, 2),
+				Problem.TestCase(expectation: 27, arguments: 3, 3),
+				Problem.TestCase(expectation: 2, arguments: 2, 1),
+				Problem.TestCase(expectation: 4, arguments: 2, 2),
+				Problem.TestCase(expectation: 8, arguments: 2, 3),
+				Problem.TestCase(expectation: 16, arguments: 2, 4),
+				Problem.TestCase(expectation: 32, arguments: 2, 5),
+				Problem.TestCase(expectation: 10, arguments: 10, 1),
+				Problem.TestCase(expectation: 100, arguments: 10, 2),
+				Problem.TestCase(expectation: 1000, arguments: 10, 3)
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "countX",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively (no loops) the number of lowercase \"x\" characters in the string.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 4, arguments: "xxhixx"),
+				Problem.TestCase(expectation: 3, arguments: "xhixhix"),
+				Problem.TestCase(expectation: 0, arguments: "hi"),
+				Problem.TestCase(expectation: 0, arguments: "h"),
+				Problem.TestCase(expectation: 1, arguments: "x"),
+				Problem.TestCase(expectation: 0, arguments: ""),
+				Problem.TestCase(expectation: 0, arguments: "hihi"),
+				Problem.TestCase(expectation: 0, arguments: "hiAAhi12hi")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "countHi2",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively (no loops) the number of times lowercase \"hi\" appears in the string.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 1, arguments: "xxhixx"),
+				Problem.TestCase(expectation: 2, arguments: "xhixhix"),
+				Problem.TestCase(expectation: 1, arguments: "hi"),
+				Problem.TestCase(expectation: 2, arguments: "hihih"),
+				Problem.TestCase(expectation: 0, arguments: "h"),
+				Problem.TestCase(expectation: 0, arguments: ""),
+				Problem.TestCase(expectation: 4, arguments: "ihihihihih"),
+				Problem.TestCase(expectation: 5, arguments: "ihihihihihi"),
+				Problem.TestCase(expectation: 3, arguments: "hiAAhi12hi"),
+				Problem.TestCase(expectation: 3, arguments: "xhixhxihihhhih"),
+				Problem.TestCase(expectation: 1, arguments: "ship")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "changeXY",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively (no loops) a new string where all the lowercase \"x\" characters have been changed to \"y\" characters.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "codey", arguments: "codex"),
+				Problem.TestCase(expectation: "yyhiyy", arguments: "xxhixx"),
+				Problem.TestCase(expectation: "yhiyhiy", arguments: "xhixhix"),
+				Problem.TestCase(expectation: "hiy", arguments: "hiy"),
+				Problem.TestCase(expectation: "h", arguments: "h"),
+				Problem.TestCase(expectation: "y", arguments: "x"),
+				Problem.TestCase(expectation: "", arguments: ""),
+				Problem.TestCase(expectation: "yyy", arguments: "xxx"),
+				Problem.TestCase(expectation: "yyhyyi", arguments: "yyhxyi"),
+				Problem.TestCase(expectation: "hihi", arguments: "hihi")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "changePi",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively (no loops) a new string where all appearances of \"pi\" have been replaced by \"3.14\".",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "x3.14x", arguments: "xpix"),
+				Problem.TestCase(expectation: "3.143.14", arguments: "pipi"),
+				Problem.TestCase(expectation: "3.14p", arguments: "pip"),
+				Problem.TestCase(expectation: "3.14", arguments: "pi"),
+				Problem.TestCase(expectation: "hip", arguments: "hip"),
+				Problem.TestCase(expectation: "p", arguments: "p"),
+				Problem.TestCase(expectation: "x", arguments: "x"),
+				Problem.TestCase(expectation: "", arguments: ""),
+				Problem.TestCase(expectation: "3.14xx", arguments: "pixx"),
+				Problem.TestCase(expectation: "xyzzy", arguments: "xyzzy")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "noX",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively a new string where all the \"x\" characters have been removed.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "ab", arguments: "xaxb"),
+				Problem.TestCase(expectation: "abc", arguments: "abc"),
+				Problem.TestCase(expectation: "", arguments: "xx"),
+				Problem.TestCase(expectation: "", arguments: ""),
+				Problem.TestCase(expectation: "ab", arguments: "axxbxx"),
+				Problem.TestCase(expectation: "Hello", arguments: "Hellox")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "array6",
+			returnType: Bool.self,
+			parameters: [
+				Problem.Parameter(name: "nums", type: [Int].self),
+				Problem.Parameter(name: "index", type: Int.self)
+			],
+			prompt: "Given an array of ints, compute recursively if the array contains a 6. We'll use the convention of considering only the part of the array that begins at the given index. In this way, a recursive call can pass index+1 to move down the array. The initial call will pass in index as 0.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: true, arguments: [1, 6, 4], 0),
+				Problem.TestCase(expectation: false, arguments: [1, 4], 0),
+				Problem.TestCase(expectation: true, arguments: [6], 0),
+				Problem.TestCase(expectation: false, arguments: [Int](), 0),
+				Problem.TestCase(expectation: true, arguments: [6, 2, 2], 0),
+				Problem.TestCase(expectation: false, arguments: [2, 5], 0),
+				Problem.TestCase(expectation: true, arguments: [1, 9, 4, 6, 6], 0),
+				Problem.TestCase(expectation: true, arguments: [2, 5, 6], 0)
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "array11",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "nums", type: [Int].self),
+				Problem.Parameter(name: "index", type: Int.self)
+			],
+			prompt: "Given an array of ints, compute recursively the number of times that the value 11 appears in the array. We'll use the convention of considering only the part of the array that begins at the given index. In this way, a recursive call can pass index+1 to move down the array. The initial call will pass in index as 0.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 1, arguments: [1, 2, 11], 0),
+				Problem.TestCase(expectation: 2, arguments: [11, 11], 0),
+				Problem.TestCase(expectation: 0, arguments: [1, 2, 3, 4], 0),
+				Problem.TestCase(expectation: 3, arguments: [1, 11, 3, 11, 11], 0),
+				Problem.TestCase(expectation: 1, arguments: [11], 0),
+				Problem.TestCase(expectation: 0, arguments: [1], 0),
+				Problem.TestCase(expectation: 0, arguments: [Int](), 0),
+				Problem.TestCase(expectation: 2, arguments: [11, 2, 3, 4, 11, 5], 0),
+				Problem.TestCase(expectation: 2, arguments: [11, 5, 11], 0)
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "array220",
+			returnType: Bool.self,
+			parameters: [
+				Problem.Parameter(name: "nums", type: [Int].self),
+				Problem.Parameter(name: "index", type: Int.self)
+			],
+			prompt: "Given an array of ints, compute recursively if the array contains somewhere a value followed in the array by that value times 10. We'll use the convention of considering only the part of the array that begins at the given index. In this way, a recursive call can pass index+1 to move down the array. The initial call will pass in index as 0.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: true, arguments: [1, 2, 20], 0),
+				Problem.TestCase(expectation: true, arguments: [3, 30], 0),
+				Problem.TestCase(expectation: false, arguments: [3], 0),
+				Problem.TestCase(expectation: false, arguments: [Int](), 0),
+				Problem.TestCase(expectation: true, arguments: [3, 3, 30, 4], 0),
+				Problem.TestCase(expectation: false, arguments: [2, 19, 4], 0),
+				Problem.TestCase(expectation: false, arguments: [20, 2, 21], 0),
+				Problem.TestCase(expectation: true, arguments: [20, 2, 21, 210], 0),
+				Problem.TestCase(expectation: true, arguments: [2, 200, 2000], 0),
+				Problem.TestCase(expectation: true, arguments: [0, 0], 0),
+				Problem.TestCase(expectation: false, arguments: [1, 2, 3, 4, 5, 6], 0),
+				Problem.TestCase(expectation: true, arguments: [1, 2, 3, 4, 5, 50, 6], 0),
+				Problem.TestCase(expectation: false, arguments: [1, 2, 3, 4, 5, 51, 6], 0),
+				Problem.TestCase(expectation: true, arguments: [1, 2, 3, 4, 4, 50, 500, 6], 0)
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "allStar",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively a new string where all the adjacent characters are now separated by a \"*\".",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "h*e*l*l*o", arguments: "hello"),
+				Problem.TestCase(expectation: "a*b*c", arguments: "abc"),
+				Problem.TestCase(expectation: "a*b", arguments: "ab"),
+				Problem.TestCase(expectation: "a", arguments: "a"),
+				Problem.TestCase(expectation: "", arguments: ""),
+				Problem.TestCase(expectation: "3*.*1*4", arguments: "3.14"),
+				Problem.TestCase(expectation: "C*h*o*c*o*l*a*t*e", arguments: "Chocolate"),
+				Problem.TestCase(expectation: "1*2*3*4", arguments: "1234")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "pairStar",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively a new string where identical characters that are adjacent in the original string are separated from each other by a \"*\".",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "hel*lo", arguments: "hello"),
+				Problem.TestCase(expectation: "x*xy*y", arguments: "xxyy"),
+				Problem.TestCase(expectation: "a*a*a*a", arguments: "aaaa"),
+				Problem.TestCase(expectation: "a*a*ab", arguments: "aaab"),
+				Problem.TestCase(expectation: "a*a", arguments: "aa"),
+				Problem.TestCase(expectation: "a", arguments: "a"),
+				Problem.TestCase(expectation: "", arguments: ""),
+				Problem.TestCase(expectation: "noadjacent", arguments: "noadjacent"),
+				Problem.TestCase(expectation: "ab*ba", arguments: "abba"),
+				Problem.TestCase(expectation: "ab*b*ba", arguments: "abbba")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "endX",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively a new string where all the lowercase 'x' characters have been moved to the end of the string.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "rexx", arguments: "xxre"),
+				Problem.TestCase(expectation: "hixxxx", arguments: "xxhixx"),
+				Problem.TestCase(expectation: "hihixxx", arguments: "xhixhix"),
+				Problem.TestCase(expectation: "hiy", arguments: "hiy"),
+				Problem.TestCase(expectation: "h", arguments: "h"),
+				Problem.TestCase(expectation: "x", arguments: "x"),
+				Problem.TestCase(expectation: "xx", arguments: "xx"),
+				Problem.TestCase(expectation: "", arguments: ""),
+				Problem.TestCase(expectation: "bxx", arguments: "bxx"),
+				Problem.TestCase(expectation: "baxx", arguments: "bxax"),
+				Problem.TestCase(expectation: "aaaxxx", arguments: "axaxax"),
+				Problem.TestCase(expectation: "hixxx", arguments: "xxhxi")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "countPairs",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "We'll say that a \"pair\" in a string is two instances of a character separated by a character. So \"AxA\" the A's make a pair. Pairs can overlap, so \"AxAxA\" contains 3 pairs -- 2 for A and 1 for x. Recursively compute the number of pairs in the given string.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 1, arguments: "axa"),
+				Problem.TestCase(expectation: 2, arguments: "axax"),
+				Problem.TestCase(expectation: 1, arguments: "axbx"),
+				Problem.TestCase(expectation: 0, arguments: "hi"),
+				Problem.TestCase(expectation: 3, arguments: "hihih"),
+				Problem.TestCase(expectation: 3, arguments: "ihihhh"),
+				Problem.TestCase(expectation: 0, arguments: "ihjxhh"),
+				Problem.TestCase(expectation: 0, arguments: ""),
+				Problem.TestCase(expectation: 0, arguments: "a"),
+				Problem.TestCase(expectation: 0, arguments: "aa"),
+				Problem.TestCase(expectation: 1, arguments: "aaa")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "countAbc",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Count recursively the total number of \"abc\" and \"aba\" substrings that appear in the given string.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 1, arguments: "abc"),
+				Problem.TestCase(expectation: 2, arguments: "abcxxabc"),
+				Problem.TestCase(expectation: 2, arguments: "abaxxaba"),
+				Problem.TestCase(expectation: 2, arguments: "ababc"),
+				Problem.TestCase(expectation: 0, arguments: "abxbc"),
+				Problem.TestCase(expectation: 1, arguments: "aaabc"),
+				Problem.TestCase(expectation: 0, arguments: "hello"),
+				Problem.TestCase(expectation: 0, arguments: ""),
+				Problem.TestCase(expectation: 0, arguments: "ab"),
+				Problem.TestCase(expectation: 1, arguments: "aba"),
+				Problem.TestCase(expectation: 0, arguments: "aca"),
+				Problem.TestCase(expectation: 0, arguments: "aaa")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "count11",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively (no loops) the number of \"11\" substrings in the string. The \"11\" substrings should not overlap.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 2, arguments: "11abc11"),
+				Problem.TestCase(expectation: 3, arguments: "abc11x11x11"),
+				Problem.TestCase(expectation: 1, arguments: "111"),
+				Problem.TestCase(expectation: 2, arguments: "1111"),
+				Problem.TestCase(expectation: 0, arguments: "1"),
+				Problem.TestCase(expectation: 0, arguments: ""),
+				Problem.TestCase(expectation: 0, arguments: "hi"),
+				Problem.TestCase(expectation: 4, arguments: "11x111x1111"),
+				Problem.TestCase(expectation: 1, arguments: "1x111"),
+				Problem.TestCase(expectation: 0, arguments: "1Hello1"),
+				Problem.TestCase(expectation: 0, arguments: "Hello")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "stringClean",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, return recursively a \"cleaned\" string where adjacent characters that are the same have been reduced to a single char. So \"yyzzza\" yields \"yza\".",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "yza", arguments: "yyzzza"),
+				Problem.TestCase(expectation: "abcd", arguments: "abbbcdd"),
+				Problem.TestCase(expectation: "Helo", arguments: "Hello"),
+				Problem.TestCase(expectation: "XabcY", arguments: "XXabcYY"),
+				Problem.TestCase(expectation: "12ab45", arguments: "112ab445"),
+				Problem.TestCase(expectation: "Helo Bokeper", arguments: "Hello Bookkeeper")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "countHi3",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, compute recursively the number of times lowercase \"hi\" appears in the string, however do not count \"hi\" that have an 'x' immedately before them.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 1, arguments: "ahixhi"),
+				Problem.TestCase(expectation: 2, arguments: "ahibhi"),
+				Problem.TestCase(expectation: 0, arguments: "xhixhi"),
+				Problem.TestCase(expectation: 1, arguments: "hixhi"),
+				Problem.TestCase(expectation: 2, arguments: "hixhhi"),
+				Problem.TestCase(expectation: 3, arguments: "hihihi"),
+				Problem.TestCase(expectation: 3, arguments: "hihihix"),
+				Problem.TestCase(expectation: 2, arguments: "xhihihix"),
+				Problem.TestCase(expectation: 0, arguments: "xxhi"),
+				Problem.TestCase(expectation: 1, arguments: "hixxhi"),
+				Problem.TestCase(expectation: 1, arguments: "hi"),
+				Problem.TestCase(expectation: 0, arguments: "xxxx"),
+				Problem.TestCase(expectation: 0, arguments: "h"),
+				Problem.TestCase(expectation: 0, arguments: "x"),
+				Problem.TestCase(expectation: 0, arguments: ""),
+				Problem.TestCase(expectation: 1, arguments: "Hellohi")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "parenBit",
+			returnType: String.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string that contains a single pair of parenthesis, compute recursively a new string made of only of the parenthesis and their contents, so \"xyz(abc)123\" yields \"(abc)\".",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: "(abc)", arguments: "xyz(abc)123"),
+				Problem.TestCase(expectation: "(hello)", arguments: "x(hello)"),
+				Problem.TestCase(expectation: "(xy)", arguments: "(xy)1)"),
+				Problem.TestCase(expectation: "(possible)", arguments: "not really (possible)"),
+				Problem.TestCase(expectation: "(abc)", arguments: "(abc)"),
+				Problem.TestCase(expectation: "(abc)", arguments: "(abc)xyz"),
+				Problem.TestCase(expectation: "(abc)", arguments: "(abc)x"),
+				Problem.TestCase(expectation: "(x)", arguments: "(x)"),
+				Problem.TestCase(expectation: "()", arguments: "()"),
+				Problem.TestCase(expectation: "(ipsa)", arguments: "res (ipsa) loquitor"),
+				Problem.TestCase(expectation: "(not really)", arguments: "hello(not really)there"),
+				Problem.TestCase(expectation: "(ab)", arguments: "ab(ab)ab")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "nestParen",
+			returnType: Bool.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self)
+			],
+			prompt: "Given a string, return true if it is a nesting of zero or more pairs of parenthesis, like \"(())\" or \"((()))\". Suggestion: check the first and last characters, and then recur on what's inside them.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: true, arguments: "(())"),
+				Problem.TestCase(expectation: true, arguments: "((()))"),
+				Problem.TestCase(expectation: false, arguments: "(((x))"),
+				Problem.TestCase(expectation: false, arguments: "((())"),
+				Problem.TestCase(expectation: false, arguments: "((()()"),
+				Problem.TestCase(expectation: true, arguments: "()"),
+				Problem.TestCase(expectation: true, arguments: ""),
+				Problem.TestCase(expectation: false, arguments: "(yy)"),
+				Problem.TestCase(expectation: true, arguments: "(())"),
+				Problem.TestCase(expectation: false, arguments: "(((y))"),
+				Problem.TestCase(expectation: false, arguments: "((y)))"),
+				Problem.TestCase(expectation: true, arguments: "((()))"),
+				Problem.TestCase(expectation: false, arguments: "(())))"),
+				Problem.TestCase(expectation: false, arguments: "((yy())))"),
+				Problem.TestCase(expectation: true, arguments: "(((())))")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "strCount",
+			returnType: Int.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self),
+				Problem.Parameter(name: "sub", type: String.self)
+			],
+			prompt: "Given a string and a non-empty substring sub, compute recursively the number of times that sub appears in the string, without the sub strings overlapping.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: 2, arguments: "catcowcat", "cat"),
+				Problem.TestCase(expectation: 1, arguments: "catcowcat", "cow"),
+				Problem.TestCase(expectation: 0, arguments: "catcowcat", "dog"),
+				Problem.TestCase(expectation: 2, arguments: "cacatcowcat", "cat"),
+				Problem.TestCase(expectation: 2, arguments: "xyx", "x"),
+				Problem.TestCase(expectation: 4, arguments: "iiiijj", "i"),
+				Problem.TestCase(expectation: 2, arguments: "iiiijj", "ii"),
+				Problem.TestCase(expectation: 1, arguments: "iiiijj", "iii"),
+				Problem.TestCase(expectation: 2, arguments: "iiiijj", "j"),
+				Problem.TestCase(expectation: 1, arguments: "iiiijj", "jj"),
+				Problem.TestCase(expectation: 4, arguments: "aaabababab", "ab"),
+				Problem.TestCase(expectation: 1, arguments: "aaabababab", "aa"),
+				Problem.TestCase(expectation: 6, arguments: "aaabababab", "a"),
+				Problem.TestCase(expectation: 4, arguments: "aaabababab", "b")
+			],
+			eulerMode: false
+	),
+		Problem(
+			title: "strCopies",
+			returnType: Bool.self,
+			parameters: [
+				Problem.Parameter(name: "str", type: String.self),
+				Problem.Parameter(name: "sub", type: String.self),
+				Problem.Parameter(name: "n", type: Int.self)
+			],
+			prompt: "Given a string and a non-empty substring sub, compute recursively if at least n copies of sub appear in the string somewhere, possibly with overlapping. N will be non-negative.",
+			solution: nil,
+			hint: nil,
+			testCases: [
+				Problem.TestCase(expectation: true, arguments: "catcowcat", "cat", 2),
+				Problem.TestCase(expectation: false, arguments: "catcowcat", "cow", 2),
+				Problem.TestCase(expectation: true, arguments: "catcowcat", "cow", 1),
+				Problem.TestCase(expectation: true, arguments: "iiijjj", "i", 3),
+				Problem.TestCase(expectation: false, arguments: "iiijjj", "i", 4),
+				Problem.TestCase(expectation: true, arguments: "iiijjj", "ii", 2),
+				Problem.TestCase(expectation: false, arguments: "iiijjj", "ii", 3),
+				Problem.TestCase(expectation: false, arguments: "iiijjj", "x", 3),
+				Problem.TestCase(expectation: true, arguments: "iiijjj", "x", 0),
+				Problem.TestCase(expectation: true, arguments: "iiiiij", "iii", 3),
+				Problem.TestCase(expectation: false, arguments: "iiiiij", "iii", 4),
+				Problem.TestCase(expectation: true, arguments: "ijiiiiij", "iiii", 2),
+				Problem.TestCase(expectation: false, arguments: "ijiiiiij", "iiii", 3),
+				Problem.TestCase(expectation: true, arguments: "dogcatdogcat", "dog", 2)
+			],
+			eulerMode: false
+	),
+			Problem(
+				title: "strDist",
+				returnType: Int.self,
+				parameters: [
+					Problem.Parameter(name: "str", type: String.self),
+					Problem.Parameter(name: "sub", type: String.self)
+				],
+				prompt: "Given a string and a non-empty substring sub, compute recursively the largest substring which starts and ends with sub and return its length.",
+				solution: nil,
+				hint: nil,
+				testCases: [
+					Problem.TestCase(expectation: 9, arguments: "catcowcat", "cat"),
+					Problem.TestCase(expectation: 3, arguments: "catcowcat", "cow"),
+					Problem.TestCase(expectation: 9, arguments: "cccatcowcatxx", "cat"),
+					Problem.TestCase(expectation: 12, arguments: "abccatcowcatcatxyz", "cat"),
+					Problem.TestCase(expectation: 3, arguments: "xyx", "x"),
+					Problem.TestCase(expectation: 1, arguments: "xyx", "y"),
+					Problem.TestCase(expectation: 0, arguments: "xyx", "z"),
+					Problem.TestCase(expectation: 1, arguments: "z", "z"),
+					Problem.TestCase(expectation: 0, arguments: "x", "z"),
+					Problem.TestCase(expectation: 0, arguments: "", "z"),
+					Problem.TestCase(expectation: 13, arguments: "hiHellohihihi", "hi"),
+					Problem.TestCase(expectation: 5, arguments: "hiHellohihihi", "hih"),
+					Problem.TestCase(expectation: 1, arguments: "hiHellohihihi", "o"),
+					Problem.TestCase(expectation: 2, arguments: "hiHellohihihi", "ll")
+				],
+				eulerMode: false
+			)
+
+]
+
+// MARK: Recursion-2
+
+fileprivate let codingBatRecursion2Problems: [Problem] = [
+	Problem(
+		title: "groupSum",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "target", type: Int.self)
+		],
+		prompt: "Given an array of ints, is it possible to choose a group of some of the ints, such that the group sums to the given target? This is a classic backtracking recursion problem. Once you understand the recursive backtracking strategy in this problem, you can use the same pattern for many problems to search a space of choices. Rather than looking at the whole array, our convention is to consider the part of the array starting at index start and continuing to the end of the array. The caller can specify the whole array simply by passing start as 0. No loops are needed -- the recursive calls progress down the array.",
+		solution: """
+			func groupSum(start: Int, nums: [Int], target: Int) -> Bool {
+				// Base case: if there are no numbers left, then there is a
+				// solution only if target is 0.
+				if start >= nums.count {
+					return target == 0
+				}
+				
+				// Key idea: nums[start] is chosen or it is not.
+				// Deal with nums[start], letting recursion
+				// deal with all the rest of the array.
+				
+				// Recursive call trying the case that nums[start]
+				// is chosen -- subtract it from target in the call.
+				if groupSum(start: start + 1, nums: nums, target: target - nums[start]) {
+					return true
+				}
+				
+				// Recursive call trying the case that nums[start]
+				// is not chosen.
+				if groupSum(start: start + 1, nums: nums, target: target) {
+					return true
+				}
+				
+				// If neither of the above worked, it's not possible.
+				return false
+			}
+			""",
+		hint: "The base case is when start>=nums.count. In that case, return true if target==0. Otherwise, consider the element at nums[start]. The key idea is that there are only 2 possibilities -- nums[start] is chosen or it is not. Make one recursive call to see if a solution is possible if nums[start] is chosen (subtract nums[start] from target in that call). Make another recursive call to see if a solution is possible if nums[start] is not chosen. Return true if either of the two recursive calls returns true.",
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: 0, [2, 4, 8], 10),
+			Problem.TestCase(expectation: true, arguments: 0, [2, 4, 8], 14),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 4, 8], 9),
+			Problem.TestCase(expectation: true, arguments: 0, [2, 4, 8], 8),
+			Problem.TestCase(expectation: true, arguments: 1, [2, 4, 8], 8),
+			Problem.TestCase(expectation: false, arguments: 1, [2, 4, 8], 2),
+			Problem.TestCase(expectation: true, arguments: 0, [1], 1),
+			Problem.TestCase(expectation: false, arguments: 0, [9], 1),
+			Problem.TestCase(expectation: true, arguments: 1, [9], 0),
+			Problem.TestCase(expectation: true, arguments: 0, [Int](), 0),
+			Problem.TestCase(expectation: true, arguments: 0, [10, 2, 2, 5], 17),
+			Problem.TestCase(expectation: true, arguments: 0, [10, 2, 2, 5], 15),
+			Problem.TestCase(expectation: true, arguments: 0, [10, 2, 2, 5], 9)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "groupSum6",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "target", type: Int.self)
+		],
+		prompt: "Given an array of ints, is it possible to choose a group of some of the ints, beginning at the start index, such that the group sums to the given target? However, with the additional constraint that all 6's must be chosen. (No loops needed.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: 0, [5, 6, 2], 8),
+			Problem.TestCase(expectation: false, arguments: 0, [5, 6, 2], 9),
+			Problem.TestCase(expectation: false, arguments: 0, [5, 6, 2], 7),
+			Problem.TestCase(expectation: true, arguments: 0, [1], 1),
+			Problem.TestCase(expectation: false, arguments: 0, [9], 1),
+			Problem.TestCase(expectation: true, arguments: 0, [Int](), 0),
+			Problem.TestCase(expectation: true, arguments: 0, [3, 2, 4, 6], 8),
+			Problem.TestCase(expectation: true, arguments: 0, [6, 2, 4, 3], 8),
+			Problem.TestCase(expectation: false, arguments: 0, [5, 2, 4, 6], 9),
+			Problem.TestCase(expectation: false, arguments: 0, [6, 2, 4, 5], 9),
+			Problem.TestCase(expectation: false, arguments: 0, [3, 2, 4, 6], 3),
+			Problem.TestCase(expectation: true, arguments: 0, [1, 6, 2, 6, 4], 12),
+			Problem.TestCase(expectation: true, arguments: 0, [1, 6, 2, 6, 4], 13),
+			Problem.TestCase(expectation: false, arguments: 0, [1, 6, 2, 6, 4], 4),
+			Problem.TestCase(expectation: false, arguments: 0, [1, 6, 2, 6, 4], 9),
+			Problem.TestCase(expectation: true, arguments: 0, [1, 6, 2, 6, 5], 14),
+			Problem.TestCase(expectation: true, arguments: 0, [1, 6, 2, 6, 5], 15),
+			Problem.TestCase(expectation: false, arguments: 0, [1, 6, 2, 6, 5], 16)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "groupNoAdj",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "target", type: Int.self)
+		],
+		prompt: "Given an array of ints, is it possible to choose a group of some of the ints, such that the group sums to the given target with this additional constraint: If a value in the array is chosen to be in the group, the value immediately following it in the array must not be chosen. (No loops needed.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: 0, [2, 5, 10, 4], 12),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 5, 10, 4], 14),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 5, 10, 4], 7),
+			Problem.TestCase(expectation: true, arguments: 0, [2, 5, 10, 4, 2], 7),
+			Problem.TestCase(expectation: true, arguments: 0, [2, 5, 10, 4], 9),
+			Problem.TestCase(expectation: true, arguments: 0, [10, 2, 2, 3, 3], 15),
+			Problem.TestCase(expectation: false, arguments: 0, [10, 2, 2, 3, 3], 7),
+			Problem.TestCase(expectation: true, arguments: 0, [Int](), 0),
+			Problem.TestCase(expectation: true, arguments: 0, [1], 1),
+			Problem.TestCase(expectation: false, arguments: 0, [9], 1),
+			Problem.TestCase(expectation: true, arguments: 0, [9], 0),
+			Problem.TestCase(expectation: true, arguments: 0, [5, 10, 4, 1], 11)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "groupSum5",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "target", type: Int.self)
+		],
+		prompt: "Given an array of ints, is it possible to choose a group of some of the ints, such that the group sums to the given target with these additional constraints: all multiples of 5 in the array must be included in the group. If the value immediately following a multiple of 5 is 1, it must not be chosen. (No loops needed.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: 0, [2, 5, 10, 4], 19),
+			Problem.TestCase(expectation: true, arguments: 0, [2, 5, 10, 4], 17),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 5, 10, 4], 12),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 5, 4, 10], 12),
+			Problem.TestCase(expectation: false, arguments: 0, [3, 5, 1], 4),
+			Problem.TestCase(expectation: true, arguments: 0, [3, 5, 1], 5),
+			Problem.TestCase(expectation: true, arguments: 0, [1, 3, 5], 5),
+			Problem.TestCase(expectation: false, arguments: 0, [3, 5, 1], 9),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 5, 10, 4], 7),
+			Problem.TestCase(expectation: true, arguments: 0, [2, 5, 10, 4], 15),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 5, 10, 4], 11),
+			Problem.TestCase(expectation: true, arguments: 0, [1], 1),
+			Problem.TestCase(expectation: false, arguments: 0, [9], 1),
+			Problem.TestCase(expectation: true, arguments: 0, [9], 0),
+			Problem.TestCase(expectation: true, arguments: 0, [Int](), 0)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "groupSumClump",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "start", type: Int.self),
+			Problem.Parameter(name: "nums", type: [Int].self),
+			Problem.Parameter(name: "target", type: Int.self)
+		],
+		prompt: "Given an array of ints, is it possible to choose a group of some of the ints, such that the group sums to the given target, with this additional constraint: if there are numbers in the array that are adjacent and the identical value, they must either all be chosen, or none of them chosen. For example, with the array [1, 2, 2, 2, 5, 2], either all three 2's in the middle must be chosen or not, all as a group. (one loop can be used to find the extent of the identical values).",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: 0, [2, 4, 8], 10),
+			Problem.TestCase(expectation: true, arguments: 0, [1, 2, 4, 8, 1], 14),
+			Problem.TestCase(expectation: false, arguments: 0, [2, 4, 4, 8], 14),
+			Problem.TestCase(expectation: true, arguments: 0, [8, 2, 2, 1], 9),
+			Problem.TestCase(expectation: false, arguments: 0, [8, 2, 2, 1], 11),
+			Problem.TestCase(expectation: true, arguments: 0, [1], 1),
+			Problem.TestCase(expectation: false, arguments: 0, [9], 1)
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "splitArray",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, is it possible to divide the ints into two groups, so that the sums of the two groups are the same. Every int must be in one group or the other. Write a recursive helper method that takes whatever arguments you like, and make the initial call to your recursive helper from splitArray(nums:). (No loops needed.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [2, 2]),
+			Problem.TestCase(expectation: false, arguments: [2, 3]),
+			Problem.TestCase(expectation: true, arguments: [5, 2, 3]),
+			Problem.TestCase(expectation: false, arguments: [5, 2, 2]),
+			Problem.TestCase(expectation: true, arguments: [1, 1, 1, 1, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 1, 1, 1, 1]),
+			Problem.TestCase(expectation: true, arguments: [Int]()),
+			Problem.TestCase(expectation: false, arguments: [1]),
+			Problem.TestCase(expectation: false, arguments: [3, 5]),
+			Problem.TestCase(expectation: true, arguments: [5, 3, 2]),
+			Problem.TestCase(expectation: true, arguments: [2, 2, 10, 10, 1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 2, 2, 10, 10, 1, 1]),
+			Problem.TestCase(expectation: true, arguments: [1, 2, 3, 10, 10, 1, 1])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "splitOdd10",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, is it possible to divide the ints into two groups, so that the sum of one group is a multiple of 10, and the sum of the other group is odd. Every int must be in one group or the other. Write a recursive helper method that takes whatever arguments you like, and make the initial call to your recursive helper from splitOdd10(nums:). (No loops needed.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [5, 5, 5]),
+			Problem.TestCase(expectation: false, arguments: [5, 5, 6]),
+			Problem.TestCase(expectation: true, arguments: [5, 5, 6, 1]),
+			Problem.TestCase(expectation: true, arguments: [6, 5, 5, 1]),
+			Problem.TestCase(expectation: true, arguments: [6, 5, 5, 1, 10]),
+			Problem.TestCase(expectation: false, arguments: [6, 5, 5, 5, 1]),
+			Problem.TestCase(expectation: true, arguments: [1]),
+			Problem.TestCase(expectation: false, arguments: [Int]()),
+			Problem.TestCase(expectation: true, arguments: [10, 7, 5, 5]),
+			Problem.TestCase(expectation: false, arguments: [10, 0, 5, 5]),
+			Problem.TestCase(expectation: true, arguments: [10, 7, 5, 5, 2]),
+			Problem.TestCase(expectation: false, arguments: [10, 7, 5, 5, 1])
+		],
+		eulerMode: false
+	),
+	Problem(
+		title: "split53",
+		returnType: Bool.self,
+		parameters: [
+			Problem.Parameter(name: "nums", type: [Int].self)
+		],
+		prompt: "Given an array of ints, is it possible to divide the ints into two groups, so that the sum of the two groups is the same, with these constraints: all the values that are multiple of 5 must be in one group, and all the values that are a multiple of 3 (and not a multiple of 5) must be in the other. (No loops needed.)",
+		solution: nil,
+		hint: nil,
+		testCases: [
+			Problem.TestCase(expectation: true, arguments: [1, 1]),
+			Problem.TestCase(expectation: false, arguments: [1, 1, 1]),
+			Problem.TestCase(expectation: true, arguments: [2, 4, 2]),
+			Problem.TestCase(expectation: false, arguments: [2, 2, 2, 1]),
+			Problem.TestCase(expectation: true, arguments: [3, 3, 5, 1]),
+			Problem.TestCase(expectation: false, arguments: [3, 5, 8]),
+			Problem.TestCase(expectation: true, arguments: [2, 4, 6]),
+			Problem.TestCase(expectation: true, arguments: [3, 5, 6, 10, 3, 3])
+		],
+		eulerMode: false
 	)
 ]
 
 // MARK: Functional-1
 
-fileprivate let codingBatFunctional1Problems = [
+fileprivate let codingBatFunctional1Problems: [Problem] = [
 	Problem(
 		title: "doubling",
 		returnType: [Int].self,
@@ -5645,7 +7304,7 @@ fileprivate let codingBatFunctional1Problems = [
 		eulerMode: false
 	),
 	Problem(
-		title: "noX",
+		title: "noX2",
 		returnType: [String].self,
 		parameters: [
 			Problem.Parameter(name: "strings", type: [String].self)
@@ -5669,7 +7328,7 @@ fileprivate let codingBatFunctional1Problems = [
 
 // MARK: Functional-2
 
-fileprivate let codingBatFunctional2Problems = [
+fileprivate let codingBatFunctional2Problems: [Problem] = [
 	Problem(
 		title: "noNeg",
 		returnType: [Int].self,
@@ -5869,7 +7528,7 @@ fileprivate let codingBatFunctional2Problems = [
 ]
 
 // MARK: - Project Euler
-fileprivate let eulerProblems = [
+fileprivate let eulerProblems: [Problem] = [
 	Problem(title: "Multiples of 3 and 5",
 			functionName: "euler1",
 			returnType: Int.self,

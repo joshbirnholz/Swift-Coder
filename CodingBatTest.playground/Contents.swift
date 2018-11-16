@@ -39,6 +39,32 @@ extension String {
 	
 }
 
+extension StringProtocol {
+	/// Shouldn't work if `open` == `close`
+	func character(atIndex i: Index, isContainedWithin open: Character, and close: Character) -> Bool {
+		let pre = self[startIndex ..< i]
+		let post = self[i...]
+		
+		let precededByOpenBeforeClosed: Bool = {
+			guard let lastOpenIndex = pre.lastIndex(of: open) else { return false }
+			if let lastClosedIndex = pre.lastIndex(of: close) {
+				return lastOpenIndex > lastClosedIndex
+			}
+			return true
+		}()
+		
+		let followedByClosedBeforeOpen: Bool = {
+			guard let firstClosedIndex = post.firstIndex(of: close) else { return false }
+			if let firstOpenIndex = post.firstIndex(of: open) {
+				return firstClosedIndex < firstOpenIndex
+			}
+			return true
+		}()
+		
+		return precededByOpenBeforeClosed && followedByClosedBeforeOpen
+	}
+}
+
 extension Array: LosslessStringConvertible where Element: LosslessStringConvertible {
 	public init?(_ description: String) {
 		if let arr = description.matches(forRegex: "\\[(.*)]").first?.groups.first?.value.split(separator: ",").compactMap({
@@ -125,7 +151,10 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		"double[]": "[Double]",
 		"float[]": "[Float]",
 		"void": "Void",
-		"List<String>": "[String]"
+		"List<String>": "[String]",
+		"Map<String, String>": "[String: String]",
+		"Map<String, Integer>": "[String: Int]",
+		"Map<String, Boolean>": "[String: Bool]"
 	]
 	
 	override init() {
@@ -142,6 +171,38 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		
 		public var initCode: String {
 			let swiftReturnType = CodingBatQuestionTester.swiftTypesForJavaTypes[javaReturnType]!
+			
+			let testCases: [(expectedResult: String, arguments: [String])] = self.testCases.map { testCase in
+				var testCase = testCase
+				// The Swift compiler can't determine the type of empty array literals.
+				// This loop turns arguments like "[]" into "[Int]()"
+				for (argNumber, arg) in testCase.arguments.enumerated() {
+					if arg == "[]" {
+						testCase.arguments[argNumber] = CodingBatQuestionTester.swiftTypesForJavaTypes[parameters[argNumber].type]! + "()"
+					}
+					if arg == "{}" {
+						testCase.arguments[argNumber] = CodingBatQuestionTester.swiftTypesForJavaTypes[parameters[argNumber].type]! + "()"
+					}
+				}
+				
+				if testCase.expectedResult == "[]" {
+					testCase.expectedResult = CodingBatQuestionTester.swiftTypesForJavaTypes[javaReturnType]! + "()"
+				}
+				
+				if testCase.expectedResult == "{}" {
+					testCase.expectedResult = CodingBatQuestionTester.swiftTypesForJavaTypes[javaReturnType]! + "()"
+				}
+				
+				for (argNumber, arg) in testCase.arguments.enumerated() where self.parameters[argNumber].type.hasPrefix("Map") {
+					testCase.arguments[argNumber] = arg.replacingOccurrences(of: "{", with: "[").replacingOccurrences(of: "}", with: "]")
+				}
+				
+				if swiftReturnType.contains(":") {
+					testCase.expectedResult = testCase.expectedResult.replacingOccurrences(of: "{", with: "[").replacingOccurrences(of: "}", with: "]")
+				}
+				
+				return testCase
+			}
 			
 			let initCode = """
 			Problem(
@@ -170,6 +231,36 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		self.completion = completion
 		webview.load(URLRequest(url: url))
 	}
+
+	func parameters(fromCode code: String) -> [(type: String, name: String)] {
+		guard let fullParamsString = code.matches(forRegex: "\\(([^)]+)\\)").first?.groups.first?.value else { return [] }
+		var i = code.startIndex
+		let paramsStrings = fullParamsString.split(whereSeparator: { (char) -> Bool in
+			defer {
+				i = fullParamsString.index(after: i)
+			}
+			guard char == "," else { return false }
+			
+			return !fullParamsString.character(atIndex: i, isContainedWithin: "<", and: ">")
+			
+		})
+		
+		let parameters: [(type: String, name: String)] = paramsStrings.map { paramString in
+			i = paramString.startIndex
+			let split = paramString.split(whereSeparator: { (char) -> Bool in
+				defer {
+					i = paramString.index(after: i)
+				}
+				
+				guard char == " " else { return false }
+				
+				return !paramString.character(atIndex: i, isContainedWithin: "<", and: ">")
+			})
+			return (type: String(split[0]), name: String(split[1]))
+		}
+		
+		return parameters
+	}
 	
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 		getResponse { (response) in
@@ -180,33 +271,33 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 				let prompt = jsResponse["prompt"] as? String,
 					let javaReturnType = jsResponse["returnType"] as? String,
 				let code = jsResponse["sampleCode"] as? String,
-				let paramsStrings = code.matches(forRegex: "\\(([^)]+)\\)").first?.groups.first?.value.components(separatedBy: ", "),
 				let testCasesStrings = jsResponse["testCases"] as? [String] else {
 						throw NSError(domain: "Couldn't get info", code: -1, userInfo: ["Possible values": "title, prompt, returnType, code, paramsStrings, testCases"])
 				}
-				
-				let parameters: [(type: String, name: String)] = paramsStrings.map { paramString in
-					let split = paramString.split(separator: " ")
-					return (type: String(split[0]), name: String(split[1]))
+
+				let parameters: [(type: String, name: String)] = self.parameters(fromCode: code).map { param in
+					var param = param
+					if param.name == "map" && param.type.hasPrefix("Map") {
+						param.name = "dictionary"
+					}
+					return param
 				}
 				
 				let testCases: [(expectedResult: String, arguments: [String])] = testCasesStrings.compactMap { testCase in
 					let split = testCase.components(separatedBy: " → ")
-					guard var arguments = split[0].matches(forRegex: "\\(([^)]+)\\)").first?.groups.first?.value.components(separatedBy: ", ") else { return nil }
-					
-					// The Swift compiler can't determine the type of empty array literals.
-					// This loop turns arguments like "[]" into "[Int]()"
-					for (argNumber, arg) in arguments.enumerated() {
-						if arg == "[]" {
-							arguments[argNumber] = CodingBatQuestionTester.swiftTypesForJavaTypes[parameters[argNumber].type]! + "()"
+					guard let argumentsString = split[0].matches(forRegex: "\\(([^)]+)\\)").first?.groups.first?.value else { return nil }
+					var i = argumentsString.startIndex
+					var arguments = argumentsString.split(whereSeparator: { (char) -> Bool in
+						defer {
+							i = argumentsString.index(after: i)
 						}
-					}
+						
+						guard char == "," else { return false }
+						
+						return !argumentsString.character(atIndex: i, isContainedWithin: "{", and: "}") && !argumentsString.character(atIndex: i, isContainedWithin: "[", and: "]")
+					}).map(String.init)
 					
-					var expectedResult = split[1]
-					
-					if expectedResult == "[]" {
-						expectedResult = CodingBatQuestionTester.swiftTypesForJavaTypes[javaReturnType]! + "()"
-					}
+					let expectedResult = split[1]
 					
 					return (expectedResult: expectedResult, arguments: arguments)
 				}
@@ -226,6 +317,9 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 	private func getResponse(completion: @escaping (Result<[String: Any]>) -> ()) {
 		doOnMainThread {
 		let script = """
+
+		function getReturnType(){const regex=/public (.+) .+\\(/gm;const str=document.ace_editor.getValue();let m;var returnType;while((m=regex.exec(str))!==null){if(m.index===regex.lastIndex){regex.lastIndex++} m.forEach((match,groupIndex)=>{if(groupIndex==1&&match!==undefined){returnType=match}})} return returnType}
+
 		var response = {};
 
 		response.title = document.querySelectorAll('.h2')[3].innerText;
@@ -238,7 +332,10 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		"String[]": "String[] myArray = { }; return myArray;",
 		"int[]": "int[] myArray = { }; return myArray;",
 		"List<Integer>": "List<Integer> myList = null; return myList;",
-		"List<String>": "List<String> myList = null; return myList;"
+		"List<String>": "List<String> myList = null; return myList;",
+		"Map<String, String>": "Map<String, String> myMap = null; return myMap;",
+		"Map<String, Integer>": "Map<String, Integer> myMap = null; return myMap;",
+		"Map<String, Boolean>": "Map<String, Boolean> myMap = null; return myMap;"
 		};
 		
 		var sampleCode = document.ace_editor.getValue();
@@ -249,7 +346,7 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 
 		response.sampleCode = sampleCode;
 		
-		var returnType = sampleCode.split(" ")[1];
+		var returnType = getReturnType();
 
 		response.returnType = returnType;
 
@@ -303,7 +400,7 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 }
 
 let tester1 = CodingBatQuestionTester()
-tester1.load(url: URL(string: "https://codingbat.com/prob/p147538")!) { problemInfoResult in
+tester1.load(url: URL(string: "https://codingbat.com/prob/p150113")!) { problemInfoResult in
 	doOnMainThread {
 		do {
 			let problemInfo: CodingBatQuestionTester.ProblemInfo = try problemInfoResult.unwrap()
