@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		540CB435219E3C8E007240B8 /* StringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB434219E3C8E007240B8 /* StringConvertible.swift */; };
 		540F00152124BB7400284D48 /* String+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00022124BB7400284D48 /* String+Range.swift */; };
 		540F00162124BB7400284D48 /* NSTextView+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00032124BB7400284D48 /* NSTextView+UIKit.swift */; };
 		540F00172124BB7400284D48 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00042124BB7400284D48 /* Types.swift */; };
@@ -47,8 +48,7 @@
 		546885AE1CC2E758003F3614 /* ProblemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546885AD1CC2E758003F3614 /* ProblemList.swift */; };
 		547C63AC213493F000D50AD4 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C63AB213493F000D50AD4 /* Result.swift */; };
 		549BABFD212217A60015D6F6 /* LocalCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549BABFC212217A60015D6F6 /* LocalCodeController.swift */; };
-		54CFF10E21963B660089E740 /* StringAPI StringReturn.txt in Resources */ = {isa = PBXBuildFile; fileRef = 54CFF10D21963AFE0089E740 /* StringAPI StringReturn.txt */; };
-		54E227C621941AC000E33204 /* container-migration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54E227C521941AC000E33204 /* container-migration.plist */; };
+		54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFF10F219B77FC0089E740 /* CompilerMessage.swift */; };
 		54EFE62B219624CC0023585D /* CompilationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFE62A219624CC0023585D /* CompilationResult.swift */; };
 		54EFE62E21962D680023585D /* StringAPI.txt in Resources */ = {isa = PBXBuildFile; fileRef = 54EFE62C219629C80023585D /* StringAPI.txt */; };
 /* End PBXBuildFile section */
@@ -93,6 +93,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		540CB434219E3C8E007240B8 /* StringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringConvertible.swift; sourceTree = "<group>"; };
 		540F00022124BB7400284D48 /* String+Range.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Range.swift"; sourceTree = "<group>"; };
 		540F00032124BB7400284D48 /* NSTextView+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextView+UIKit.swift"; sourceTree = "<group>"; };
 		540F00042124BB7400284D48 /* Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
@@ -135,10 +136,9 @@
 		546885AD1CC2E758003F3614 /* ProblemList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemList.swift; sourceTree = "<group>"; };
 		547C63AB213493F000D50AD4 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		549BABFC212217A60015D6F6 /* LocalCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCodeController.swift; sourceTree = "<group>"; };
-		54CFF10D21963AFE0089E740 /* StringAPI StringReturn.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "StringAPI StringReturn.txt"; sourceTree = "<group>"; };
+		54CFF10F219B77FC0089E740 /* CompilerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerMessage.swift; sourceTree = "<group>"; };
 		54E227B52193FF6800E33204 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		54E227C4219419E500E33204 /* Swift Coder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Swift Coder.entitlements"; sourceTree = "<group>"; };
-		54E227C521941AC000E33204 /* container-migration.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "container-migration.plist"; sourceTree = "<group>"; };
 		54EFE62A219624CC0023585D /* CompilationResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilationResult.swift; sourceTree = "<group>"; };
 		54EFE62C219629C80023585D /* StringAPI.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = StringAPI.txt; sourceTree = "<group>"; };
 		54FCC3BA219150B20035DD4D /* CodingBatTest.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = CodingBatTest.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -280,19 +280,19 @@
 			children = (
 				54E227C4219419E500E33204 /* Swift Coder.entitlements */,
 				5468857D1CC2BA0C003F3614 /* AppDelegate.swift */,
+				546885AB1CC2DE70003F3614 /* Problem.swift */,
+				540CB434219E3C8E007240B8 /* StringConvertible.swift */,
+				546885AD1CC2E758003F3614 /* ProblemList.swift */,
 				5468857F1CC2BA0C003F3614 /* SwiftCoderViewController.swift */,
 				54EFE62A219624CC0023585D /* CompilationResult.swift */,
 				549BABFC212217A60015D6F6 /* LocalCodeController.swift */,
-				546885AB1CC2DE70003F3614 /* Problem.swift */,
-				546885AD1CC2E758003F3614 /* ProblemList.swift */,
+				54CFF10F219B77FC0089E740 /* CompilerMessage.swift */,
 				546885811CC2BA0C003F3614 /* Assets.xcassets */,
 				546885831CC2BA0C003F3614 /* Main.storyboard */,
 				546240C81CC604E0009AA888 /* Extensions.swift */,
 				546885861CC2BA0C003F3614 /* Info.plist */,
 				540F00472124C01C00284D48 /* SourceCodeTheme.swift */,
 				547C63AB213493F000D50AD4 /* Result.swift */,
-				54E227C521941AC000E33204 /* container-migration.plist */,
-				54CFF10D21963AFE0089E740 /* StringAPI StringReturn.txt */,
 				54EFE62C219629C80023585D /* StringAPI.txt */,
 			);
 			path = "Swift Coder";
@@ -403,6 +403,9 @@
 						DevelopmentTeam = CB7D3XVLP3;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.HardenedRuntime = {
+								enabled = 0;
+							};
 							com.apple.Sandbox = {
 								enabled = 1;
 							};
@@ -450,9 +453,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				54EFE62E21962D680023585D /* StringAPI.txt in Resources */,
-				54CFF10E21963B660089E740 /* StringAPI StringReturn.txt in Resources */,
 				546885821CC2BA0C003F3614 /* Assets.xcassets in Resources */,
-				54E227C621941AC000E33204 /* container-migration.plist in Resources */,
 				546885851CC2BA0C003F3614 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -503,6 +504,8 @@
 			files = (
 				546885801CC2BA0C003F3614 /* SwiftCoderViewController.swift in Sources */,
 				546240C91CC604E0009AA888 /* Extensions.swift in Sources */,
+				540CB435219E3C8E007240B8 /* StringConvertible.swift in Sources */,
+				54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */,
 				54EFE62B219624CC0023585D /* CompilationResult.swift in Sources */,
 				546885AE1CC2E758003F3614 /* ProblemList.swift in Sources */,
 				540F00482124C01C00284D48 /* SourceCodeTheme.swift in Sources */,

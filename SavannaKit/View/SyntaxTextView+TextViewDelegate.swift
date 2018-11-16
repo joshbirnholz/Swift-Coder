@@ -240,6 +240,7 @@ extension SyntaxTextView {
 		let origInsertingText = insertingText
 
 		var insertingText = insertingText
+		var insertingSuffix = ""
 		
 		if insertingText == "\n" {
 			
@@ -263,6 +264,11 @@ extension SyntaxTextView {
 					break
 				}
 
+			}
+			
+			if currentLine.hasSuffix("{") {
+				insertingSuffix = "\n" + newLinePrefix + "}"
+				newLinePrefix += "\t"
 			}
 			
 			insertingText += newLinePrefix
@@ -359,6 +365,9 @@ extension SyntaxTextView {
 		if origInsertingText == "\n" {
 
 			textStorage.replaceCharacters(in: selectedRange, with: insertingText)
+//			textStorage.replaceCharacters(in: NSRange(location: selectedRange.upperBound + insertingText.count, length: 0), with: insertingSuffix)
+
+			insertText(insertingSuffix)
 			
 			didUpdateText()
 			
