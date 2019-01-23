@@ -19,28 +19,33 @@ public enum SourceCodeTokenType {
 	case editorPlaceholder
 }
 
-protocol SourceCodeToken: Token {
+public protocol SourceCodeToken: Token {
 	
 	var type: SourceCodeTokenType { get }
 	
 }
 
-extension SourceCodeToken {
+public extension SourceCodeToken {
 	
-	var isEditorPlaceholder: Bool {
+	public var isEditorPlaceholder: Bool {
 		return type == .editorPlaceholder
 	}
 	
-	var isPlain: Bool {
+	public var isPlain: Bool {
 		return type == .plain
 	}
 	
 }
 
-struct SimpleSourceCodeToken: SourceCodeToken {
+public struct SimpleSourceCodeToken: SourceCodeToken {
 	
-	let type: SourceCodeTokenType
+	public let type: SourceCodeTokenType
 	
-	let range: Range<String.Index>
+	public let range: Range<String.Index>
+	
+	public init(type: SourceCodeTokenType, range: Range<String.Index>) {
+		self.type = type
+		self.range = range
+	}
 	
 }

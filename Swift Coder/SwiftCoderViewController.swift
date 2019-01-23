@@ -18,7 +18,7 @@ struct ProblemIndexPath: Equatable {
 class SwiftCoderViewController: NSViewController {
 	
 	let codeController = LocalCodeController.shared
-	let lexer = SwiftLexer()
+	let lexer: Lexer = SwiftLexer()
 	
 	enum AssistantView: CaseIterable {
 		case tableView
@@ -75,6 +75,7 @@ class SwiftCoderViewController: NSViewController {
 	var finishedLoadingView = false
 	
 	var testResults: [CompilationResult.TestResult] = []
+	var allHiddenTestResultsPassed: Bool = false
 	
 	var problems: [Problem] {
 		return problemIndexPath.list.problems
@@ -525,7 +526,11 @@ class SwiftCoderViewController: NSViewController {
 							self.outputField.string = "Your code took too long to compile."
 						}
 					case .success(let testResults):
-						self.testResults = testResults
+						self.testResults = testResults.enumerated().filter { index, _ in !self.problem.testCases[index].isHidden }.map { $0.element }
+						self.allHiddenTestResultsPassed = testResults.enumerated().filter { index, _ in self.problem.testCases[index].isHidden }.allSatisfy{
+							$1.success == .ok
+						}
+						
 						let numSuccesses = testResults.filter { $0.success == .ok }.count
 						
 						if numSuccesses == testResults.count {
@@ -725,7 +730,13 @@ extension SwiftCoderViewController: NSScrubberFlowLayoutDelegate {
 extension SwiftCoderViewController: NSTableViewDataSource {
 	
 	func numberOfRows(in tableView: NSTableView) -> Int {
-		return testResults.isEmpty ? 0 : testResults.count
+		guard !testResults.isEmpty else { return 0 }
+		
+		if problem.testCases.contains(where: { $0.isHidden }) {
+			return testResults.count + 1
+		} else {
+			return testResults.count
+		}
 	}
 	
 }
@@ -749,30 +760,46 @@ extension SwiftCoderViewController: NSTableViewDelegate {
 	
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		
-		let result = testResults[row]
+		let isHiddenRow = row == testResults.count
+		var result: CompilationResult.TestResult {
+			return testResults[row]
+		}
 		
 		if tableColumn == tableView.tableColumns[0] {
 			let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ExpectedCellID"), owner: nil) as! NSTableCellView
-			cell.textField?.stringValue = problem.expectationString(testCase: problem.testCases[row])
+			if isHiddenRow {
+				cell.textField?.stringValue = "other tests"
+			} else {
+				cell.textField?.stringValue = problem.expectationString(testCase: problem.testCases[row])
+			}
 			
 			return cell
 		} else if tableColumn == tableView.tableColumns[1] {
 			let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "RunCellID"), owner: nil) as! NSTableCellView
-			cell.textField?.stringValue = returnTypeNeedsSurroundingQuotesForDisplay(problem.actualReturnType) ? "\"\(result.run)\"" : result.run
+			if isHiddenRow {
+				cell.textField?.stringValue = ""
+			} else {
+				cell.textField?.stringValue = result.run
+			}
 			
 			return cell
 		} else if tableColumn == tableView.tableColumns[2] {
 			let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "OkayCellID"), owner: nil) as! NSTableCellView
-			cell.textField?.stringValue = result.success.rawValue
+			let successful: CompilationResult.TestResult.Successful = isHiddenRow ? (allHiddenTestResultsPassed ? .ok : .failure) : result.success
+			
+			cell.textField?.stringValue = successful.rawValue
 			
 			return cell
 		} else if tableColumn == tableView.tableColumns[3] {
 			let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ColorCellID"), owner: nil) as! BackgroundColorTableCellView
 			cell.wantsLayer = true
+			
+			let successful: CompilationResult.TestResult.Successful = isHiddenRow ? (allHiddenTestResultsPassed ? .ok : .failure) : result.success
+			
 			if #available(OSX 10.13, *) {
-				cell.backgroundColor = result.success == .ok ? NSColor(named: NSColor.Name("successGreen")) : NSColor(named: NSColor.Name("errorRed"))
+				cell.backgroundColor = successful == .ok ? NSColor(named: NSColor.Name("successGreen")) : NSColor(named: NSColor.Name("errorRed"))
 			} else {
-				cell.backgroundColor = result.success == .ok ? NSColor(red:0.095, green:0.627, blue:0.109, alpha:1) : .red
+				cell.backgroundColor = successful == .ok ? NSColor(red:0.095, green:0.627, blue:0.109, alpha:1) : .red
 			}
 			return cell
 		}

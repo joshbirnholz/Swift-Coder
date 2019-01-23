@@ -53,7 +53,7 @@ class LocalCodeController {
 	
 	public static let shared = LocalCodeController()
 	
-	private let isSandboxed = ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
+	let isSandboxed = ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
 	
 	private init() {
 		print("Sandboxed:", isSandboxed)
@@ -240,8 +240,9 @@ class LocalCodeController {
 	fileprivate func runTest(testCase: Problem.TestCase, for problem: Problem) throws -> CompilationResult.TestResult {
 //		print("Running \(problem.functionCall(with: testCase.arguments))")
 		
-		let command = testCase.arguments.map {
-			($0 == "" ? "String.empty" : $0).data(using: .utf8)!.base64EncodedString()
+		let command: [String] = testCase.arguments.map {
+			let argString = $0.stringRepresentation
+			return (argString == "" ? "String.empty" : argString).data(using: .utf8)!.base64EncodedString()
 		}
 		
 		let startTime = Date()
@@ -262,13 +263,21 @@ class LocalCodeController {
 			
 			print("Finished Running \(problem.functionCall(with: testCase.arguments))")
 			
-			guard let typedOutput = problem.actualReturnType.init(runResult.output)?.asEquatable() else {
+			let success: Bool
+			
+			if let customTestResultHandler = problem.customTestResultHandler {
+				success = customTestResultHandler(testCase, runResult.output)
+				
+				return CompilationResult.TestResult(run: runResult.output, success: success ? .ok : .failure, runTime: runTime)
+			} else {
+				guard let typedOutput = problem.actualReturnType.init(runResult.output)?.asEquatable() else {
 					return CompilationResult.TestResult(run: runResult.output, success: .error, runTime: runTime)
+				}
+				success = typedOutput == testCase.expectedResult
+				
+				return CompilationResult.TestResult(run: typedOutput.displayDescription, success: success ? .ok : .failure, runTime: runTime)
 			}
 			
-			let success = typedOutput == testCase.actualExpectation
-			
-			return CompilationResult.TestResult(run: String(describing: typedOutput), success: success ? .ok : .failure, runTime: runTime)
 		} catch let error as CompilationError {
 			let runTime = Date().timeIntervalSince(startTime)
 			
@@ -339,14 +348,16 @@ class LocalCodeController {
 					return
 				}
 				
-				var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count)
+				problem.onRunTest?()
+				
+				var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count * problem.numberOfTimesToTest)
 				let queue = OperationQueue()
 				queue.qualityOfService = .userInteractive
 				
-				let operations = (0 ..< problem.testCases.count).map { i in
+				let operations = problem.testCases.duplicated(times: problem.numberOfTimesToTest).enumerated().map { i, testCase in
 					BlockOperation {
 						do {
-							results[i] = try self.runTest(testCase: problem.testCases[i], for: problem)
+							results[i] = try self.runTest(testCase: testCase, for: problem)
 						} catch {
 							// Runtime errors caused by user code
 							results[i] = CompilationResult.TestResult(run: "error testing code: \(error.localizedDescription)", success: .error, runTime: 0)
@@ -356,7 +367,15 @@ class LocalCodeController {
 				
 				queue.addOperations(operations, waitUntilFinished: true)
 				
-				result = .success(results)
+				if problem.numberOfTimesToTest > 1 {
+					let chunks = results.chunked(by: problem.testCases.count)
+					let chunk: [CompilationResult.TestResult] = chunks.first { r in
+						r.contains(where: { $0.success != .ok })
+						} ?? chunks[0]
+					result = .success(chunk)
+				} else {
+					result = .success(results)
+				}
 				
 			} catch let error as CompilationError {
 				// Compile-time errors caused by user code
@@ -374,11 +393,10 @@ class LocalCodeController {
 	}
 	
 	func loadCode(for problem: Problem) -> String {
-		let file = baseDirectory.appendingPathComponent(problem.functionName + ".swift").path
+		let fileURL = baseDirectory.appendingPathComponent(problem.functionName + ".swift")
 		
-		//reading
 		do {
-			let code = try String(contentsOfFile: file)
+			let code = try String(contentsOf: fileURL)
 			if code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
 				return problem.startingCode
 			} else {
@@ -391,7 +409,7 @@ class LocalCodeController {
 	}
 	
 	private func runnableProblemCode(for problem: Problem, code: String) -> String {
-		let printReplacement = """
+		let printReplacement = problem.usesPrintedOutput ? "" : """
 		func print(_ items: Any..., separator: String = "", terminator: String = "") {
 		
 		}
@@ -416,72 +434,52 @@ class LocalCodeController {
 		}
 		
 		let returnType = String(describing: problem.actualReturnType)
+		
+		
+		let types: [StringConvertible.Type] = {
+			var dict = [String: StringConvertible.Type]()
+			dict[problem.actualReturnType.convertibleTypeName] = problem.actualReturnType
+			for param in problem.parameters {
+				dict[param.actualType.convertibleTypeName] = param.actualType
+			}
+			return Array(dict.values)
+		}()
+		
 		var addedCoders = false
 		
-		if returnType.contains("Array") || problem.parameters.contains(where: { String(describing: $0.actualType).contains("Array") }) {
+		func addCoders() {
+			guard !addedCoders else { return }
 			runnableCode += """
 			let decoder = JSONDecoder()
 			let encoder = JSONEncoder()
 			
-			extension Array: LosslessStringConvertible where Element: Codable {
-				public init?(_ description: String) {
-					guard let data = description.data(using: .utf8) else { return nil }
-					guard let arr = try? decoder.decode([Element].self, from: data) else { return nil }
-			
-					self = arr
-				}
-				var stringRepresentation: String {
-					return (try? encoder.encode(self)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]"
-				}
-			}
 			
 			"""
 			addedCoders = true
 		}
 		
-		if returnType.contains("Dictionary") || problem.parameters.contains(where: { String(describing: $0.actualType).contains("Dictionary") }) {
-			if !addedCoders {
-				runnableCode += """
-				let decoder = JSONDecoder()
-				let encoder = JSONEncoder()
-				
-				
-				"""
+		for type in types {
+			if type.helperCodeNeedsCoders {
+				addCoders()
 			}
-			
-			runnableCode += """
-			extension Dictionary: LosslessStringConvertible where Key: Codable, Value: Codable & Equatable {
-				public init?(_ description: String) {
-					guard let data = description.data(using: .utf8) else { return nil }
-					guard let arr = try? decoder.decode([Key: Value].self, from: data) else { return nil }
-			
-					self = arr
-				}
-				var stringRepresentation: String {
-					return (try? encoder.encode(self)).flatMap { String(data: $0, encoding: .utf8) } ?? "[:]"
-				}
-			}
-			
-			"""
-			
+			runnableCode += type.helperCode
 		}
 		
 		for (index, parameter) in problem.parameters.enumerated() {
 			
-			switch parameter.type {
-			case "String":
+			if parameter.actualType == String.self {
 				// Don't need to convert type, so no need for optional checking with a string.
 				runnableCode += """
-				guard let __param\(index): \(parameter.type) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap({ $0 == "String.empty" ? "" : $0 }) else {
+				guard let __param\(index): \(parameter.actualType.runnableTesterParameterTypeName) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap({ $0 == "String.empty" ? "" : $0 }) else {
 					Swift.print("Incorrect argument type")
 					exit(-1)
 				}
 				
 				
 				"""
-			default:
+			} else {
 				runnableCode += """
-				guard let __param\(index): \(parameter.type) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap(\(parameter.type).init) else {
+				guard let __param\(index): \(parameter.actualType.runnableTesterParameterTypeName) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap(\(parameter.actualType.runnableTesterParameterTypeName).init) else {
 				Swift.print("Incorrect argument type")
 					exit(-1)
 				}
@@ -492,12 +490,55 @@ class LocalCodeController {
 			}
 		}
 		
-		let needsStringRepresentationPrinted = returnType.contains("Array") || returnType.contains("Dictionary")
+		let needsStringRepresentationPrinted = problem.actualReturnType.needsCustomStringRepresentation
+		
+		let isTupleType = returnType.contains("Tuple")
+		
+		let paramsString = (problem.extensionType == nil ? problem.parameters : Array(problem.parameters.dropFirst())).enumerated().map { index, parameter in
+			let index = problem.extensionType == nil ? index : index + 1
+			return "\(parameter.label == "_" ? "" : "\(parameter.label): ")__param\(index)"
+			}.joined(separator: ", ")
+		
+		if let customTesterOutputCode = problem.customTesterOutputCode {
+			runnableCode += customTesterOutputCode
+			return runnableCode
+		}
 		
 		runnableCode += """
-		let __result: \(problem.returnType) = \(problem.functionName)(\(problem.parameters.enumerated().map { index, parameter in "\(parameter.name): __param\(index)" }.joined(separator: ", ")))
+		let __result: \(problem.actualReturnType.convertibleTypeName) = \(problem.extensionType == nil ? "" : "__param0.")\(problem.functionName)(\(paramsString))
 		
-		Swift.print(__result\(needsStringRepresentationPrinted ? ".stringRepresentation" : ""))
+		"""
+		
+		if isTupleType {
+			runnableCode += """
+			var __resultTuple = StringConvertibleTwoElementTuple(__result)
+			
+			func setResultTupleLabels() {
+				let mirror = Mirror(reflecting: \(problem.functionName))
+				let returnTypeString = String(describing: mirror.subjectType)
+				let pattern = "-> \\\\(([a-zA-Z0-9_]+): ([a-zA-Z0-9_\\\\[\\\\] :<>,]+), ([a-zA-Z0-9_]+): ([a-zA-Z0-9_\\\\[\\\\] :<>,]+)\\\\)"
+				guard let expression = try? NSRegularExpression(pattern: pattern, options: []),
+					let match = expression.matches(in: returnTypeString, options: [], range: NSRange(returnTypeString.startIndex..., in: returnTypeString)).first else {
+					return
+				}
+				let r: Range<Int> = (0 ..< match.numberOfRanges)
+				let groups: [String] = r.compactMap {
+					guard let range = Range(match.range(at: $0), in: returnTypeString) else { return nil }
+					return String(returnTypeString[range])
+				}
+			
+				guard groups.count >= 3 else { return }
+			
+				__resultTuple.label0 = groups[1]
+				__resultTuple.label1 = groups[3]
+			}
+			setResultTupleLabels()
+			
+			"""
+		}
+		
+		runnableCode += """
+		Swift.print(\(isTupleType ? "__resultTuple" : "__result")\(needsStringRepresentationPrinted ? ".stringRepresentation" : ""))
 		"""
 		
 		return runnableCode

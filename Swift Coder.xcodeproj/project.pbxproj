@@ -39,13 +39,32 @@
 		540FFFF82124BB6600284D48 /* SavannaKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 540FFFF62124BB6600284D48 /* SavannaKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		540FFFFB2124BB6600284D48 /* SavannaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FFFF42124BB6600284D48 /* SavannaKit.framework */; };
 		540FFFFC2124BB6600284D48 /* SavannaKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 540FFFF42124BB6600284D48 /* SavannaKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		542A053B21A4823E004E5F4F /* CodingBatWarmup1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A053A21A4823E004E5F4F /* CodingBatWarmup1Problems.swift */; };
+		542A053D21A48273004E5F4F /* CodingBatWarmup2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A053C21A48273004E5F4F /* CodingBatWarmup2Problems.swift */; };
+		542A053F21A4829A004E5F4F /* CodingBatLogic1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A053E21A4829A004E5F4F /* CodingBatLogic1Problems.swift */; };
+		542A054121A482B4004E5F4F /* CodingBatArray1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054021A482B4004E5F4F /* CodingBatArray1Problems.swift */; };
+		542A054321A482D8004E5F4F /* CodingBatString1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054221A482D8004E5F4F /* CodingBatString1Problems.swift */; };
+		542A054521A482F1004E5F4F /* CodingBatLogic2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054421A482F0004E5F4F /* CodingBatLogic2Problems.swift */; };
+		542A054721A4830F004E5F4F /* CodingBatAP1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054621A4830F004E5F4F /* CodingBatAP1Problems.swift */; };
+		542A054921A48328004E5F4F /* CodingBatString2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054821A48327004E5F4F /* CodingBatString2Problems.swift */; };
+		542A054B21A4833D004E5F4F /* CodingBatString3Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054A21A4833D004E5F4F /* CodingBatString3Problems.swift */; };
+		542A054D21A48352004E5F4F /* CodingBatArray2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054C21A48352004E5F4F /* CodingBatArray2Problems.swift */; };
+		542A054F21A48365004E5F4F /* CodingBatArray3Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A054E21A48365004E5F4F /* CodingBatArray3Problems.swift */; };
+		542A055121A4837D004E5F4F /* CodingBatDictionary1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055021A4837D004E5F4F /* CodingBatDictionary1Problems.swift */; };
+		542A055321A48392004E5F4F /* CodingBatDictionary2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055221A48392004E5F4F /* CodingBatDictionary2Problems.swift */; };
+		542A055521A483AC004E5F4F /* CodingBatRecursion1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055421A483AC004E5F4F /* CodingBatRecursion1Problems.swift */; };
+		542A055721A483D2004E5F4F /* CodingBatRecursion2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055621A483D2004E5F4F /* CodingBatRecursion2Problems.swift */; };
+		542A055921A483EE004E5F4F /* CodingBatFunctional1Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055821A483EE004E5F4F /* CodingBatFunctional1Problems.swift */; };
+		542A055B21A48409004E5F4F /* CodingBatFunctional2Problems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055A21A48409004E5F4F /* CodingBatFunctional2Problems.swift */; };
+		542A055D21A4841F004E5F4F /* ProjectEulerProblems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A055C21A4841F004E5F4F /* ProjectEulerProblems.swift */; };
+		54545F6921AC8AC90001E614 /* OptionalsProblems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54545F6821AC8AC90001E614 /* OptionalsProblems.swift */; };
 		546240C91CC604E0009AA888 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546240C81CC604E0009AA888 /* Extensions.swift */; };
 		5468857E1CC2BA0C003F3614 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5468857D1CC2BA0C003F3614 /* AppDelegate.swift */; };
 		546885801CC2BA0C003F3614 /* SwiftCoderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5468857F1CC2BA0C003F3614 /* SwiftCoderViewController.swift */; };
 		546885821CC2BA0C003F3614 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 546885811CC2BA0C003F3614 /* Assets.xcassets */; };
 		546885851CC2BA0C003F3614 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 546885831CC2BA0C003F3614 /* Main.storyboard */; };
 		546885AC1CC2DE70003F3614 /* Problem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546885AB1CC2DE70003F3614 /* Problem.swift */; };
-		546885AE1CC2E758003F3614 /* ProblemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546885AD1CC2E758003F3614 /* ProblemList.swift */; };
+		546885AE1CC2E758003F3614 /* ProblemSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546885AD1CC2E758003F3614 /* ProblemSet.swift */; };
 		547C63AC213493F000D50AD4 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C63AB213493F000D50AD4 /* Result.swift */; };
 		549BABFD212217A60015D6F6 /* LocalCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549BABFC212217A60015D6F6 /* LocalCodeController.swift */; };
 		54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFF10F219B77FC0089E740 /* CompilerMessage.swift */; };
@@ -80,7 +99,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		540F00002124BB6600284D48 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
@@ -125,6 +144,25 @@
 		540FFFF42124BB6600284D48 /* SavannaKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SavannaKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		540FFFF62124BB6600284D48 /* SavannaKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SavannaKit.h; sourceTree = "<group>"; };
 		540FFFF72124BB6600284D48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		542A053A21A4823E004E5F4F /* CodingBatWarmup1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatWarmup1Problems.swift; sourceTree = "<group>"; };
+		542A053C21A48273004E5F4F /* CodingBatWarmup2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatWarmup2Problems.swift; sourceTree = "<group>"; };
+		542A053E21A4829A004E5F4F /* CodingBatLogic1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatLogic1Problems.swift; sourceTree = "<group>"; };
+		542A054021A482B4004E5F4F /* CodingBatArray1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatArray1Problems.swift; sourceTree = "<group>"; };
+		542A054221A482D8004E5F4F /* CodingBatString1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatString1Problems.swift; sourceTree = "<group>"; };
+		542A054421A482F0004E5F4F /* CodingBatLogic2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatLogic2Problems.swift; sourceTree = "<group>"; };
+		542A054621A4830F004E5F4F /* CodingBatAP1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatAP1Problems.swift; sourceTree = "<group>"; };
+		542A054821A48327004E5F4F /* CodingBatString2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatString2Problems.swift; sourceTree = "<group>"; };
+		542A054A21A4833D004E5F4F /* CodingBatString3Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatString3Problems.swift; sourceTree = "<group>"; };
+		542A054C21A48352004E5F4F /* CodingBatArray2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatArray2Problems.swift; sourceTree = "<group>"; };
+		542A054E21A48365004E5F4F /* CodingBatArray3Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatArray3Problems.swift; sourceTree = "<group>"; };
+		542A055021A4837D004E5F4F /* CodingBatDictionary1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatDictionary1Problems.swift; sourceTree = "<group>"; };
+		542A055221A48392004E5F4F /* CodingBatDictionary2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatDictionary2Problems.swift; sourceTree = "<group>"; };
+		542A055421A483AC004E5F4F /* CodingBatRecursion1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatRecursion1Problems.swift; sourceTree = "<group>"; };
+		542A055621A483D2004E5F4F /* CodingBatRecursion2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatRecursion2Problems.swift; sourceTree = "<group>"; };
+		542A055821A483EE004E5F4F /* CodingBatFunctional1Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatFunctional1Problems.swift; sourceTree = "<group>"; };
+		542A055A21A48409004E5F4F /* CodingBatFunctional2Problems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingBatFunctional2Problems.swift; sourceTree = "<group>"; };
+		542A055C21A4841F004E5F4F /* ProjectEulerProblems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectEulerProblems.swift; sourceTree = "<group>"; };
+		54545F6821AC8AC90001E614 /* OptionalsProblems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsProblems.swift; sourceTree = "<group>"; };
 		546240C81CC604E0009AA888 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5468857A1CC2BA0C003F3614 /* Swift Coder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift Coder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5468857D1CC2BA0C003F3614 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -133,7 +171,7 @@
 		546885841CC2BA0C003F3614 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		546885861CC2BA0C003F3614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		546885AB1CC2DE70003F3614 /* Problem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Problem.swift; sourceTree = "<group>"; };
-		546885AD1CC2E758003F3614 /* ProblemList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemList.swift; sourceTree = "<group>"; };
+		546885AD1CC2E758003F3614 /* ProblemSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemSet.swift; sourceTree = "<group>"; };
 		547C63AB213493F000D50AD4 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		549BABFC212217A60015D6F6 /* LocalCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCodeController.swift; sourceTree = "<group>"; };
 		54CFF10F219B77FC0089E740 /* CompilerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerMessage.swift; sourceTree = "<group>"; };
@@ -171,6 +209,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		54028CE621AF15C8006E43EC /* Files Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Files Resources";
+			sourceTree = "<group>";
+		};
 		540F00012124BB7400284D48 /* Util */ = {
 			isa = PBXGroup;
 			children = (
@@ -253,6 +298,26 @@
 			path = SavannaKit;
 			sourceTree = "<group>";
 		};
+		542A04B421A1EE94004E5F4F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		542A053921A481F7004E5F4F /* Problems */ = {
+			isa = PBXGroup;
+			children = (
+				546885AB1CC2DE70003F3614 /* Problem.swift */,
+				546885AD1CC2E758003F3614 /* ProblemSet.swift */,
+				54BB418321A5B615002B660E /* CodingBat */,
+				54028CE621AF15C8006E43EC /* Files Resources */,
+				54545F6821AC8AC90001E614 /* OptionalsProblems.swift */,
+				542A055C21A4841F004E5F4F /* ProjectEulerProblems.swift */,
+			);
+			path = Problems;
+			sourceTree = "<group>";
+		};
 		546885711CC2BA0C003F3614 = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +327,7 @@
 				540FFFF52124BB6600284D48 /* SavannaKit */,
 				540F002C2124BBAF00284D48 /* SourceEditor */,
 				5468857B1CC2BA0C003F3614 /* Products */,
+				542A04B421A1EE94004E5F4F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -278,11 +344,10 @@
 		5468857C1CC2BA0C003F3614 /* Swift Coder */ = {
 			isa = PBXGroup;
 			children = (
+				542A053921A481F7004E5F4F /* Problems */,
 				54E227C4219419E500E33204 /* Swift Coder.entitlements */,
 				5468857D1CC2BA0C003F3614 /* AppDelegate.swift */,
-				546885AB1CC2DE70003F3614 /* Problem.swift */,
 				540CB434219E3C8E007240B8 /* StringConvertible.swift */,
-				546885AD1CC2E758003F3614 /* ProblemList.swift */,
 				5468857F1CC2BA0C003F3614 /* SwiftCoderViewController.swift */,
 				54EFE62A219624CC0023585D /* CompilationResult.swift */,
 				549BABFC212217A60015D6F6 /* LocalCodeController.swift */,
@@ -296,6 +361,30 @@
 				54EFE62C219629C80023585D /* StringAPI.txt */,
 			);
 			path = "Swift Coder";
+			sourceTree = "<group>";
+		};
+		54BB418321A5B615002B660E /* CodingBat */ = {
+			isa = PBXGroup;
+			children = (
+				542A053A21A4823E004E5F4F /* CodingBatWarmup1Problems.swift */,
+				542A053C21A48273004E5F4F /* CodingBatWarmup2Problems.swift */,
+				542A053E21A4829A004E5F4F /* CodingBatLogic1Problems.swift */,
+				542A054021A482B4004E5F4F /* CodingBatArray1Problems.swift */,
+				542A054221A482D8004E5F4F /* CodingBatString1Problems.swift */,
+				542A054421A482F0004E5F4F /* CodingBatLogic2Problems.swift */,
+				542A054621A4830F004E5F4F /* CodingBatAP1Problems.swift */,
+				542A054821A48327004E5F4F /* CodingBatString2Problems.swift */,
+				542A054A21A4833D004E5F4F /* CodingBatString3Problems.swift */,
+				542A054C21A48352004E5F4F /* CodingBatArray2Problems.swift */,
+				542A054E21A48365004E5F4F /* CodingBatArray3Problems.swift */,
+				542A055021A4837D004E5F4F /* CodingBatDictionary1Problems.swift */,
+				542A055221A48392004E5F4F /* CodingBatDictionary2Problems.swift */,
+				542A055421A483AC004E5F4F /* CodingBatRecursion1Problems.swift */,
+				542A055621A483D2004E5F4F /* CodingBatRecursion2Problems.swift */,
+				542A055821A483EE004E5F4F /* CodingBatFunctional1Problems.swift */,
+				542A055A21A48409004E5F4F /* CodingBatFunctional2Problems.swift */,
+			);
+			path = CodingBat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -385,16 +474,18 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1000;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Josh Birnholz";
 				TargetAttributes = {
 					540F002A2124BBAF00284D48 = {
 						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = CB7D3XVLP3;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 					540FFFF32124BB6600284D48 = {
 						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = CB7D3XVLP3;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
@@ -404,7 +495,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.HardenedRuntime = {
-								enabled = 0;
+								enabled = 1;
 							};
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -504,15 +595,34 @@
 			files = (
 				546885801CC2BA0C003F3614 /* SwiftCoderViewController.swift in Sources */,
 				546240C91CC604E0009AA888 /* Extensions.swift in Sources */,
+				542A053B21A4823E004E5F4F /* CodingBatWarmup1Problems.swift in Sources */,
+				542A054B21A4833D004E5F4F /* CodingBatString3Problems.swift in Sources */,
 				540CB435219E3C8E007240B8 /* StringConvertible.swift in Sources */,
 				54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */,
 				54EFE62B219624CC0023585D /* CompilationResult.swift in Sources */,
-				546885AE1CC2E758003F3614 /* ProblemList.swift in Sources */,
+				546885AE1CC2E758003F3614 /* ProblemSet.swift in Sources */,
+				542A054121A482B4004E5F4F /* CodingBatArray1Problems.swift in Sources */,
+				542A053F21A4829A004E5F4F /* CodingBatLogic1Problems.swift in Sources */,
+				542A055721A483D2004E5F4F /* CodingBatRecursion2Problems.swift in Sources */,
+				542A054921A48328004E5F4F /* CodingBatString2Problems.swift in Sources */,
 				540F00482124C01C00284D48 /* SourceCodeTheme.swift in Sources */,
 				547C63AC213493F000D50AD4 /* Result.swift in Sources */,
 				546885AC1CC2DE70003F3614 /* Problem.swift in Sources */,
+				542A055D21A4841F004E5F4F /* ProjectEulerProblems.swift in Sources */,
+				54545F6921AC8AC90001E614 /* OptionalsProblems.swift in Sources */,
 				5468857E1CC2BA0C003F3614 /* AppDelegate.swift in Sources */,
+				542A055921A483EE004E5F4F /* CodingBatFunctional1Problems.swift in Sources */,
+				542A054F21A48365004E5F4F /* CodingBatArray3Problems.swift in Sources */,
+				542A054721A4830F004E5F4F /* CodingBatAP1Problems.swift in Sources */,
+				542A053D21A48273004E5F4F /* CodingBatWarmup2Problems.swift in Sources */,
+				542A054D21A48352004E5F4F /* CodingBatArray2Problems.swift in Sources */,
+				542A054521A482F1004E5F4F /* CodingBatLogic2Problems.swift in Sources */,
+				542A054321A482D8004E5F4F /* CodingBatString1Problems.swift in Sources */,
+				542A055321A48392004E5F4F /* CodingBatDictionary2Problems.swift in Sources */,
 				549BABFD212217A60015D6F6 /* LocalCodeController.swift in Sources */,
+				542A055B21A48409004E5F4F /* CodingBatFunctional2Problems.swift in Sources */,
+				542A055521A483AC004E5F4F /* CodingBatRecursion1Problems.swift in Sources */,
+				542A055121A4837D004E5F4F /* CodingBatDictionary1Problems.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,20 +667,25 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = CB7D3XVLP3;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SourceEditor/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = com.josh.birnholz.SourceEditor;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -597,15 +712,20 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = CB7D3XVLP3;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SourceEditor/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.josh.birnholz.SourceEditor;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -625,11 +745,12 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = CB7D3XVLP3;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -638,7 +759,7 @@
 				INFOPLIST_FILE = SavannaKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = com.josh.birnholz.SavannaKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -665,6 +786,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = CB7D3XVLP3;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -673,7 +795,7 @@
 				INFOPLIST_FILE = SavannaKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.josh.birnholz.SavannaKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -800,9 +922,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = CB7D3XVLP3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = "Swift Coder/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.josh.birnholz.Swift-Coder";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -819,9 +947,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = CB7D3XVLP3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = "Swift Coder/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.josh.birnholz.Swift-Coder";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
