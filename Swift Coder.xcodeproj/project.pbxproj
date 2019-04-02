@@ -8,15 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5406891922529AFC008B78A0 /* SavannaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FFFF42124BB6600284D48 /* SavannaKit.framework */; };
-		540AAFB721F8D3A900755552 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540AAFB321F8D3A700755552 /* Strings.swift */; };
-		540AAFB821F8D3A900755552 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540AAFB421F8D3A700755552 /* Files.swift */; };
-		540AAFB921F8D3A900755552 /* Collections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540AAFB521F8D3A800755552 /* Collections.swift */; };
-		540AAFBA21F8D3A900755552 /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540AAFB621F8D3A900755552 /* Numbers.swift */; };
-		540AAFC121F8D3CB00755552 /* cat.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 540AAFBC21F8D3C800755552 /* cat.jpeg */; };
-		540AAFC221F8D3CB00755552 /* panda.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 540AAFBD21F8D3C900755552 /* panda.jpeg */; };
-		540AAFC321F8D3CB00755552 /* giraffe.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 540AAFBE21F8D3C900755552 /* giraffe.jpeg */; };
-		540AAFC421F8D3CB00755552 /* dog.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 540AAFBF21F8D3CA00755552 /* dog.jpeg */; };
-		540AAFC521F8D3CB00755552 /* shakespeare.txt in Resources */ = {isa = PBXBuildFile; fileRef = 540AAFC021F8D3CB00755552 /* shakespeare.txt */; };
 		540F00152124BB7400284D48 /* String+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00022124BB7400284D48 /* String+Range.swift */; };
 		540F00162124BB7400284D48 /* NSTextView+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00032124BB7400284D48 /* NSTextView+UIKit.swift */; };
 		540F00172124BB7400284D48 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00042124BB7400284D48 /* Types.swift */; };
@@ -121,15 +112,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		540AAFB321F8D3A700755552 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
-		540AAFB421F8D3A700755552 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
-		540AAFB521F8D3A800755552 /* Collections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
-		540AAFB621F8D3A900755552 /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
-		540AAFBC21F8D3C800755552 /* cat.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat.jpeg; sourceTree = "<group>"; };
-		540AAFBD21F8D3C900755552 /* panda.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = panda.jpeg; sourceTree = "<group>"; };
-		540AAFBE21F8D3C900755552 /* giraffe.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = giraffe.jpeg; sourceTree = "<group>"; };
-		540AAFBF21F8D3CA00755552 /* dog.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dog.jpeg; sourceTree = "<group>"; };
-		540AAFC021F8D3CB00755552 /* shakespeare.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shakespeare.txt; sourceTree = "<group>"; };
 		540F00022124BB7400284D48 /* String+Range.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Range.swift"; sourceTree = "<group>"; };
 		540F00032124BB7400284D48 /* NSTextView+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextView+UIKit.swift"; sourceTree = "<group>"; };
 		540F00042124BB7400284D48 /* Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
@@ -228,29 +210,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		54028CE621AF15C8006E43EC /* Files Resources */ = {
-			isa = PBXGroup;
-			children = (
-				540AAFBC21F8D3C800755552 /* cat.jpeg */,
-				540AAFBF21F8D3CA00755552 /* dog.jpeg */,
-				540AAFBE21F8D3C900755552 /* giraffe.jpeg */,
-				540AAFBD21F8D3C900755552 /* panda.jpeg */,
-				540AAFC021F8D3CB00755552 /* shakespeare.txt */,
-			);
-			path = "Files Resources";
-			sourceTree = "<group>";
-		};
-		540AAFBB21F8D3B600755552 /* Hacking With Swift */ = {
-			isa = PBXGroup;
-			children = (
-				540AAFB521F8D3A800755552 /* Collections.swift */,
-				540AAFB421F8D3A700755552 /* Files.swift */,
-				540AAFB621F8D3A900755552 /* Numbers.swift */,
-				540AAFB321F8D3A700755552 /* Strings.swift */,
-			);
-			path = "Hacking With Swift";
-			sourceTree = "<group>";
-		};
 		540F00012124BB7400284D48 /* Util */ = {
 			isa = PBXGroup;
 			children = (
@@ -347,10 +306,8 @@
 				546885AB1CC2DE70003F3614 /* Problem.swift */,
 				546885AD1CC2E758003F3614 /* ProblemSet.swift */,
 				54BB418321A5B615002B660E /* CodingBat */,
-				54028CE621AF15C8006E43EC /* Files Resources */,
 				542A055C21A4841F004E5F4F /* ProjectEuler.swift */,
 				547B567E225296E200D9B3A1 /* Optionals.swift */,
-				540AAFBB21F8D3B600755552 /* Hacking With Swift */,
 			);
 			path = Problems;
 			sourceTree = "<group>";
@@ -580,11 +537,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				540AAFC421F8D3CB00755552 /* dog.jpeg in Resources */,
-				540AAFC521F8D3CB00755552 /* shakespeare.txt in Resources */,
-				540AAFC221F8D3CB00755552 /* panda.jpeg in Resources */,
-				540AAFC121F8D3CB00755552 /* cat.jpeg in Resources */,
-				540AAFC321F8D3CB00755552 /* giraffe.jpeg in Resources */,
 				54EFE62E21962D680023585D /* StringAPI.txt in Resources */,
 				546885821CC2BA0C003F3614 /* Assets.xcassets in Resources */,
 				546885851CC2BA0C003F3614 /* Main.storyboard in Resources */,
@@ -644,21 +596,17 @@
 				542A054121A482B4004E5F4F /* Array1.swift in Sources */,
 				542A053F21A4829A004E5F4F /* Logic1.swift in Sources */,
 				542A055721A483D2004E5F4F /* Recursion2.swift in Sources */,
-				540AAFB821F8D3A900755552 /* Files.swift in Sources */,
 				542A054921A48328004E5F4F /* String2.swift in Sources */,
 				540F00482124C01C00284D48 /* SourceCodeTheme.swift in Sources */,
 				54FAFCE722528F8800BBCE0E /* Functional1.swift in Sources */,
 				546885AC1CC2DE70003F3614 /* Problem.swift in Sources */,
 				542019B9224B219C00B9FE1F /* SwiftCoderViewController.swift in Sources */,
 				542A055D21A4841F004E5F4F /* ProjectEuler.swift in Sources */,
-				540AAFB921F8D3A900755552 /* Collections.swift in Sources */,
 				54FAFCE522528E7200BBCE0E /* StringConvertible.swift in Sources */,
 				542A054F21A48365004E5F4F /* Array3.swift in Sources */,
 				542A054721A4830F004E5F4F /* AP1.swift in Sources */,
 				542A053D21A48273004E5F4F /* Warmup2.swift in Sources */,
 				547B567F225296E200D9B3A1 /* Optionals.swift in Sources */,
-				540AAFBA21F8D3A900755552 /* Numbers.swift in Sources */,
-				540AAFB721F8D3A900755552 /* Strings.swift in Sources */,
 				542A054D21A48352004E5F4F /* Array2.swift in Sources */,
 				542A054521A482F1004E5F4F /* Logic2.swift in Sources */,
 				542A054321A482D8004E5F4F /* String1.swift in Sources */,
