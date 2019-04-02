@@ -27,11 +27,11 @@ public protocol SourceCodeToken: Token {
 
 public extension SourceCodeToken {
 	
-	public var isEditorPlaceholder: Bool {
+	var isEditorPlaceholder: Bool {
 		return type == .editorPlaceholder
 	}
 	
-	public var isPlain: Bool {
+	var isPlain: Bool {
 		return type == .plain
 	}
 	

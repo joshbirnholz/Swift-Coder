@@ -29,9 +29,31 @@ class LocalCodeController {
 		}
 	}
 	
-	public var logCommands: Bool = false
+	public var isLoggingEnabled: Bool = false
 	
-	public let baseDirectory: URL
+	public let applicationSupportDirectory: URL
+	
+	public var activeUsername: String?
+	
+	public var baseDirectory: URL {
+		if let activeUsername = activeUsername {
+			let url = applicationSupportDirectory.appendingPathComponent("users").appendingPathComponent(activeUsername, isDirectory: true)
+			
+			var isDirectory: ObjCBool = false
+			if !FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+				try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+			}
+			
+			return url
+		} else {
+			return applicationSupportDirectory
+		}
+	}
+	
+	public func userNameIsValid(_ username: String) -> Bool {
+		return !username.contains(":") && !username.contains("/")
+	}
+	
 	public let tempDirectory: URL
 	public var xcodeURL: URL {
 		get {
@@ -69,7 +91,7 @@ class LocalCodeController {
 			}
 		}
 		
-		baseDirectory = dir
+		applicationSupportDirectory = dir
 		
 		do {
 			tempDirectory = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: dir, create: true)
@@ -118,6 +140,15 @@ class LocalCodeController {
 		return path
 	}
 	
+	func swiftVersionString() -> String? {
+		guard let swiftPath = try? swiftPath() else { return nil }
+		if let fullVersionString = try? self.execute(launchPath: swiftPath, arguments: ["--version"], timeout: nil).output {
+			return fullVersionString.matches(forRegex: ".+?(?= \\()").first?.fullMatch.value
+		}
+		
+		return nil
+	}
+	
 	private let stringAPI: String = {
 		let apiPath = Bundle.main.url(forResource: "StringAPI", withExtension: "txt")!.path
 		let stringAPI = try? String(contentsOfFile: apiPath)
@@ -153,7 +184,7 @@ class LocalCodeController {
 		let errpipe = Pipe()
 		task.standardError = errpipe
 		
-		if logCommands {
+		if isLoggingEnabled {
 			print("$ \(launchPath) \(arguments.map { $0.contains(" ") ? "\"\($0)\"" : $0 }.joined(separator: " "))")
 		}
 		task.launch()
@@ -231,7 +262,7 @@ class LocalCodeController {
 	}
 	
 	/// Compiles a Swift source code file to the given output path, throwing any compilation errors.
-	/// The default output path is /dev/null, which will disregard away the executable.
+	/// The default output path is /dev/null, which will throw away the executable, but the compiler output will still be returned.
 	@discardableResult private func swiftc(filePath: String, outputPath: String = "/dev/null", timeout: TimeInterval? = nil) throws -> (output: String, exitCode: Int32) {
 		print("Compiling \(filePath)")
 		return try execute(launchPath: swiftcPath(), arguments: ["-sdk", sdkPath(), filePath, "-o", outputPath], timeout: timeout)
@@ -270,10 +301,10 @@ class LocalCodeController {
 				
 				return CompilationResult.TestResult(run: runResult.output, success: success ? .ok : .failure, runTime: runTime)
 			} else {
-				guard let typedOutput = problem.actualReturnType.init(runResult.output)?.asEquatable() else {
+				guard let typedOutput = problem.actualReturnType.init(runResult.output) else {
 					return CompilationResult.TestResult(run: runResult.output, success: .error, runTime: runTime)
 				}
-				success = typedOutput == testCase.expectedResult
+				success = AnyEquatableStringConvertible(typedOutput) == testCase.expectedResult
 				
 				return CompilationResult.TestResult(run: typedOutput.displayDescription, success: success ? .ok : .failure, runTime: runTime)
 			}
@@ -409,6 +440,8 @@ class LocalCodeController {
 	}
 	
 	private func runnableProblemCode(for problem: Problem, code: String) -> String {
+		var runnableCode = code + "\n\n"
+		
 		let printReplacement = problem.usesPrintedOutput ? "" : """
 		func print(_ items: Any..., separator: String = "", terminator: String = "") {
 		
@@ -416,8 +449,6 @@ class LocalCodeController {
 		
 
 		"""
-		
-		var runnableCode = code + "\n\n"
 		
 		runnableCode += printReplacement
 		
@@ -435,7 +466,6 @@ class LocalCodeController {
 		
 		let returnType = String(describing: problem.actualReturnType)
 		
-		
 		let types: [StringConvertible.Type] = {
 			var dict = [String: StringConvertible.Type]()
 			dict[problem.actualReturnType.convertibleTypeName] = problem.actualReturnType
@@ -445,23 +475,16 @@ class LocalCodeController {
 			return Array(dict.values)
 		}()
 		
-		var addedCoders = false
-		
-		func addCoders() {
-			guard !addedCoders else { return }
+		if types.contains(where: { $0.helperCodeNeedsCoders }) {
 			runnableCode += """
 			let decoder = JSONDecoder()
 			let encoder = JSONEncoder()
 			
 			
 			"""
-			addedCoders = true
 		}
 		
 		for type in types {
-			if type.helperCodeNeedsCoders {
-				addCoders()
-			}
 			runnableCode += type.helperCode
 		}
 		

@@ -65,7 +65,7 @@ func optionalChecking(n: Int?) -> Int {
 				Problem.TestCase(expectation: 0, arguments: Int?.some(0)),
 				Problem.TestCase(expectation: 40, arguments: Int?.some(40)),
 				
-		]),
+				]),
 	Problem(title: "stringToInt",
 			returnType: Int?.self,
 			parameters: [

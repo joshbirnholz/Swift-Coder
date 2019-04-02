@@ -138,6 +138,8 @@ class SwiftCoderViewController: NSViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		codeController.activeUsername = userDefaults.string(forKey: activeUserUserDefaultsKey)
+		
 		let list = userDefaults.string(forKey: "problemList").flatMap(ProblemSet.init) ?? ProblemSet.allCases.first!
 		let index = min(userDefaults.integer(forKey: "problemIndex"), list.problems.count-1)
 		problemIndexPath = ProblemIndexPath(list: list, index: index)
@@ -173,6 +175,7 @@ class SwiftCoderViewController: NSViewController {
 		setupCodeMenu()
 		setupHelpMenu()
 		setupAppMenu()
+		setupUserMenu()
 		
 		finishedLoadingView = true
 		
@@ -209,12 +212,125 @@ class SwiftCoderViewController: NSViewController {
 	func setupHelpMenu() {
 		guard let helpMenu = NSApp.mainMenu?.item(withTitle: "Help")?.submenu else { return }
 		
-		helpMenu.insertItem(.separator(), at: helpMenu.items.count)
-		
 		swiftVersionMenuItem = helpMenu.insertItem(withTitle: codeController.swiftVersionString() ?? "Swift Not Found", action: #selector(doNothing), keyEquivalent: "", at: helpMenu.items.count)
+		
+		helpMenu.insertItem(.separator(), at: helpMenu.items.count)
 		
 		helpMenu.insertItem(withTitle: "Swift Guided Tour", action: #selector(openGuidedTour), keyEquivalent: "", at: helpMenu.items.count)
 		helpMenu.insertItem(withTitle: "Swift Language Guide", action: #selector(openLanguageGuide), keyEquivalent: "", at: helpMenu.items.count)
+	}
+	
+	func setupUserMenu() {
+		guard let userMenu = NSApp.mainMenu?.item(withTitle: "User")?.submenu else { return }
+		
+		userMenu.removeAllItems()
+		
+		userMenu.insertItem(withTitle: NSFullUserName(), action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
+		
+		do {
+			let users = try FileManager.default.contentsOfDirectory(at: codeController.applicationSupportDirectory.appendingPathComponent("users"), includingPropertiesForKeys: [.isDirectoryKey], options: []).compactMap { $0.hasDirectoryPath ? $0.lastPathComponent : nil }
+			
+			for user in users {
+				let userItem = userMenu.insertItem(withTitle: user, action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
+				userItem.representedObject = user
+			}
+		} catch {
+			
+		}
+		
+		userMenu.insertItem(.separator(), at: userMenu.items.count)
+		
+		userMenu.insertItem(withTitle: "New User…", action: #selector(newUserMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
+		userMenu.insertItem(withTitle: "Delete User", action: #selector(deleteCurrentUserMenuItemSelected), keyEquivalent: "", at: userMenu.items.count)
+		
+	}
+	
+	@objc func userMenuItemSelected(_ sender: NSMenuItem) {
+		let userName = sender.representedObject as? String
+		
+		setUser(to: userName)
+	}
+	
+	func setUser(to userName: String?) {
+		updateProblemIndex(to: problemIndexPath.index)
+		
+		codeController.activeUsername = userName
+		
+		inputTextView.text = codeController.loadCode(for: problem)
+		
+		updateProblemIndex(to: problemIndexPath.index)
+		
+		if let userName = userName {
+			userDefaults.setValue(userName, forKey: activeUserUserDefaultsKey)
+		} else {
+			userDefaults.removeObject(forKey: activeUserUserDefaultsKey)
+		}
+		
+	}
+	
+	let activeUserUserDefaultsKey = "activeUser"
+	
+	@objc func deleteCurrentUserMenuItemSelected(sender: Any?) {
+		guard let userName = codeController.activeUsername else { return }
+		
+		let alert = NSAlert()
+		
+		alert.messageText = "Are you sure you want to delete \(userName)'s profile?"
+		alert.informativeText = "All of \(userName)'s code will be moved to the trash."
+		
+		alert.addButton(withTitle: "Don't Delete")
+		
+		alert.addButton(withTitle: "Delete")
+		
+		switch alert.runModal() {
+		case NSApplication.ModalResponse.alertSecondButtonReturn:
+			setUser(to: nil)
+			
+			try? FileManager.default.trashItem(at: codeController.applicationSupportDirectory.appendingPathComponent("users").appendingPathComponent(userName), resultingItemURL: nil)
+			
+			setupUserMenu()
+		default:
+			break
+		}
+	}
+	
+	@objc func newUserMenuItemSelected(_ sender: NSMenuItem) {
+		func showAlert(informativeText: String? = nil, name: String? = nil) {
+			let alert = NSAlert()
+			
+			alert.messageText = "Enter your name:"
+			if let informativeText = informativeText {
+				alert.informativeText = informativeText
+			}
+			
+			let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
+			textField.placeholderString = "Name"
+			
+			if let name = name {
+				textField.stringValue = name
+			}
+			
+			alert.accessoryView = textField
+			
+			alert.addButton(withTitle: "Add User")
+			
+			alert.addButton(withTitle: "Cancel")
+			
+			switch alert.runModal() {
+			case NSApplication.ModalResponse.alertFirstButtonReturn:
+				let userName = textField.stringValue
+				if codeController.userNameIsValid(userName) {
+					setUser(to: userName)
+					setupUserMenu()
+				} else {
+					showAlert(informativeText: "The name you chose contains one or more characters are aren't allowed. Don't use \":\" or \"/\" in your user name.", name: userName)
+				}
+			default:
+				break
+			}
+		}
+		
+		showAlert()
 	}
 	
 	var swiftVersionMenuItem: NSMenuItem?
@@ -869,6 +985,14 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 		
 		if menuItem == swiftVersionMenuItem {
 			return false
+		}
+		
+		if menuItem.action == #selector(userMenuItemSelected(_:)) {
+			menuItem.state = codeController.activeUsername == menuItem.representedObject as? String ? .on : .off
+		}
+		
+		if menuItem.action == #selector(deleteCurrentUserMenuItemSelected) {
+			return codeController.activeUsername != nil
 		}
 		
 		return true

@@ -16,8 +16,7 @@ protocol StringConvertible {
 	
 	/// A textual representation of this instance that can be used to recreate it.
 	var stringRepresentation: String { get }
-	func isEqualTo(_ other: StringConvertible) -> Bool
-	func asEquatable() -> AnyEquatableStringConvertible
+	func isEqual(to other: StringConvertible) -> Bool
 	static var convertibleTypeName: String { get }
 	static var convertibleExtensionTypeName: String { get }
 	static var runnableTesterParameterTypeName: String { get }
@@ -66,12 +65,9 @@ extension StringConvertible {
 }
 
 extension StringConvertible where Self: Equatable {
-	func isEqualTo(_ other: StringConvertible) -> Bool {
+	func isEqual(to other: StringConvertible) -> Bool {
 		guard let other = other as? Self else { return false }
 		return self == other
-	}
-	func asEquatable() -> AnyEquatableStringConvertible {
-		return AnyEquatableStringConvertible(self)
 	}
 }
 
@@ -86,9 +82,11 @@ struct AnyEquatableStringConvertible: Equatable, CustomStringConvertible {
 	}
 	
 	init(_ value: StringConvertible) { self.value = value }
+	
 	let value: StringConvertible
+	
 	static func ==(lhs: AnyEquatableStringConvertible, rhs: AnyEquatableStringConvertible) -> Bool {
-		return lhs.value.isEqualTo(rhs.value)
+		return lhs.value.isEqual(to: rhs.value)
 	}
 }
 
@@ -152,7 +150,7 @@ extension URL: StringConvertible {
 	}
 	
 	var displayDescription: String {
-		let file = path.replacingOccurrences(of: Bundle.main.bundlePath.appending("/Contents/Resources/"), with: "").replacingOccurrences(of: LocalCodeController.shared.baseDirectory.path + "/", with: "")
+		let file = path.replacingOccurrences(of: Bundle.main.bundlePath.appending("/Contents/Resources/"), with: "").replacingOccurrences(of: LocalCodeController.shared.applicationSupportDirectory.path + "/", with: "")
 		return file
 	}
 }
@@ -321,7 +319,11 @@ extension StringConvertibleTuple  {
 			}
 			desc.append(String(describing: item))
 			return desc.joined(separator: ": ")
-		}.joined(separator: ", ") + ")"
+			}.joined(separator: ", ") + ")"
+	}
+	
+	var displayDescription: String {
+		return "(\(zip(items, labels).map { "\($1.flatMap { "\($0): " } ?? "")\($0.displayDescription)" }.joined(separator: ", ")))"
 	}
 	
 	static func typeSignature(labels: [String?]) -> String {
@@ -352,7 +354,7 @@ struct StringConvertibleTwoElementTuple<Type0: StringConvertible & Codable, Type
 	var label1: String?
 	
 	var items: [AnyEquatableStringConvertible] {
-		return [item0.asEquatable(), item1.asEquatable()]
+		return [item0, item1].map(AnyEquatableStringConvertible.init)
 	}
 	var labels: [String?] {
 		return [label0, label1]
@@ -364,7 +366,7 @@ struct StringConvertibleTwoElementTuple<Type0: StringConvertible & Codable, Type
 	init(_ a: (item: Type0, label: String?), _ b: (item: Type1, label: String?)) {
 		item0 = a.item
 		label0 = a.label
-
+		
 		item1 = b.item
 		label1 = b.label
 	}
@@ -478,34 +480,50 @@ extension Optional: StringConvertible where Wrapped: StringConvertible & Equatab
 		}
 	}
 	
+	private static var thatPart: String {
+		if Wrapped.self == String.self {
+			return """
+			if description == \"\(nilUUID)\" {
+			self = .none
+			} else {
+			self = .some(description)
+			}
+			"""
+		} else {
+			return """
+			if description == \"\(nilUUID)\" {
+			self = .none
+			} else if let value = Wrapped.init(description) {
+			self = .some(value)
+			} else {
+			return nil
+			}
+			"""
+		}
+	}
+	
 	static var helperCode: String {
 		return """
-		extension Optional: LosslessStringConvertible, CustomStringConvertible where Wrapped == \(Wrapped.convertibleTypeName) {
+			extension Optional: LosslessStringConvertible, CustomStringConvertible where Wrapped == \(Wrapped.convertibleTypeName) {
 			public init?(_ description: String) {
-				if description == \"\(nilUUID)\" {
-					self = .none
-				} else if let value = Wrapped.init(description) {
-					self = .some(value)
-				} else {
-					return nil
-				}
+			\(thatPart)
 			}
-		
+			
 			var stringRepresentation: String {
-				switch self {
-				case .none:
-					return \"\(nilUUID)\"
-				case .some(let wrapped):
-					return wrapped.\(Wrapped.needsCustomStringRepresentation ? "stringRepresentation" : "description")
-				}
+			switch self {
+			case .none:
+			return \"\(nilUUID)\"
+			case .some(let wrapped):
+			return wrapped.\(Wrapped.needsCustomStringRepresentation ? "stringRepresentation" : "description")
 			}
-		
+			}
+			
 			public var description: String {
-				return String(describing: self)
+			return String(describing: self)
 			}
-		}
-		
-		""" + Wrapped.helperCode
+			}
+			
+			""" + Wrapped.helperCode
 	}
 	
 	static var convertibleExtensionTypeName: String {
@@ -522,40 +540,58 @@ extension Optional: StringConvertible where Wrapped: StringConvertible & Equatab
 	
 }
 
+
 extension ClosedRange: StringConvertible where Bound: Codable & Strideable & StringConvertible {
-	fileprivate struct CountableClosedRangeHelper: Codable {
-		var lowerBound: Bound
-		var upperBound: Bound
-	}
-	
 	init?(_ description: String) {
 		guard let data = description.data(using: .utf8) else { return nil }
-		guard let helper = try? decoder.decode(CountableClosedRangeHelper.self, from: data) else { return nil }
+		guard let range = try? decoder.decode(ClosedRange<Bound>.self, from: data) else { return nil }
 		
-		self = helper.lowerBound...helper.upperBound
+		self = range
 	}
 	
 	var stringRepresentation: String {
-		let helper = CountableClosedRangeHelper(lowerBound: lowerBound, upperBound: upperBound)
-		return (try? encoder.encode(helper)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]"
+		return (try? encoder.encode(self)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]"
 	}
 	
 	static var helperCode: String {
 		return """
-		extension ClosedRange: LosslessStringConvertible where Bound: Codable & Strideable {
-			fileprivate struct CountableClosedRangeHelper: Codable {
-				var lowerBound: Bound
-				var upperBound: Bound
+		#if swift(>=5.0)
+		#else
+		extension ClosedRange: Decodable where Bound: Decodable {
+				public init(from decoder: Decoder) throws {
+					var container = try decoder.unkeyedContainer()
+					let lowerBound = try container.decode(Bound.self)
+					let upperBound = try container.decode(Bound.self)
+					guard lowerBound <= upperBound else {
+						throw DecodingError.dataCorrupted(
+							DecodingError.Context(
+								codingPath: decoder.codingPath,
+								debugDescription: "Cannot initialize \\(ClosedRange.self) with a lowerBound (\\(lowerBound)) greater than upperBound (\\(upperBound))"))
+					}
+					self.init(uncheckedBounds: (lower: lowerBound, upper: upperBound))
+				}
+		}
+
+		extension ClosedRange: Encodable where Bound: Encodable {
+			public func encode(to encoder: Encoder) throws {
+				var container = encoder.unkeyedContainer()
+				try container.encode(self.lowerBound)
+				try container.encode(self.upperBound)
 			}
+		}
+		#endif
+		
+		extension ClosedRange: LosslessStringConvertible where Bound: Codable & Strideable {
+
 			public init?(_ description: String) {
 				guard let data = description.data(using: .utf8) else { return nil }
-				guard let helper = try? decoder.decode(CountableClosedRangeHelper.self, from: data) else { return nil }
+				guard let range = try? decoder.decode(ClosedRange<Bound>.self, from: data) else { return nil }
 		
-				self = helper.lowerBound...helper.upperBound
+				self = range
 			}
+		
 			var stringRepresentation: String {
-				let helper = CountableClosedRangeHelper(lowerBound: lowerBound, upperBound: upperBound)
-				return (try? encoder.encode(helper)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]"
+				return (try? encoder.encode(self)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]"
 			}
 		}
 		
@@ -574,7 +610,7 @@ extension ClosedRange: StringConvertible where Bound: Codable & Strideable & Str
 	static var convertibleTypeName: String {
 		return "ClosedRange<\(Bound.convertibleTypeName)>"
 	}
-
+	
 	static var convertibleExtensionTypeName: String {
 		return "CountableClosedRange where Bound == \(Bound.convertibleTypeName)"
 	}

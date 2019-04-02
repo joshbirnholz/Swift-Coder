@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -98,148 +98,6 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
-                                        <menuItem title="Font" id="jxT-CU-nIS">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Font" id="GEO-Iw-cKr">
-                                                <items>
-                                                    <menuItem title="Bigger" tag="3" keyEquivalent="+" id="Ptp-SP-VEL"/>
-                                                    <menuItem title="Smaller" tag="4" keyEquivalent="-" id="i1d-Er-qST"/>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="dAy-HK-51u"/>
-                                        <menuItem title="Find" id="4EN-yA-p0u">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Find" id="1b7-l0-nxx">
-                                                <items>
-                                                    <menuItem title="Find…" tag="1" keyEquivalent="f" id="Xz5-n4-O0W">
-                                                        <connections>
-                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="cD7-Qs-BN4"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Find and Replace…" tag="12" keyEquivalent="f" id="YEy-JH-Tfz">
-                                                        <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                                        <connections>
-                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="WD3-Gg-5AJ"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Find Next" tag="2" keyEquivalent="g" id="q09-fT-Sye">
-                                                        <connections>
-                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="NDo-RZ-v9R"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Find Previous" tag="3" keyEquivalent="G" id="OwM-mh-QMV">
-                                                        <connections>
-                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="HOh-sY-3ay"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Use Selection for Find" tag="7" keyEquivalent="e" id="buJ-ug-pKt">
-                                                        <connections>
-                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="U76-nv-p5D"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Jump to Selection" keyEquivalent="j" id="S0p-oC-mLd">
-                                                        <connections>
-                                                            <action selector="centerSelectionInVisibleArea:" target="Ady-hI-5gd" id="IOG-6D-g5B"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                        <menuItem title="Substitutions" id="9ic-FL-obx">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Substitutions" id="FeM-D8-WVr">
-                                                <items>
-                                                    <menuItem title="Show Substitutions" id="z6F-FW-3nz">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="orderFrontSubstitutionsPanel:" target="Ady-hI-5gd" id="oku-mr-iSq"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem isSeparatorItem="YES" id="gPx-C9-uUO"/>
-                                                    <menuItem title="Smart Copy/Paste" id="9yt-4B-nSM">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleSmartInsertDelete:" target="Ady-hI-5gd" id="3IJ-Se-DZD"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Smart Quotes" id="hQb-2v-fYv">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleAutomaticQuoteSubstitution:" target="Ady-hI-5gd" id="ptq-xd-QOA"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Smart Dashes" id="rgM-f4-ycn">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleAutomaticDashSubstitution:" target="Ady-hI-5gd" id="oCt-pO-9gS"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Smart Links" id="cwL-P1-jid">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleAutomaticLinkDetection:" target="Ady-hI-5gd" id="Gip-E3-Fov"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Data Detectors" id="tRr-pd-1PS">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleAutomaticDataDetection:" target="Ady-hI-5gd" id="R1I-Nq-Kbl"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Text Replacement" id="HFQ-gK-NFA">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleAutomaticTextReplacement:" target="Ady-hI-5gd" id="DvP-Fe-Py6"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                        <menuItem title="Transformations" id="2oI-Rn-ZJC">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Transformations" id="c8a-y6-VQd">
-                                                <items>
-                                                    <menuItem title="Make Upper Case" id="vmV-6d-7jI">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="uppercaseWord:" target="Ady-hI-5gd" id="sPh-Tk-edu"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Make Lower Case" id="d9M-CD-aMd">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="lowercaseWord:" target="Ady-hI-5gd" id="iUZ-b5-hil"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Capitalize" id="UEZ-Bs-lqG">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="capitalizeWord:" target="Ady-hI-5gd" id="26H-TL-nsh"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                        <menuItem title="Speech" id="xrE-MZ-jX0">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Speech" id="3rS-ZA-NoH">
-                                                <items>
-                                                    <menuItem title="Start Speaking" id="Ynk-f8-cLZ">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="startSpeaking:" target="Ady-hI-5gd" id="654-Ng-kyl"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Stop Speaking" id="Oyz-dy-DGm">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="stopSpeaking:" target="Ady-hI-5gd" id="dX8-6p-jy9"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -268,17 +126,13 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="User" id="b7p-Yw-ki2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="User" id="nXk-6b-peR"/>
+                            </menuItem>
                             <menuItem title="Help" id="wpr-3q-Mcd">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
-                                    <items>
-                                        <menuItem title="Swift Coder Help" keyEquivalent="?" id="FKE-Sm-Kum">
-                                            <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
+                                <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ"/>
                             </menuItem>
                         </items>
                     </menu>
@@ -317,14 +171,14 @@
             <objects>
                 <viewController title="Swift Coder" id="XfG-lQ-9wD" customClass="SwiftCoderViewController" customModule="Swift_Coder" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="1325" height="618"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1446" height="637"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CaI-sC-6Ie">
-                                <rect key="frame" x="20" y="20" width="717" height="578"/>
+                                <rect key="frame" x="20" y="20" width="838" height="597"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51V-hK-zvM">
-                                        <rect key="frame" x="-2" y="547" width="159" height="31"/>
+                                        <rect key="frame" x="-2" y="566" width="159" height="31"/>
                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" placeholderString="problemName" id="VWT-9Y-dKe">
                                             <font key="font" metaFont="system" size="26"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -332,7 +186,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="c2b-I4-hdM">
-                                        <rect key="frame" x="-2" y="521" width="52" height="18"/>
+                                        <rect key="frame" x="-2" y="540" width="52" height="18"/>
                                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" placeholderString="Prompt" allowsEditingTextAttributes="YES" id="z1l-j3-1lc">
                                             <font key="font" metaFont="system" size="14"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -340,10 +194,10 @@
                                         </textFieldCell>
                                     </textField>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uHH-Yl-mMf">
-                                        <rect key="frame" x="0.0" y="453" width="717" height="60"/>
+                                        <rect key="frame" x="0.0" y="511" width="838" height="21"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lQh-ou-3o5">
-                                                <rect key="frame" x="-6" y="13" width="112" height="32"/>
+                                                <rect key="frame" x="-6" y="-7" width="112" height="32"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="100" id="92J-eS-tT1"/>
                                                 </constraints>
@@ -356,7 +210,7 @@
                                                 </connections>
                                             </button>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cwJ-kl-axN">
-                                                <rect key="frame" x="106" y="22" width="367" height="17"/>
+                                                <rect key="frame" x="106" y="2" width="488" height="17"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="…Save, Compile, Run (⌘↩)" id="0px-M0-8AO">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -364,7 +218,7 @@
                                                 </textFieldCell>
                                             </textField>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Twp-4g-PqS">
-                                                <rect key="frame" x="473" y="13" width="127" height="32"/>
+                                                <rect key="frame" x="594" y="-7" width="127" height="32"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="115" id="Bkd-xn-LRb"/>
                                                 </constraints>
@@ -377,7 +231,7 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="08i-cR-aSX">
-                                                <rect key="frame" x="596" y="13" width="127" height="32"/>
+                                                <rect key="frame" x="717" y="-7" width="127" height="32"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="115" id="nXm-Na-T0r"/>
                                                 </constraints>
@@ -404,93 +258,116 @@
                                         </customSpacing>
                                     </stackView>
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="tQs-VH-Mgc" customClass="SyntaxTextView" customModule="SavannaKit">
-                                        <rect key="frame" x="0.0" y="58" width="640" height="387"/>
+                                        <rect key="frame" x="0.0" y="116" width="640" height="387"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="Di3-2d-HuR"/>
                                         </constraints>
                                     </customView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="foS-hP-CIy">
-                                        <rect key="frame" x="0.0" y="29" width="717" height="21"/>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jzY-bt-TdM">
+                                        <rect key="frame" x="0.0" y="0.0" width="838" height="108"/>
                                         <subviews>
-                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zzV-vL-4fV">
-                                                <rect key="frame" x="-6" y="-7" width="112" height="32"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="100" id="PJe-xD-jNN"/>
-                                                </constraints>
-                                                <buttonCell key="cell" type="push" title="Go" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ih9-O8-JSe">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="goButtonPressedWithSender:" target="XfG-lQ-9wD" id="47s-HL-OE2"/>
-                                                </connections>
-                                            </button>
-                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="euT-v4-owE">
-                                                <rect key="frame" x="102" y="-7" width="112" height="32"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="100" id="zkz-BQ-cRN"/>
-                                                </constraints>
-                                                <buttonCell key="cell" type="push" title="Previous" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vfb-Pu-2hw">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="previousButtonPressedWithSender:" target="XfG-lQ-9wD" id="8YY-ZT-xKw"/>
-                                                </connections>
-                                            </button>
-                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G7k-zk-jgu">
-                                                <rect key="frame" x="210" y="-7" width="112" height="32"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="100" id="bH5-hq-B9L"/>
-                                                </constraints>
-                                                <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Mvy-qK-66Q">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="nextButtonPressedWithSender:" target="XfG-lQ-9wD" id="FZk-dC-pib"/>
-                                                </connections>
-                                            </button>
-                                            <customView horizontalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2s8-pH-7ZG">
-                                                <rect key="frame" x="324" y="21" width="393" height="0.0"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" id="Kqq-iA-V42"/>
-                                                </constraints>
-                                            </customView>
+                                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bzs-Jv-LVh">
+                                                <rect key="frame" x="0.0" y="29" width="838" height="50"/>
+                                                <subviews>
+                                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="foS-hP-CIy">
+                                                        <rect key="frame" x="0.0" y="29" width="717" height="21"/>
+                                                        <subviews>
+                                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zzV-vL-4fV">
+                                                                <rect key="frame" x="-6" y="-7" width="112" height="32"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="100" id="PJe-xD-jNN"/>
+                                                                </constraints>
+                                                                <buttonCell key="cell" type="push" title="Go" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ih9-O8-JSe">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="goButtonPressedWithSender:" target="XfG-lQ-9wD" id="47s-HL-OE2"/>
+                                                                </connections>
+                                                            </button>
+                                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="euT-v4-owE">
+                                                                <rect key="frame" x="102" y="-7" width="112" height="32"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="100" id="zkz-BQ-cRN"/>
+                                                                </constraints>
+                                                                <buttonCell key="cell" type="push" title="Previous" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vfb-Pu-2hw">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="previousButtonPressedWithSender:" target="XfG-lQ-9wD" id="8YY-ZT-xKw"/>
+                                                                </connections>
+                                                            </button>
+                                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G7k-zk-jgu">
+                                                                <rect key="frame" x="210" y="-7" width="112" height="32"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="100" id="bH5-hq-B9L"/>
+                                                                </constraints>
+                                                                <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Mvy-qK-66Q">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="nextButtonPressedWithSender:" target="XfG-lQ-9wD" id="FZk-dC-pib"/>
+                                                                </connections>
+                                                            </button>
+                                                            <customView horizontalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2s8-pH-7ZG">
+                                                                <rect key="frame" x="324" y="21" width="393" height="0.0"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" id="Kqq-iA-V42"/>
+                                                                </constraints>
+                                                            </customView>
+                                                        </subviews>
+                                                        <visibilityPriorities>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                            <real value="1000"/>
+                                                        </visibilityPriorities>
+                                                        <customSpacing>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                        </customSpacing>
+                                                    </stackView>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xwz-16-gQr">
+                                                        <rect key="frame" x="-6" y="-7" width="112" height="32"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="100" id="trL-p7-hMy"/>
+                                                        </constraints>
+                                                        <buttonCell key="cell" type="push" title="Start Over" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="e5d-Xr-DMU">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="startOverWithSender:" target="XfG-lQ-9wD" id="ILa-ol-WsW"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
                                         </subviews>
                                         <visibilityPriorities>
                                             <integer value="1000"/>
-                                            <integer value="1000"/>
-                                            <integer value="1000"/>
-                                            <real value="1000"/>
                                         </visibilityPriorities>
                                         <customSpacing>
                                             <real value="3.4028234663852886e+38"/>
-                                            <real value="3.4028234663852886e+38"/>
-                                            <real value="3.4028234663852886e+38"/>
-                                            <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xwz-16-gQr">
-                                        <rect key="frame" x="-6" y="-7" width="112" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="100" id="trL-p7-hMy"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="push" title="Start Over" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="e5d-Xr-DMU">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="startOverWithSender:" target="XfG-lQ-9wD" id="ILa-ol-WsW"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="foS-hP-CIy" secondAttribute="trailing" id="Aqn-ip-rch"/>
                                     <constraint firstAttribute="trailing" secondItem="uHH-Yl-mMf" secondAttribute="trailing" id="MrB-Un-l0R"/>
+                                    <constraint firstItem="jzY-bt-TdM" firstAttribute="width" secondItem="CaI-sC-6Ie" secondAttribute="width" id="Pz0-4a-dQ8"/>
                                 </constraints>
                                 <visibilityPriorities>
-                                    <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
@@ -503,11 +380,10 @@
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UdH-Xq-e23">
-                                <rect key="frame" x="762" y="570" width="543" height="17"/>
+                                <rect key="frame" x="883" y="589" width="543" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="539" id="HJm-ag-3I9"/>
                                 </constraints>
@@ -518,17 +394,17 @@
                                 </textFieldCell>
                             </textField>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MjL-nB-BTK">
-                                <rect key="frame" x="762" y="20" width="543" height="540"/>
+                                <rect key="frame" x="883" y="20" width="543" height="559"/>
                                 <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ebk-cg-OHF">
-                                    <rect key="frame" x="0.0" y="0.0" width="543" height="540"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="543" height="559"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView editable="NO" drawsBackground="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="riS-m1-ghn">
-                                            <rect key="frame" x="0.0" y="0.0" width="528" height="540"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="528" height="559"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="543" height="540"/>
+                                            <size key="minSize" width="543" height="559"/>
                                             <size key="maxSize" width="555" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         </textView>
@@ -544,13 +420,13 @@
                                 </scroller>
                             </scrollView>
                             <scrollView hidden="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u5x-GJ-ewC">
-                                <rect key="frame" x="762" y="20" width="543" height="540"/>
+                                <rect key="frame" x="883" y="20" width="543" height="559"/>
                                 <clipView key="contentView" id="xhR-Ed-9uF">
-                                    <rect key="frame" x="1" y="0.0" width="541" height="539"/>
+                                    <rect key="frame" x="1" y="0.0" width="541" height="558"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" selectionHighlightStyle="none" alternatingRowBackgroundColors="YES" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" usesAutomaticRowHeights="YES" headerView="Rsg-Eh-ls9" viewBased="YES" floatsGroupRows="NO" id="vYM-aL-sSg">
-                                            <rect key="frame" x="0.0" y="0.0" width="541" height="516"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="541" height="535"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

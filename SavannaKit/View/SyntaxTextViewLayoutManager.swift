@@ -22,7 +22,7 @@ public enum EditorPlaceholderState {
 
 public extension NSAttributedString.Key {
 	
-	static public let editorPlaceholder = NSAttributedString.Key("editorPlaceholder")
+	static let editorPlaceholder = NSAttributedString.Key("editorPlaceholder")
 
 }
 
