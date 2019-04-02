@@ -210,9 +210,14 @@ class SwiftCoderViewController: NSViewController {
 		guard let helpMenu = NSApp.mainMenu?.item(withTitle: "Help")?.submenu else { return }
 		
 		helpMenu.insertItem(.separator(), at: helpMenu.items.count)
+		
+		swiftVersionMenuItem = helpMenu.insertItem(withTitle: codeController.swiftVersionString() ?? "Swift Not Found", action: #selector(doNothing), keyEquivalent: "", at: helpMenu.items.count)
+		
 		helpMenu.insertItem(withTitle: "Swift Guided Tour", action: #selector(openGuidedTour), keyEquivalent: "", at: helpMenu.items.count)
 		helpMenu.insertItem(withTitle: "Swift Language Guide", action: #selector(openLanguageGuide), keyEquivalent: "", at: helpMenu.items.count)
 	}
+	
+	var swiftVersionMenuItem: NSMenuItem?
 	
 	func setupAppMenu() {
 		guard let appMenu = NSApp.mainMenu?.items.first?.submenu else { return }
@@ -221,10 +226,11 @@ class SwiftCoderViewController: NSViewController {
 		
 		appMenu.insertItem(withTitle: "Enable String Integer Subscripts", action: #selector(toggleStringIntSubscriptAPI), keyEquivalent: "", at: index)
 		
-		
 		appMenu.insertItem(withTitle: "Set Xcode Path…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
 		
 	}
+	
+	@objc func doNothing() { }
 	
 	@objc func setXcodePath() {
 		let openPanel = NSOpenPanel()
@@ -238,6 +244,7 @@ class SwiftCoderViewController: NSViewController {
 		openPanel.begin { (response) in
 			if let url = openPanel.url, response == .OK {
 				self.codeController.xcodeURL = url
+				self.swiftVersionMenuItem?.title = self.codeController.swiftVersionString() ?? "Swift Not Found"
 			}
 		}
 	}
@@ -858,6 +865,10 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 		
 		if menuItem.action == #selector(toggleStringIntSubscriptAPI) {
 			menuItem.state = codeController.includeStringIntSubscriptAPI ? .on : .off
+		}
+		
+		if menuItem == swiftVersionMenuItem {
+			return false
 		}
 		
 		return true
