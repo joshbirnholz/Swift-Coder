@@ -92,20 +92,8 @@ func doOnMainThread(_ block: () -> ()) {
 	}
 }
 
-enum Result<T> {
-	case success(T)
-	case failure(Error)
-	
-	init(wrapping block: (() throws -> T)) {
-		do {
-			let result = try block()
-			self = .success(result)
-		} catch {
-			self = .failure(error)
-		}
-	}
-	
-	init(_ result: T?, _ error: Error?) {
+extension Result where Failure == Error {
+	init(_ result: Success?, _ error: Failure?) {
 		if let error = error {
 			self = .failure(error)
 		} else if let result = result {
@@ -115,22 +103,13 @@ enum Result<T> {
 		}
 	}
 	
-	init(_ result: Any?, _ error: Error?, as type: T.Type) {
+	init(_ result: Any?, _ error: Failure?, as type: Success.Type) {
 		if let error = error {
 			self = .failure(error)
-		} else if let result = result as? T {
+		} else if let result = result as? Success {
 			self = .success(result)
 		} else {
 			self = .failure(NSError())
-		}
-	}
-	
-	func unwrap() throws -> T {
-		switch self {
-		case .success(let result):
-			return result
-		case .failure(let error):
-			throw error
 		}
 	}
 }
@@ -225,9 +204,9 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		}
 	}
 	
-	var completion: ((Result<ProblemInfo>) -> ())?
+	var completion: ((Result<ProblemInfo, Error>) -> ())?
 	
-	func load(url: URL, completion: @escaping (Result<ProblemInfo>) -> ()) {
+	func load(url: URL, completion: @escaping (Result<ProblemInfo, Error>) -> ()) {
 		self.completion = completion
 		webview.load(URLRequest(url: url))
 	}
@@ -264,8 +243,8 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 	
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 		getResponse { (response) in
-			let result = Result<ProblemInfo> { () -> CodingBatQuestionTester.ProblemInfo in
-				let jsResponse = try response.unwrap()
+			let result = Result<ProblemInfo, Error> { () -> CodingBatQuestionTester.ProblemInfo in
+				let jsResponse = try response.get()
 				
 				guard let title = jsResponse["title"] as? String,
 				let prompt = jsResponse["prompt"] as? String,
@@ -314,7 +293,7 @@ class CodingBatQuestionTester: NSObject, WKNavigationDelegate {
 		}
 	}
 	
-	private func getResponse(completion: @escaping (Result<[String: Any]>) -> ()) {
+	private func getResponse(completion: @escaping (Result<[String: Any], Error>) -> ()) {
 		doOnMainThread {
 		let script = """
 
@@ -403,7 +382,7 @@ let tester1 = CodingBatQuestionTester()
 tester1.load(url: URL(string: "https://codingbat.com/prob/p150113")!) { problemInfoResult in
 	doOnMainThread {
 		do {
-			let problemInfo: CodingBatQuestionTester.ProblemInfo = try problemInfoResult.unwrap()
+			let problemInfo: CodingBatQuestionTester.ProblemInfo = try problemInfoResult.get()
 			print(problemInfo.initCode)
 		} catch {
 			print("Error:", error)
