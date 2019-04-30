@@ -17,23 +17,49 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			NSApplication.shared.isAutomaticCustomizeTouchBarMenuItemEnabled = true
 		}
 		
-		var allProblemTypes: [String: String] = [:]
-		let allProblems = ProblemSet.allCases.map { $0.problems }.joined()
-		
-		for problem in allProblems {
-			allProblemTypes[problem.actualReturnType.convertibleTypeName] = String(describing: problem.actualReturnType) + ".self"
-			for parameter in problem.parameters {
-				allProblemTypes[parameter.actualType.convertibleTypeName] = String(describing: parameter.actualType) + ".self"
-			}
-		}
-		
-		print(allProblemTypes)
-
-		
 	}
 	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 		return true
+	}
+	
+	func application(_ sender: NSApplication, openFiles filenames: [String]) {
+		print(#function)
+		let urls = filenames.map{ URL(fileURLWithPath: $0) }
+		
+		let fm = FileManager.default
+		let problemsDirectory = LocalCodeController.shared.applicationSupportDirectory.appendingPathComponent("Problems", isDirectory: true)
+		
+		var loadedProblemSets: [ProblemSet] = []
+		
+		for url in urls {
+			do {
+				let problemSet = try ProblemSet.load(from: url)
+				
+				guard !problemSet.problems.isEmpty else { continue }
+				
+				let destinationURL = problemsDirectory.appendingPathComponent(url.lastPathComponent)
+				
+				try fm.copyItem(at: url, to: destinationURL)
+				loadedProblemSets.append(problemSet)
+			} catch {
+				let alert = NSAlert(error: error)
+				
+				if let decodingError = error as? DecodingError {
+					alert.informativeText += "\(decodingError)"
+				}
+				
+				alert.runModal()
+			}
+		}
+		
+		ProblemSet.allCases.append(contentsOf: loadedProblemSets)
+		
+		if let problemSet = loadedProblemSets.first,
+			let vc = NSApplication.shared.mainWindow?.contentViewController as? SwiftCoderViewController {
+			vc.problemIndexPath = ProblemIndexPath(list: problemSet, index: 0)
+			vc.setupProblemMenu()
+		}
 	}
 	
 }
