@@ -110,12 +110,12 @@ func optionalChecking(n: Int?) -> Int {
 			solution: nil,
 			hint: nil,
 			testCases: [
-				Problem.TestCase(expectation: "Keith A. Hayes", arguments: String?.some("Keith"), String?.some("A"), String?.some("Hayes")),
-				Problem.TestCase(expectation: "Greg Kellner", arguments: String?.some("Greg"), String?.none, String?.some("Kellner")),
-				Problem.TestCase(expectation: "Kristi E. Taylor", arguments: String?.some("Kristi"), String?.some("E"), String?.some("Taylor")),
-				Problem.TestCase(expectation: "Tiffany Heaton", arguments: String?.some("Tiffany"), String?.none, String?.some("Heaton")),
-				Problem.TestCase(expectation: "Cloud Strife", arguments: String?.some("Cloud"), String?.none, String?.some("Strife")),
-				Problem.TestCase(expectation: "Trevor C. Belmont", arguments: String?.some("Trevor"), String?.some("C"), String?.some("Belmont"))
+				Problem.TestCase(expectation: "Keith A. Hayes", arguments: "Keith", String?.some("A"), "Hayes"),
+				Problem.TestCase(expectation: "Greg Kellner", arguments: "Greg", String?.none, "Kellner"),
+				Problem.TestCase(expectation: "Kristi E. Taylor", arguments: "Kristi", String?.some("E"), "Taylor"),
+				Problem.TestCase(expectation: "Tiffany Heaton", arguments: "Tiffany", String?.none, "Heaton"),
+				Problem.TestCase(expectation: "Cloud Strife", arguments: "Cloud", String?.none, "Strife"),
+				Problem.TestCase(expectation: "Trevor C. Belmont", arguments: "Trevor", String?.some("C"), "Belmont")
 		]),
 	Problem(title: "optionalSum",
 			returnType: Int.self,

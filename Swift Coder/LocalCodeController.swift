@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class LocalCodeController {
+class LocalCodeController: CodeController {
 	
 	enum PathError: Error {
 		case swift
@@ -29,11 +29,19 @@ class LocalCodeController {
 		}
 	}
 	
-	public var isLoggingEnabled: Bool = false
+	public var isLoggingEnabled: Bool = true
 	
 	public let applicationSupportDirectory: URL
 	
-	public var activeUsername: String?
+	private var activeUsername: String?
+	
+	public func setActiveUsername(_ username: String?) {
+		self.activeUsername = username
+	}
+	
+	public func getActiveUserName() -> String? {
+		return activeUsername
+	}
 	
 	public var baseDirectory: URL {
 		if let activeUsername = activeUsername {
@@ -50,7 +58,7 @@ class LocalCodeController {
 		}
 	}
 	
-	public func userNameIsValid(_ username: String) -> Bool {
+	func validateUsername(_ username: String) -> Bool {
 		return !username.contains(":") && !username.contains("/")
 	}
 	
@@ -64,6 +72,14 @@ class LocalCodeController {
 		}
 	}
 	
+	public func setShouldIncludeStringSubscriptAPI(_ shouldInclude: Bool) {
+		includeStringIntSubscriptAPI = shouldInclude
+	}
+	
+	public func shouldIncludeStringSubscriptAPI() -> Bool {
+		return includeStringIntSubscriptAPI
+	}
+	
 	public var includeStringIntSubscriptAPI: Bool {
 		get {
 			return UserDefaults.standard.bool(forKey: #function)
@@ -73,9 +89,9 @@ class LocalCodeController {
 		}
 	}
 	
-	public static let shared = LocalCodeController()
-	
 	let isSandboxed = ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
+	
+	public static let shared = LocalCodeController()
 	
 	private init() {
 		print("Sandboxed:", isSandboxed)
@@ -271,9 +287,20 @@ class LocalCodeController {
 	fileprivate func runTest(testCase: Problem.TestCase, for problem: Problem) throws -> CompilationResult.TestResult {
 //		print("Running \(problem.functionCall(with: testCase.arguments))")
 		
-		let command: [String] = testCase.arguments.map {
+		var command: [String] = testCase.arguments.map {
 			let argString = $0.stringRepresentation
-			return (argString == "" ? "String.empty" : argString).data(using: .utf8)!.base64EncodedString()
+			return (argString == "" && $0 is String ? "String.empty" : argString).data(using: .utf8)!.base64EncodedString()
+		}
+		
+		if let customTesterOutputCode = problem.customTesterOutputCode, customTesterOutputCode.contains("__expectedResult") {
+			let expectedResultString = testCase.expectedResult.stringRepresentation
+			
+			if expectedResultString == "" {
+				command.append("String.empty".data(using: .utf8)!.base64EncodedString())
+			} else {
+				command.append(expectedResultString.data(using: .utf8)!.base64EncodedString())
+			}
+			
 		}
 		
 		let startTime = Date()
@@ -296,10 +323,8 @@ class LocalCodeController {
 			
 			let success: Bool
 			
-			if let customTestResultHandler = problem.customTestResultHandler {
-				success = customTestResultHandler(testCase, runResult.output)
-				
-				return CompilationResult.TestResult(run: runResult.output, success: success ? .ok : .failure, runTime: runTime)
+			if problem.customTesterOutputCode != nil {
+				return CompilationResult.TestResult(run: runResult.output, success: runResult.exitCode == Int32.success ? .ok : .failure, runTime: runTime)
 			} else {
 				guard let typedOutput = problem.actualReturnType.init(runResult.output) else {
 					return CompilationResult.TestResult(run: runResult.output, success: .error, runTime: runTime)
@@ -379,8 +404,6 @@ class LocalCodeController {
 					return
 				}
 				
-				problem.onRunTest?()
-				
 				var results: [CompilationResult.TestResult] = Array.init(repeating: CompilationResult.TestResult(run: "", success: .error, runTime: 0), count: problem.testCases.count * problem.numberOfTimesToTest)
 				let queue = OperationQueue()
 				queue.qualityOfService = .userInteractive
@@ -442,7 +465,7 @@ class LocalCodeController {
 	private func runnableProblemCode(for problem: Problem, code: String) -> String {
 		var runnableCode = code + "\n\n"
 		
-		let printReplacement = problem.usesPrintedOutput ? "" : """
+		let printReplacement = """
 		func print(_ items: Any..., separator: String = "", terminator: String = "") {
 		
 		}
@@ -494,7 +517,7 @@ class LocalCodeController {
 				// Don't need to convert type, so no need for optional checking with a string.
 				runnableCode += """
 				guard let __param\(index): \(parameter.actualType.runnableTesterParameterTypeName) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap({ $0 == "String.empty" ? "" : $0 }) else {
-					Swift.print("Incorrect argument type")
+					Swift.print("Incorrect argument type for \(parameter.name)")
 					exit(-1)
 				}
 				
@@ -503,7 +526,7 @@ class LocalCodeController {
 			} else {
 				runnableCode += """
 				guard let __param\(index): \(parameter.actualType.runnableTesterParameterTypeName) = Data(base64Encoded: CommandLine.arguments[\(index + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap(\(parameter.actualType.runnableTesterParameterTypeName).init) else {
-				Swift.print("Incorrect argument type")
+					Swift.print("Incorrect argument type for \(parameter.name)")
 					exit(-1)
 				}
 				
@@ -511,6 +534,10 @@ class LocalCodeController {
 				"""
 				
 			}
+		}
+		
+		if let onRunTest = problem.onRunTest {
+			runnableCode += "do {\n" + onRunTest + "}\n\n"
 		}
 		
 		let needsStringRepresentationPrinted = problem.actualReturnType.needsCustomStringRepresentation
@@ -523,6 +550,19 @@ class LocalCodeController {
 			}.joined(separator: ", ")
 		
 		if let customTesterOutputCode = problem.customTesterOutputCode {
+			runnableCode += Int32.exitCode + "\n\n"
+			
+			if customTesterOutputCode.contains("__expectedResult") {
+				runnableCode += """
+				guard let __expectedResult: String = Data(base64Encoded: CommandLine.arguments[\(problem.parameters.count + 1)]).flatMap({ String(data: $0, encoding: .utf8) }).flatMap({ $0 == "String.empty" ? "" : $0 }) else {
+				Swift.print("Incorrect argument type for expected result")
+				exit(-1)
+				}
+				
+				
+				"""
+			}
+			
 			runnableCode += customTesterOutputCode
 			return runnableCode
 		}
@@ -565,6 +605,27 @@ class LocalCodeController {
 		"""
 		
 		return runnableCode
+	}
+	
+	func cleanupTemporaryFiles() {
+		do {
+			// Delete temporary files
+			try FileManager.default.removeItem(at: tempDirectory)
+		} catch {
+			NSLog("Error: Could not delete contents of \(tempDirectory.path): \(error)")
+		}
+	}
+	
+	func getUsernames() -> [String] {
+		do {
+			return try FileManager.default.contentsOfDirectory(at: applicationSupportDirectory.appendingPathComponent("users"), includingPropertiesForKeys: [.isDirectoryKey], options: []).compactMap { $0.hasDirectoryPath ? $0.lastPathComponent : nil }
+		} catch {
+			return []
+		}
+	}
+	
+	func deleteUser(_ username: String) {
+		try? FileManager.default.trashItem(at: applicationSupportDirectory.appendingPathComponent("users").appendingPathComponent(username), resultingItemURL: nil)
 	}
 	
 }

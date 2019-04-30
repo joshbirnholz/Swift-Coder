@@ -17,7 +17,7 @@ struct ProblemIndexPath: Equatable {
 
 class SwiftCoderViewController: NSViewController {
 	
-	let codeController = LocalCodeController.shared
+	let codeController: CodeController = LocalCodeController.shared
 	let lexer: Lexer = SwiftLexer()
 	
 	enum AssistantView: CaseIterable {
@@ -100,7 +100,7 @@ class SwiftCoderViewController: NSViewController {
 				}
 			}
 			
-			userDefaults.set(problemIndexPath.list.rawValue, forKey: "problemList")
+			userDefaults.set(problemIndexPath.list.title, forKey: "problemList")
 			userDefaults.set(problemIndexPath.index, forKey: "problemIndex")
 			nextButton.isEnabled = problemIndexPath.index + 1 < problems.count
 			previousButton.isEnabled = problemIndexPath.index - 1 >= 0
@@ -138,16 +138,21 @@ class SwiftCoderViewController: NSViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		codeController.activeUsername = userDefaults.string(forKey: activeUserUserDefaultsKey)
+		codeController.setActiveUsername(userDefaults.string(forKey: activeUserUserDefaultsKey))
 		
-		let list = userDefaults.string(forKey: "problemList").flatMap(ProblemSet.init) ?? ProblemSet.allCases.first!
-		let index = min(userDefaults.integer(forKey: "problemIndex"), list.problems.count-1)
-		problemIndexPath = ProblemIndexPath(list: list, index: index)
+		let savedProblemSetTitle = userDefaults.string(forKey: "problemList")
+		
+		let problemSet = ProblemSet.allCases.first(where: { savedProblemSetTitle == $0.title }) ?? ProblemSet.allCases.first!
+		let index = min(userDefaults.integer(forKey: "problemIndex"), problemSet.problems.count-1)
+		problemIndexPath = ProblemIndexPath(list: problemSet, index: index)
 		
 		inputTextView.needsDisplay = true
 		
-		let font = NSFont(name: "Menlo", size: 13)!
-		let attributes: [NSAttributedString.Key : Any] = [.font : font, .foregroundColor: NSColor.labelColor]
+		var attributes: [NSAttributedString.Key : Any] = [.foregroundColor: NSColor.labelColor]
+		
+		if let font = NSFont(name: "Menlo", size: 13) {
+			attributes[.font] = font
+		}
 		
 		outputField.typingAttributes = attributes
 		
@@ -191,12 +196,7 @@ class SwiftCoderViewController: NSViewController {
 			NSLog("Error: Could not save code: \(error)")
 		}
 		
-		do {
-			// Delete temporary files
-			try FileManager.default.removeItem(at: codeController.tempDirectory)
-		} catch {
-			NSLog("Error: Could not delete contents of \(codeController.tempDirectory.path): \(error)")
-		}
+		self.codeController.cleanupTemporaryFiles()
 	}
 	
 	override func viewWillAppear() {
@@ -206,7 +206,7 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	func updateWindowTitle() {
-		view.window?.title = "\(problemIndexPath.list.rawValue) > \(problem.title)"
+		view.window?.title = "\(problemIndexPath.list.title) > \(problem.title)"
 	}
 	
 	func setupHelpMenu() {
@@ -227,15 +227,11 @@ class SwiftCoderViewController: NSViewController {
 		
 		userMenu.insertItem(withTitle: NSFullUserName(), action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
 		
-		do {
-			let users = try FileManager.default.contentsOfDirectory(at: codeController.applicationSupportDirectory.appendingPathComponent("users"), includingPropertiesForKeys: [.isDirectoryKey], options: []).compactMap { $0.hasDirectoryPath ? $0.lastPathComponent : nil }
-			
-			for user in users {
-				let userItem = userMenu.insertItem(withTitle: user, action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
-				userItem.representedObject = user
-			}
-		} catch {
-			
+		let users = codeController.getUsernames()
+		
+		for user in users {
+			let userItem = userMenu.insertItem(withTitle: user, action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
+			userItem.representedObject = user
 		}
 		
 		userMenu.insertItem(.separator(), at: userMenu.items.count)
@@ -254,7 +250,7 @@ class SwiftCoderViewController: NSViewController {
 	func setUser(to userName: String?) {
 		updateProblemIndex(to: problemIndexPath.index)
 		
-		codeController.activeUsername = userName
+		codeController.setActiveUsername(userName)
 		
 		inputTextView.text = codeController.loadCode(for: problem)
 		
@@ -271,7 +267,7 @@ class SwiftCoderViewController: NSViewController {
 	let activeUserUserDefaultsKey = "activeUser"
 	
 	@objc func deleteCurrentUserMenuItemSelected(sender: Any?) {
-		guard let userName = codeController.activeUsername else { return }
+		guard let userName = codeController.getActiveUserName() else { return }
 		
 		let alert = NSAlert()
 		
@@ -286,7 +282,7 @@ class SwiftCoderViewController: NSViewController {
 		case NSApplication.ModalResponse.alertSecondButtonReturn:
 			setUser(to: nil)
 			
-			try? FileManager.default.trashItem(at: codeController.applicationSupportDirectory.appendingPathComponent("users").appendingPathComponent(userName), resultingItemURL: nil)
+			codeController.deleteUser(userName)
 			
 			setupUserMenu()
 		default:
@@ -319,7 +315,7 @@ class SwiftCoderViewController: NSViewController {
 			switch alert.runModal() {
 			case NSApplication.ModalResponse.alertFirstButtonReturn:
 				let userName = textField.stringValue
-				if codeController.userNameIsValid(userName) {
+				if codeController.validateUsername(userName) {
 					setUser(to: userName)
 					setupUserMenu()
 				} else {
@@ -340,10 +336,17 @@ class SwiftCoderViewController: NSViewController {
 		
 		let index = appMenu.indexOfItem(withTitle: "Preferences…")
 		
+		appMenu.insertItem(withTitle: "Manage Problem Sets in Finder", action: #selector(manageProblemSetsInFinder), keyEquivalent: "", at: index)
+		
 		appMenu.insertItem(withTitle: "Enable String Integer Subscripts", action: #selector(toggleStringIntSubscriptAPI), keyEquivalent: "", at: index)
 		
 		appMenu.insertItem(withTitle: "Set Xcode Path…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
 		
+	}
+	
+	@objc func manageProblemSetsInFinder() {
+		let url = LocalCodeController.shared.applicationSupportDirectory.appendingPathComponent("Problems", isDirectory: true)
+		NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: url.path)
 	}
 	
 	@objc func doNothing() { }
@@ -359,14 +362,15 @@ class SwiftCoderViewController: NSViewController {
 		
 		openPanel.begin { (response) in
 			if let url = openPanel.url, response == .OK {
-				self.codeController.xcodeURL = url
+				(self.codeController as? LocalCodeController)?.xcodeURL = url
 				self.swiftVersionMenuItem?.title = self.codeController.swiftVersionString() ?? "Swift Not Found"
 			}
 		}
 	}
 	
 	@objc func toggleStringIntSubscriptAPI() {
-		codeController.includeStringIntSubscriptAPI.toggle()
+		let shouldInclude = !codeController.shouldIncludeStringSubscriptAPI()
+		codeController.setShouldIncludeStringSubscriptAPI(shouldInclude)
 	}
 	
 	@objc func openLanguageGuide() {
@@ -427,7 +431,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		let problemSetMenu = NSMenu(title: "Problem Set")
 		let setItems: [NSMenuItem] = ProblemSet.allCases.map {
-			let item = NSMenuItem(title: $0.rawValue, action: #selector(problemSetMenuItemSelected), keyEquivalent: "")
+			let item = NSMenuItem(title: $0.title, action: #selector(problemSetMenuItemSelected), keyEquivalent: "")
 			item.representedObject = $0
 			return item
 		}
@@ -980,7 +984,7 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 		}
 		
 		if menuItem.action == #selector(toggleStringIntSubscriptAPI) {
-			menuItem.state = codeController.includeStringIntSubscriptAPI ? .on : .off
+			menuItem.state = codeController.shouldIncludeStringSubscriptAPI() ? .on : .off
 		}
 		
 		if menuItem == swiftVersionMenuItem {
@@ -988,11 +992,11 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 		}
 		
 		if menuItem.action == #selector(userMenuItemSelected(_:)) {
-			menuItem.state = codeController.activeUsername == menuItem.representedObject as? String ? .on : .off
+			menuItem.state = codeController.getActiveUserName() == menuItem.representedObject as? String ? .on : .off
 		}
 		
 		if menuItem.action == #selector(deleteCurrentUserMenuItemSelected) {
-			return codeController.activeUsername != nil
+			return codeController.getActiveUserName() != nil
 		}
 		
 		return true

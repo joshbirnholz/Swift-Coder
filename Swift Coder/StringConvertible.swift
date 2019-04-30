@@ -446,25 +446,44 @@ struct StringConvertibleVoid: Equatable, StringConvertible, CustomStringConverti
 	
 }
 
-fileprivate let nilUUID = "nil-\(UUID().uuidString)"
 extension Optional: StringConvertible where Wrapped: StringConvertible & Equatable {
+	
+	private struct OptionalHelper: Codable {
+		var stringRepresentation: String?
+	}
+	
 	init?(_ description: String) {
-		if description == nilUUID {
+		if description == "nil" {
 			self = .none
-		} else if let value = Wrapped.init(description) {
+			return
+		}
+		
+		guard let data = description.data(using: .utf8),
+			let helper = try? decoder.decode(OptionalHelper.self, from: data) else {
+				return nil
+		}
+		
+		if let stringRepresentation = helper.stringRepresentation {
+			guard let value = Wrapped.init(stringRepresentation) else { return nil }
 			self = .some(value)
 		} else {
-			return nil
+			self = .none
 		}
 	}
 	
 	var stringRepresentation: String {
+		let helper: OptionalHelper?
+		
 		switch self {
 		case .none:
-			return nilUUID
+			helper = OptionalHelper(stringRepresentation: nil)
 		case .some(let wrapped):
-			return wrapped.stringRepresentation
+			helper = OptionalHelper(stringRepresentation: wrapped.stringRepresentation)
 		}
+		
+		guard let data = try? encoder.encode(helper) else { return "" }
+		
+		return String(data: data, encoding: .utf8) ?? ""
 	}
 	
 	static var convertibleTypeName: String {
@@ -480,42 +499,41 @@ extension Optional: StringConvertible where Wrapped: StringConvertible & Equatab
 		}
 	}
 	
-	private static var thatPart: String {
-		if Wrapped.self == String.self {
-			return """
-			if description == \"\(nilUUID)\" {
-			self = .none
-			} else {
-			self = .some(description)
-			}
-			"""
-		} else {
-			return """
-			if description == \"\(nilUUID)\" {
-			self = .none
-			} else if let value = Wrapped.init(description) {
-			self = .some(value)
-			} else {
-			return nil
-			}
-			"""
-		}
-	}
-	
 	static var helperCode: String {
 		return """
 			extension Optional: LosslessStringConvertible, CustomStringConvertible where Wrapped == \(Wrapped.convertibleTypeName) {
+			
+			private struct OptionalHelper: Codable {
+				var stringRepresentation: String?
+			}
+			
 			public init?(_ description: String) {
-			\(thatPart)
+				guard let data = description.data(using: .utf8),
+					let helper = try? decoder.decode(OptionalHelper.self, from: data) else {
+					return nil
+				}
+			
+				if let stringRepresentation = helper.stringRepresentation {
+					\(Wrapped.self == String.self ? "self = .some(stringRepresentation)" : "guard let value = Wrapped.init(stringRepresentation) else { return nil }\n\t\t\t\t\tself = .some(value)")
+				} else {
+					self = .none
+				}
+			
 			}
 			
 			var stringRepresentation: String {
-			switch self {
-			case .none:
-			return \"\(nilUUID)\"
-			case .some(let wrapped):
-			return wrapped.\(Wrapped.needsCustomStringRepresentation ? "stringRepresentation" : "description")
-			}
+				let helper: OptionalHelper?
+			
+				switch self {
+				case .none:
+					helper = OptionalHelper(stringRepresentation: nil)
+				case .some(let wrapped):
+					helper = OptionalHelper(stringRepresentation: wrapped.\(Wrapped.needsCustomStringRepresentation ? "stringRepresentation" : "description"))
+				}
+			
+				guard let data = try? encoder.encode(helper) else { return "" }
+			
+				return String(data: data, encoding: .utf8) ?? ""
 			}
 			
 			public var description: String {
@@ -535,7 +553,7 @@ extension Optional: StringConvertible where Wrapped: StringConvertible & Equatab
 	}
 	
 	static var helperCodeNeedsCoders: Bool {
-		return Wrapped.helperCodeNeedsCoders
+		return true
 	}
 	
 }
