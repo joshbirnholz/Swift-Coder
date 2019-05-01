@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5400987822532D9500652B37 /* shakespeare.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5400986E22532D9400652B37 /* shakespeare.txt */; };
 		5406891922529AFC008B78A0 /* SavannaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FFFF42124BB6600284D48 /* SavannaKit.framework */; };
 		540F00152124BB7400284D48 /* String+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00022124BB7400284D48 /* String+Range.swift */; };
 		540F00162124BB7400284D48 /* NSTextView+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00032124BB7400284D48 /* NSTextView+UIKit.swift */; };
@@ -114,7 +113,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5400986E22532D9400652B37 /* shakespeare.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shakespeare.txt; sourceTree = "<group>"; };
 		540F00022124BB7400284D48 /* String+Range.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Range.swift"; sourceTree = "<group>"; };
 		540F00032124BB7400284D48 /* NSTextView+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextView+UIKit.swift"; sourceTree = "<group>"; };
 		540F00042124BB7400284D48 /* Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
@@ -214,14 +212,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5400986922532D9400652B37 /* Files Resources */ = {
-			isa = PBXGroup;
-			children = (
-				5400986E22532D9400652B37 /* shakespeare.txt */,
-			);
-			path = "Files Resources";
-			sourceTree = "<group>";
-		};
 		540F00012124BB7400284D48 /* Util */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,7 +342,6 @@
 			children = (
 				542A053921A481F7004E5F4F /* Problems */,
 				54E227C4219419E500E33204 /* Swift Coder.entitlements */,
-				5400986922532D9400652B37 /* Files Resources */,
 				54FAFCE422528E7200BBCE0E /* StringConvertible.swift */,
 				54FAFCE822528FB700BBCE0E /* AppDelegate.swift */,
 				5468857F1CC2BA0C003F3614 /* SwiftCoderViewController.swift */,
@@ -551,7 +540,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5400987822532D9500652B37 /* shakespeare.txt in Resources */,
 				54EFE62E21962D680023585D /* StringAPI.txt in Resources */,
 				546885821CC2BA0C003F3614 /* Assets.xcassets in Resources */,
 				546885851CC2BA0C003F3614 /* Main.storyboard in Resources */,
