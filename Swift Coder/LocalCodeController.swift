@@ -59,7 +59,7 @@ class LocalCodeController: CodeController {
 	}
 	
 	func validateUsername(_ username: String) -> Bool {
-		return !username.contains(":") && !username.contains("/")
+		return !username.isEmpty && !username.contains(":") && !username.contains("/")
 	}
 	
 	public let tempDirectory: URL

@@ -150,8 +150,19 @@ extension URL: StringConvertible {
 	}
 	
 	var displayDescription: String {
-		let file = path.replacingOccurrences(of: Bundle.main.bundlePath.appending("/Contents/Resources/"), with: "").replacingOccurrences(of: LocalCodeController.shared.applicationSupportDirectory.path + "/", with: "")
-		return file
+		var path = self.path
+		
+		let bundlePath = Bundle.main.bundlePath
+		let resourcesPath = bundlePath + "/Contents/Resources/"
+		path = path.replacingOccurrences(of: resourcesPath, with: "")
+		path = path.replacingOccurrences(of: bundlePath, with: "")
+		
+		let appSupportPath = LocalCodeController.shared.applicationSupportDirectory.path
+		let problemsPath = LocalCodeController.shared.applicationSupportDirectory.appendingPathComponent("Problems", isDirectory: true).path
+		path = path.replacingOccurrences(of: problemsPath, with: "")
+		path = path.replacingOccurrences(of: appSupportPath, with: "")
+		
+		return path
 	}
 }
 

@@ -148,13 +148,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		inputTextView.needsDisplay = true
 		
-		var attributes: [NSAttributedString.Key : Any] = [.foregroundColor: NSColor.labelColor]
-		
-		if let font = NSFont(name: "Menlo", size: 13) {
-			attributes[.font] = font
-		}
-		
-		outputField.typingAttributes = attributes
+		outputField.typingAttributes[.foregroundColor] = NSColor.labelColor
 		
 		inputTextView.delegate = self
 		inputTextView.theme = SourceCodeThemes.dynamicSwiftBook
@@ -180,9 +174,19 @@ class SwiftCoderViewController: NSViewController {
 		setupCodeMenu()
 		setupHelpMenu()
 		setupAppMenu()
-		setupUserMenu()
 		
 		finishedLoadingView = true
+		
+	}
+	
+	private var initialUserMenuSetupCompleted = false
+	
+	override func viewDidAppear() {
+		super.viewDidAppear()
+		
+		if !initialUserMenuSetupCompleted {
+			setupUserMenu()
+		}
 		
 	}
 	
@@ -206,7 +210,7 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	func updateWindowTitle() {
-		view.window?.title = "\(problemIndexPath.list.title) > \(problem.title)"
+//		view.window?.title = "\(problemIndexPath.list.title) > \(problem.title)"
 	}
 	
 	func setupHelpMenu() {
@@ -221,17 +225,37 @@ class SwiftCoderViewController: NSViewController {
 	}
 	
 	func setupUserMenu() {
-		guard let userMenu = NSApp.mainMenu?.item(withTitle: "User")?.submenu else { return }
+		defer {
+			initialUserMenuSetupCompleted = true
+		}
+		
+		guard let toolbarItem = (view.window?.windowController as? WindowController)?.userToolbarMenu,
+			let userMenu = toolbarItem.menu else {
+				return
+		}
 		
 		userMenu.removeAllItems()
 		
-		userMenu.insertItem(withTitle: NSFullUserName(), action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
+		let fullUserName = NSFullUserName()
+		
+		let defaultUserItem = userMenu.insertItem(withTitle: fullUserName, action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
 		
 		let users = codeController.getUsernames()
+		let activeUsername = codeController.getActiveUserName()
+		
+		if activeUsername == nil {
+			toolbarItem.select(defaultUserItem)
+			toolbarItem.setTitle(fullUserName)
+		}
 		
 		for user in users {
 			let userItem = userMenu.insertItem(withTitle: user, action: #selector(userMenuItemSelected(_:)), keyEquivalent: "", at: userMenu.items.count)
 			userItem.representedObject = user
+			
+			if let activeUsername = activeUsername, activeUsername == user {
+				toolbarItem.select(userItem)
+				toolbarItem.setTitle(activeUsername)
+			}
 		}
 		
 		userMenu.insertItem(.separator(), at: userMenu.items.count)
@@ -267,6 +291,8 @@ class SwiftCoderViewController: NSViewController {
 	let activeUserUserDefaultsKey = "activeUser"
 	
 	@objc func deleteCurrentUserMenuItemSelected(sender: Any?) {
+		setupUserMenu()
+		
 		guard let userName = codeController.getActiveUserName() else { return }
 		
 		let alert = NSAlert()
@@ -319,13 +345,14 @@ class SwiftCoderViewController: NSViewController {
 					setUser(to: userName)
 					setupUserMenu()
 				} else {
-					showAlert(informativeText: "The name you chose contains one or more characters are aren't allowed. Don't use \":\" or \"/\" in your user name.", name: userName)
+					showAlert(informativeText: "Please choose a different name. The name you chose contains one or more characters are aren't allowed.", name: userName)
 				}
 			default:
 				break
 			}
 		}
 		
+		setupUserMenu()
 		showAlert()
 	}
 	
@@ -436,11 +463,14 @@ class SwiftCoderViewController: NSViewController {
 			return item
 		}
 		setItems.forEach(problemSetMenu.addItem)
+		
 		let problemSetMenuItem = NSMenuItem(title: "Problem Sets", action: nil, keyEquivalent: "")
 		problemSetMenuItem.submenu = problemSetMenu
 		problemMenu.addItem(problemSetMenuItem)
-		
 		problemMenu.addItem(.separator())
+		
+//		problemSetPopupButton.menu = problemSetMenu
+//		problemSetPopupButton.setTitle(problemIndexPath.list.title)
 		
 		let items: [NSMenuItem] = problems.enumerated().map { index, problem in
 			let item = NSMenuItem(title: problem.title, action: #selector(problemMenuItemSelected), keyEquivalent: "")
@@ -619,16 +649,21 @@ class SwiftCoderViewController: NSViewController {
 							case .error(let contents):
 								switch contents {
 								case .compilerMessages(let messages):
+									self.outputField.font = NSFont(name: "Menlo", size: 13)
 									self.outputField.string = messages.map { $0.description }.joined(separator: "\n")
 								case .text(let string):
+									self.outputField.font = NSFont(name: "Menlo", size: 13)
 									self.outputField.string = string
 								}
 							case .timeout:
+								self.outputField.font = NSFont.systemFont(ofSize: 14)
 								self.outputField.string = "It took too long to test your code."
 							}
 						} else if let error = error as? LocalCodeController.PathError {
+							self.outputField.font = NSFont.systemFont(ofSize: 14)
 							self.outputField.string = error.localizedDescription
 						} else {
+							self.outputField.font = NSFont.systemFont(ofSize: 14)
 							self.outputField.string = error.localizedDescription
 						}
 						
@@ -645,11 +680,14 @@ class SwiftCoderViewController: NSViewController {
 							switch contents {
 							case .compilerMessages(let messages):
 								// The messages array contains all of the compile-time errors produced by the user's code.
+								self.outputField.font = NSFont(name: "Menlo", size: 13)
 								self.outputField.string = messages.filter { $0.messageType != .note }.map { "\($0.messageType == .error ? "🛑" : "⚠️") line \($0.line): \($0.message)" }.joined(separator: "\n\n")
 							case .text(let string):
+								self.outputField.font = NSFont(name: "Menlo", size: 13)
 								self.outputField.string = string
 							}
 						case .timeout:
+							self.outputField.font = NSFont.systemFont(ofSize: 14)
 							self.outputField.string = "Your code took too long to compile."
 						}
 					case .success(let testResults):
@@ -697,6 +735,7 @@ class SwiftCoderViewController: NSViewController {
 					self.outputStatusTextField.textColor = .red
 				}
 				self.outputStatusTextField.stringValue =  "Error saving your code:"
+				self.outputField.font = NSFont.systemFont(ofSize: 14)
 				self.outputField.string = error.localizedDescription
 			}
 		}
@@ -708,7 +747,13 @@ class SwiftCoderViewController: NSViewController {
 		outputStatusTextField.stringValue = "Solution:"
 		self.assistantView = .textField
 		
-		outputField.string = problem.solution ?? "The solution isn't available for this problem."
+		if let solution = problem.solution {
+			outputField.font = NSFont(name: "Menlo", size: 13)
+			outputField.string = solution
+		} else {
+			outputField.font = NSFont.systemFont(ofSize: 14)
+			outputField.string = "The solution isn't available for this problem."
+		}
 		
 	}
 	
@@ -719,6 +764,8 @@ class SwiftCoderViewController: NSViewController {
 			outputStatusTextField.textColor = .labelColor
 			outputStatusTextField.stringValue = "Hint:"
 			self.assistantView = .textField
+			
+			outputField.font = NSFont.systemFont(ofSize: 14)
 			
 			outputField.string = problem.hint ?? "There is no hint for this problem."
 		}

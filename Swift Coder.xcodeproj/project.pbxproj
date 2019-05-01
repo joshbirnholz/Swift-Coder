@@ -63,6 +63,7 @@
 		546885AE1CC2E758003F3614 /* ProblemSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546885AD1CC2E758003F3614 /* ProblemSet.swift */; };
 		546C3CF5226FA19A00A3204E /* CodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546C3CF4226FA19A00A3204E /* CodeController.swift */; };
 		547B567F225296E200D9B3A1 /* Optionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547B567E225296E200D9B3A1 /* Optionals.swift */; };
+		54940F392279FAC100404E57 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54940F382279FAC100404E57 /* WindowController.swift */; };
 		549BABFD212217A60015D6F6 /* LocalCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549BABFC212217A60015D6F6 /* LocalCodeController.swift */; };
 		54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFF10F219B77FC0089E740 /* CompilerMessage.swift */; };
 		54EFE62B219624CC0023585D /* CompilationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFE62A219624CC0023585D /* CompilationResult.swift */; };
@@ -171,6 +172,7 @@
 		546885AD1CC2E758003F3614 /* ProblemSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemSet.swift; sourceTree = "<group>"; };
 		546C3CF4226FA19A00A3204E /* CodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeController.swift; sourceTree = "<group>"; };
 		547B567E225296E200D9B3A1 /* Optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optionals.swift; sourceTree = "<group>"; };
+		54940F382279FAC100404E57 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		549BABFC212217A60015D6F6 /* LocalCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCodeController.swift; sourceTree = "<group>"; };
 		54CFF10F219B77FC0089E740 /* CompilerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerMessage.swift; sourceTree = "<group>"; };
 		54E227B52193FF6800E33204 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 				549BABFC212217A60015D6F6 /* LocalCodeController.swift */,
 				54CFF10F219B77FC0089E740 /* CompilerMessage.swift */,
 				546885811CC2BA0C003F3614 /* Assets.xcassets */,
+				54940F382279FAC100404E57 /* WindowController.swift */,
 				546885831CC2BA0C003F3614 /* Main.storyboard */,
 				546885861CC2BA0C003F3614 /* Info.plist */,
 				540F00472124C01C00284D48 /* SourceCodeTheme.swift */,
@@ -620,6 +623,7 @@
 				542A055521A483AC004E5F4F /* Recursion1.swift in Sources */,
 				54FAFCE322528E3B00BBCE0E /* Extensions.swift in Sources */,
 				542A055121A4837D004E5F4F /* Dictionary1.swift in Sources */,
+				54940F392279FAC100404E57 /* WindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

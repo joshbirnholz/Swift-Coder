@@ -263,6 +263,10 @@ fileprivate struct CodableStringConvertible: Codable {
 	}
 	
 	private static let bundlePathReplacement = "$BundlePath"
+	private static let problemsPathReplacement = "$ApplicationSupport"
+	private static var problemsPath: String {
+		return LocalCodeController.shared.applicationSupportDirectory.appendingPathComponent("Problems", isDirectory: true).path
+	}
 	
 	func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
@@ -285,7 +289,7 @@ fileprivate struct CodableStringConvertible: Codable {
 		let stringRepresentation = try container.decode(String.self, forKey: .stringRepresentation)
 		
 		if type == URL.self {
-			let path = stringRepresentation.replacingOccurrences(of: CodableStringConvertible.bundlePathReplacement, with: Bundle.main.bundlePath)
+			let path = stringRepresentation.replacingOccurrences(of: CodableStringConvertible.bundlePathReplacement, with: Bundle.main.bundlePath).replacingOccurrences(of: CodableStringConvertible.problemsPathReplacement, with: CodableStringConvertible.problemsPath)
 			self.value = URL(fileURLWithPath: path)
 		} else {
 			guard let value = type.init(stringRepresentation) else {
