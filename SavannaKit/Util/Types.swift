@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class NoTouchBarTextView: NSTextView {
+public class NoTouchBarTextView: NCRAutocompleteTextView {
 	@available(OSX 10.12.2, *)
 	override public func makeTouchBar() -> NSTouchBar? {
 		return nil

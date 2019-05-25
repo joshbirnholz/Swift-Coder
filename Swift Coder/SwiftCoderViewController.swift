@@ -9,6 +9,8 @@
 import Cocoa
 import SavannaKit
 import SourceEditor
+import SourceKittenFramework
+
 
 struct ProblemIndexPath: Equatable {
 	var list: ProblemSet
@@ -18,34 +20,95 @@ struct ProblemIndexPath: Equatable {
 class SwiftCoderViewController: NSViewController {
 	
 	let codeController: CodeController = LocalCodeController.shared
-	let lexer: Lexer = SwiftLexer()
+	let sourceKitten = SourceKitten()
+	let lexer = { SwiftLexer() }()
 	
-	enum AssistantView: CaseIterable {
+	enum AssistantView: Int, CaseIterable {
 		case tableView
-		case textField
+		case textView
 	}
 	
 	func view(for assistantView: AssistantView) -> NSView {
 		switch assistantView {
 		case .tableView:
 			return tableScrollView
-		case .textField:
-			return outputField
+		case .textView:
+			return outputTextView
+		}
+	}
+	
+	fileprivate func configureQuickHelpButton() {
+		for segmentedControl in [(view.window?.windowController as? WindowController)?.assistantSegmentedControl, touchBarAssistantSegmentedControl] {
+			segmentedControl?.selectedSegment = isQuickHelpVisible ? 1 : 0
+		}
+		
+	}
+	
+	var _isQuickHelpVisible: Bool = false
+	var isQuickHelpVisible: Bool {
+		get {
+			if LocalCodeController.shared.isSandboxed {
+				return false
+			}
+			return _isQuickHelpVisible
+		}
+		set {
+			guard !LocalCodeController.shared.isSandboxed else {
+				return
+			}
+			
+			_isQuickHelpVisible = newValue
+			
+			if isQuickHelpVisible {
+				updateQuickHelp()
+				
+				AssistantView.allCases.forEach {
+					view(for: $0).isHidden = true
+				}
+				
+			} else {
+				AssistantView.allCases.forEach {
+					view(for: $0).isHidden = $0 != assistantView
+				}
+			}
+			
+			quickHelpTextView.isHidden = !isQuickHelpVisible
+			
+			configureQuickHelpButton()
+			configureOutputStatus()
 		}
 	}
 	
 	/// This changes whether the textfield is shown (for errors, hints, solutions) or the table is shown (test results)
-	var assistantView: AssistantView = .textField {
+	var assistantView: AssistantView = .textView {
 		didSet {
 			AssistantView.allCases.forEach {
 				view(for: $0).isHidden = $0 != assistantView
 			}
+			
+			isQuickHelpVisible = false
+		}
+	}
+	
+	fileprivate func configureOutputStatus() {
+		if isQuickHelpVisible {
+			outputStatusTextField.stringValue = "Quick Help"
+			outputStatusTextField.textColor = .labelColor
+		} else {
+			outputStatusTextField.stringValue = outputStatus.string
+			outputStatusTextField.textColor = outputStatus.textColor
+		}
+	}
+	
+	var outputStatus: (string: String, textColor: NSColor?) = ("", .labelColor) {
+		didSet {
+			configureOutputStatus()
 		}
 	}
 	
 	@IBOutlet weak var outputStatusTextField: NSTextField!
-	@IBOutlet weak var titleTextField: NSTextField!
-	@IBOutlet var outputField: NSTextView!
+	@IBOutlet weak var titleTextView: NSTextField!
+	@IBOutlet var outputTextView: NSTextView!
 	@IBOutlet weak var inputTextView: SyntaxTextView!
 	@IBOutlet weak var nextButton: NSButton!
 	@IBOutlet weak var previousButton: NSButton!
@@ -54,8 +117,9 @@ class SwiftCoderViewController: NSViewController {
 	@IBOutlet weak var outputTableView: NSTableView!
 	@IBOutlet weak var tableScrollView: NSScrollView!
 	@IBOutlet weak var helpButton: NSButton!
+	@IBOutlet var quickHelpTextView: NSTextView!
 	
-	var untypedProblemScrubber: NSView? {
+	var _untypedProblemScrubber: NSView? {
 		didSet {
 			if #available(macOS 10.12.2, *) {
 				updateScrubber()
@@ -65,8 +129,10 @@ class SwiftCoderViewController: NSViewController {
 	
 	@available(macOS 10.12.2, *)
 	var problemScrubber: NSScrubber? {
-		return untypedProblemScrubber as? NSScrubber
+		return _untypedProblemScrubber as? NSScrubber
 	}
+	
+	var touchBarAssistantSegmentedControl: NSSegmentedControl?
 	
 	lazy var maxScrubberItemWidth: CGFloat = 0
 	
@@ -75,10 +141,25 @@ class SwiftCoderViewController: NSViewController {
 	var finishedLoadingView = false
 	
 	var testResults: [CompilationResult.TestResult] = []
+	
 	var allHiddenTestResultsPassed: Bool = false
 	
 	var problems: [Problem] {
 		return problemIndexPath.list.problems
+	}
+	
+	fileprivate func configureShowSolutionButton() {
+		if problem.solution != nil {
+			if problem.hidesSolutionUntilSolved {
+				showSolutionButton.isHidden = !codeController.user(codeController.getActiveUserName(), hasSolved: problem)
+			} else {
+				showSolutionButton.isHidden = false
+			}
+		} else {
+			showSolutionButton.isHidden = true
+		}
+		
+		showSolutionButton.title = problem.hidesSolutionUntilSolved ? "See Our Solution" : "Show Solution"
 	}
 	
 	var problemIndexPath: ProblemIndexPath! {
@@ -93,7 +174,7 @@ class SwiftCoderViewController: NSViewController {
 		}
 		didSet {
 			if problemIndexPath.list != oldValue?.list {
-				setupProblemMenu()
+				configureProblemMenu()
 				
 				if #available(macOS 10.12.2, *) {
 					updateScrubber()
@@ -105,20 +186,38 @@ class SwiftCoderViewController: NSViewController {
 			nextButton.isEnabled = problemIndexPath.index + 1 < problems.count
 			previousButton.isEnabled = problemIndexPath.index - 1 >= 0
 			
-			showSolutionButton.isHidden = problem.solution == nil
+			configureShowSolutionButton()
+			
 			helpButton.isHidden = problem.hint == nil
 			
-			titleTextField.stringValue = problem.title
+			titleTextView.stringValue = problem.title
 			updateWindowTitle()
 			
-			outputStatusTextField.stringValue = ""
-			outputField.string = ""
+			outputStatus = ("", .labelColor)
+			outputTextView.string = ""
 			
-			assistantView = .textField
+			testResults.removeAll()
+			outputTableView.reloadData()
 			
-			promptTextField.stringValue = [problem.prompt, problem.testCases.prefix(problem.eulerMode ? 0 : 3).map{ problem.expectationString(testCase: $0) }.joined(separator: "\n")].compactMap { $0 != "" ? $0 : nil }.joined(separator: "\n\n")
+			let prompt = attributedStringForCodeMarkdown(from: problem.prompt)
+			
+			if !problem.testCases.isEmpty {
+				let testCasesString = problem.testCases.prefix(problem.eulerMode ? 0 : 3).map { problem.expectationString(testCase: $0) }.joined(separator: "\n")
+				
+				let testCasesAttributedString = NSAttributedString(string: "\n\n" + testCasesString, attributes: [.font: NSFont.systemFont(ofSize: 14), .foregroundColor: NSColor.labelColor])
+				
+				prompt.append(testCasesAttributedString)
+			}
+			
+			promptTextField.attributedStringValue = prompt
 			
 			inputTextView.text = codeController.loadCode(for: problem)
+			
+			if isQuickHelpVisible {
+				updateQuickHelp()
+			} else {
+				assistantView = .textView
+			}
 		}
 	}
 	
@@ -138,6 +237,9 @@ class SwiftCoderViewController: NSViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		quickHelpTextView.textContainer?.replaceLayoutManager(RoundedBackgroundLayoutManager())
+		outputTextView.textContainer?.replaceLayoutManager(RoundedBackgroundLayoutManager())
+		
 		codeController.setActiveUsername(userDefaults.string(forKey: activeUserUserDefaultsKey))
 		
 		let savedProblemSetTitle = userDefaults.string(forKey: "problemList")
@@ -148,18 +250,14 @@ class SwiftCoderViewController: NSViewController {
 		
 		inputTextView.needsDisplay = true
 		
-		outputField.typingAttributes[.foregroundColor] = NSColor.labelColor
+		outputTextView.typingAttributes[.foregroundColor] = NSColor.labelColor
 		
 		inputTextView.delegate = self
 		inputTextView.theme = SourceCodeThemes.dynamicSwiftBook
 		inputTextView.scrollView.scrollerKnobStyle = NSScroller.KnobStyle.default
 		inputTextView.wantsLayer = true
 		inputTextView.layer?.borderWidth = 1
-		if #available(OSX 10.14, *) {
-			inputTextView.borderColor = NSColor(named: NSColor.Name("borderColor"))!
-		} else {
-			inputTextView.borderColor = #colorLiteral(red: 0.7725490196, green: 0.7725490196, blue: 0.7725490196, alpha: 1)
-		}
+		inputTextView.borderColor = .border
 		if #available(OSX 10.12.2, *) {
 			inputTextView.contentTextView.isAutomaticTextCompletionEnabled = false
 		}
@@ -171,9 +269,23 @@ class SwiftCoderViewController: NSViewController {
 		inputTextView.contentTextView.isAutomaticSpellingCorrectionEnabled = false
 		inputTextView.contentTextView.isRichText = false
 		
+		inputTextView.contentTextView.autocompletionDelegate = self
+		inputTextView.contentTextView.autocompletionPopoverMinimumWidth = 250
+		inputTextView.contentTextView.autocompletionAttributes[.font] = NSFont.codingFont(ofSize: 12)
+		inputTextView.contentTextView.deleteClosesAutocompletionPopover = false
+		inputTextView.contentTextView.autocompletionHighlightedAttributes = [:]
+		inputTextView.contentTextView.autocompletesWhileTyping = false
+		
+		var wordBoundaryCharacterSet = CharacterSet.alphanumerics.inverted
+		wordBoundaryCharacterSet.remove(charactersIn: "()?!#@$\\`_-<>")
+		
+		inputTextView.contentTextView.autocompletionWordBoundaryCharacterSet = wordBoundaryCharacterSet
+		
 		setupCodeMenu()
 		setupHelpMenu()
 		setupAppMenu()
+		
+		isQuickHelpVisible = true
 		
 		finishedLoadingView = true
 		
@@ -188,6 +300,8 @@ class SwiftCoderViewController: NSViewController {
 			setupUserMenu()
 		}
 		
+		configureQuickHelpButton()
+		
 	}
 	
 	override func viewWillDisappear() {
@@ -199,18 +313,25 @@ class SwiftCoderViewController: NSViewController {
 		} catch {
 			NSLog("Error: Could not save code: \(error)")
 		}
-		
-		self.codeController.cleanupTemporaryFiles()
 	}
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		
 		updateWindowTitle()
+		
+		if #available(OSX 10.14, *) {
+			let appearance = userDefaults.string(forKey: "applicationAppearance").flatMap(NSAppearance.Name.init(rawValue:)).flatMap(NSAppearance.init(named:))
+			if appearance != NSApp.appearance {
+				NSApp.appearance = appearance
+			}
+		}
 	}
 	
 	func updateWindowTitle() {
-//		view.window?.title = "\(problemIndexPath.list.title) > \(problem.title)"
+//		view.window?.title = problemIndexPath.list.title
+		
+		(view.window?.windowController as? WindowController)?.titleLabel?.stringValue = problemIndexPath.list.title
 	}
 	
 	func setupHelpMenu() {
@@ -220,8 +341,17 @@ class SwiftCoderViewController: NSViewController {
 		
 		helpMenu.insertItem(.separator(), at: helpMenu.items.count)
 		
+		helpMenu.insertItem(withTitle: "Glossary", action: #selector(openGlossary), keyEquivalent: "", at: helpMenu.items.count)
+		helpMenu.insertItem(.separator(), at: helpMenu.items.count)
+		
 		helpMenu.insertItem(withTitle: "Swift Guided Tour", action: #selector(openGuidedTour), keyEquivalent: "", at: helpMenu.items.count)
 		helpMenu.insertItem(withTitle: "Swift Language Guide", action: #selector(openLanguageGuide), keyEquivalent: "", at: helpMenu.items.count)
+	}
+	
+	@objc func openGlossary() {
+		guard let glossaryURL = Bundle.main.url(forResource: "glossary", withExtension: "html") else { return }
+		
+		NSWorkspace.shared.open(glossaryURL)
 	}
 	
 	func setupUserMenu() {
@@ -285,6 +415,8 @@ class SwiftCoderViewController: NSViewController {
 		} else {
 			userDefaults.removeObject(forKey: activeUserUserDefaultsKey)
 		}
+		
+		configureProblemMenu()
 		
 	}
 	
@@ -367,7 +499,7 @@ class SwiftCoderViewController: NSViewController {
 		
 		appMenu.insertItem(withTitle: "Enable String Integer Subscripts", action: #selector(toggleStringIntSubscriptAPI), keyEquivalent: "", at: index)
 		
-		appMenu.insertItem(withTitle: "Set Xcode Path…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
+		appMenu.insertItem(withTitle: "Choose Toolchain…", action: #selector(setXcodePath), keyEquivalent: "", at: index)
 		
 	}
 	
@@ -378,21 +510,48 @@ class SwiftCoderViewController: NSViewController {
 	
 	@objc func doNothing() { }
 	
+	private func updateSwiftVersionMenuItemTitle() {
+		self.swiftVersionMenuItem?.title = self.codeController.swiftVersionString() ?? "Swift Not Found"
+	}
+	
 	@objc func setXcodePath() {
-		let openPanel = NSOpenPanel()
-		openPanel.canChooseDirectories = false
-		openPanel.canChooseFiles = true
-		openPanel.allowsMultipleSelection = false
-		openPanel.allowsOtherFileTypes = false
-		openPanel.allowedFileTypes = ["app"]
-		openPanel.directoryURL = FileManager.default.urls(for: FileManager.SearchPathDirectory.applicationDirectory, in: .systemDomainMask).first
-		
-		openPanel.begin { (response) in
-			if let url = openPanel.url, response == .OK {
-				(self.codeController as? LocalCodeController)?.xcodeURL = url
-				self.swiftVersionMenuItem?.title = self.codeController.swiftVersionString() ?? "Swift Not Found"
+		func chooseFile() {
+			let openPanel = NSOpenPanel()
+			openPanel.canChooseDirectories = false
+			openPanel.canChooseFiles = true
+			openPanel.allowsMultipleSelection = false
+			openPanel.allowsOtherFileTypes = false
+			openPanel.allowedFileTypes = ["xctoolchain"]
+			openPanel.directoryURL = FileManager.default.urls(for: FileManager.SearchPathDirectory.applicationDirectory, in: .systemDomainMask).first
+			
+			openPanel.begin { (response) in
+				if let url = openPanel.url, response == .OK {
+					LocalCodeController.shared.customToolchainURL = url
+					self.updateSwiftVersionMenuItemTitle()
+				}
 			}
 		}
+		
+		if LocalCodeController.shared.customToolchainURL != nil {
+			let alert = NSAlert()
+			alert.messageText = "Choose Toolchain"
+			alert.addButton(withTitle: "Use Default")
+			alert.addButton(withTitle: "Browse")
+			alert.addButton(withTitle: "Cancel")
+			
+			switch alert.runModal() {
+			case .alertFirstButtonReturn:
+				LocalCodeController.shared.customToolchainURL = nil
+				self.updateSwiftVersionMenuItemTitle()
+			case .alertSecondButtonReturn:
+				chooseFile()
+			default:
+				break
+			}
+		} else {
+			chooseFile()
+		}
+		
 	}
 	
 	@objc func toggleStringIntSubscriptAPI() {
@@ -410,17 +569,23 @@ class SwiftCoderViewController: NSViewController {
 	
 	@objc @available(OSX 10.14, *)
 	func setDefaultAppearance() {
-		NSApp.appearance = nil
+		setAppearance(to: nil)
 	}
 	
 	@objc @available(OSX 10.14, *)
 	func setLightAppearance() {
-		NSApp.appearance = NSAppearance(named: .aqua)
+		setAppearance(to: NSAppearance(named: .aqua))
 	}
 	
 	@objc @available(OSX 10.14, *)
 	func setDarkAppearance() {
-		NSApp.appearance = NSAppearance(named: .darkAqua)
+		setAppearance(to: NSAppearance(named: .darkAqua))
+	}
+	
+	@available(OSX 10.14, *)
+	func setAppearance(to appearance: NSAppearance?) {
+		NSApp.appearance = appearance
+		userDefaults.set(appearance?.name.rawValue, forKey: "applicationAppearance")
 	}
 	
 	func setupCodeMenu() {
@@ -448,7 +613,7 @@ class SwiftCoderViewController: NSViewController {
 		//		NSApp.mainMenu?.addItem(codeMenuItem)
 	}
 	
-	func setupProblemMenu() {
+	func configureProblemMenu() {
 		
 		problemMenu.removeAllItems()
 		problemMenu.addItem(withTitle: "Previous", action: #selector(previousButtonPressed(sender:)), keyEquivalent: "\u{001c}")
@@ -472,9 +637,24 @@ class SwiftCoderViewController: NSViewController {
 //		problemSetPopupButton.menu = problemSetMenu
 //		problemSetPopupButton.setTitle(problemIndexPath.list.title)
 		
+		let activeUser = codeController.getActiveUserName()
+		
 		let items: [NSMenuItem] = problems.enumerated().map { index, problem in
 			let item = NSMenuItem(title: problem.title, action: #selector(problemMenuItemSelected), keyEquivalent: "")
 			item.representedObject = index
+			
+			if codeController.user(activeUser, hasSolved: problem) {
+				let unattributedString = "\(problem.title) ✓"
+				let str = NSMutableAttributedString(string: unattributedString)
+				
+				let index = unattributedString.lastIndex(of: "✓")!
+				let range = index ... index
+				
+				str.addAttributes([.foregroundColor: NSColor.successGreen], range: NSRange(range, in: unattributedString))
+				
+				item.attributedTitle = str
+			}
+			
 			return item
 		}
 		items.forEach(problemMenu.addItem)
@@ -618,10 +798,13 @@ class SwiftCoderViewController: NSViewController {
 	
 	@IBAction func goButtonPressed(sender: AnyObject) {
 		
-		outputField.string = ""
-		outputStatusTextField.textColor = .labelColor
-		outputStatusTextField.stringValue =  "Compiling…"
-		assistantView = .textField
+		outputTextView.string = ""
+		outputStatus = ("Compiling…", .labelColor)
+		
+		testResults.removeAll()
+		outputTableView.reloadData()
+		
+		assistantView = .textView
 		
 		let code = self.inputTextView.text
 		let startedProblemIndex = self.problemIndexPath
@@ -636,59 +819,49 @@ class SwiftCoderViewController: NSViewController {
 				DispatchQueue.main.async {
 					switch result {
 					case .internalError(let error):
-						self.assistantView = .textField
-						if #available(OSX 10.13, *) {
-							self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("errorRed"))
-						} else {
-							self.outputStatusTextField.textColor = .red
-						}
-						self.outputStatusTextField.stringValue =  "Unable to test your code:"
+						self.assistantView = .textView
+						self.outputStatus = ("Unable to test your code:", .errorRed)
 						
 						if let error = error as? CompilationError {
 							switch error {
 							case .error(let contents):
 								switch contents {
 								case .compilerMessages(let messages):
-									self.outputField.font = NSFont(name: "Menlo", size: 13)
-									self.outputField.string = messages.map { $0.description }.joined(separator: "\n")
+									self.outputTextView.font = .codingFont(ofSize: 13)
+									self.outputTextView.string = messages.map { $0.description }.joined(separator: "\n")
 								case .text(let string):
-									self.outputField.font = NSFont(name: "Menlo", size: 13)
-									self.outputField.string = string
+									self.outputTextView.font = .codingFont(ofSize: 13)
+									self.outputTextView.string = string
 								}
 							case .timeout:
-								self.outputField.font = NSFont.systemFont(ofSize: 14)
-								self.outputField.string = "It took too long to test your code."
+								self.outputTextView.font = .systemFont(ofSize: 14)
+								self.outputTextView.string = "It took too long to test your code."
 							}
 						} else if let error = error as? LocalCodeController.PathError {
-							self.outputField.font = NSFont.systemFont(ofSize: 14)
-							self.outputField.string = error.localizedDescription
+							self.outputTextView.font = .systemFont(ofSize: 14)
+							self.outputTextView.string = error.localizedDescription
 						} else {
-							self.outputField.font = NSFont.systemFont(ofSize: 14)
-							self.outputField.string = error.localizedDescription
+							self.outputTextView.font = .systemFont(ofSize: 14)
+							self.outputTextView.string = error.localizedDescription
 						}
 						
 					case .failure(let compilationError):
-						self.assistantView = .textField
-						if #available(OSX 10.13, *) {
-							self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("errorRed"))
-						} else {
-							self.outputStatusTextField.textColor = .red
-						}
-						self.outputStatusTextField.stringValue =  "Compile problems:"
+						self.assistantView = .textView
+						self.outputStatus = ("Compile problems:", .errorRed)
 						switch compilationError {
 						case .error(let contents):
 							switch contents {
 							case .compilerMessages(let messages):
 								// The messages array contains all of the compile-time errors produced by the user's code.
-								self.outputField.font = NSFont(name: "Menlo", size: 13)
-								self.outputField.string = messages.filter { $0.messageType != .note }.map { "\($0.messageType == .error ? "🛑" : "⚠️") line \($0.line): \($0.message)" }.joined(separator: "\n\n")
+								self.outputTextView.font = .codingFont(ofSize: 13)
+								self.outputTextView.string = messages.filter { $0.messageType != .note }.map { "\($0.messageType == .error ? "🛑" : "⚠️") line \($0.line): \($0.message)" }.joined(separator: "\n\n")
 							case .text(let string):
-								self.outputField.font = NSFont(name: "Menlo", size: 13)
-								self.outputField.string = string
+								self.outputTextView.font = .codingFont(ofSize: 13)
+								self.outputTextView.string = string
 							}
 						case .timeout:
-							self.outputField.font = NSFont.systemFont(ofSize: 14)
-							self.outputField.string = "Your code took too long to compile."
+							self.outputTextView.font = .systemFont(ofSize: 14)
+							self.outputTextView.string = "Your code took too long to compile."
 						}
 					case .success(let testResults):
 						self.testResults = testResults.enumerated().filter { index, _ in !self.problem.testCases[index].isHidden }.map { $0.element }
@@ -699,23 +872,16 @@ class SwiftCoderViewController: NSViewController {
 						let numSuccesses = testResults.filter { $0.success == .ok }.count
 						
 						if numSuccesses == testResults.count {
-							if #available(OSX 10.13, *) {
-								self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("successGreen"))
-							} else {
-								self.outputStatusTextField.textColor = NSColor(red:0.095, green:0.627, blue:0.109, alpha:1)
-							}
+							self.outputStatus = ("✓ All correct", .successGreen)
 							
-							self.outputStatusTextField.stringValue = "✓ All correct"
+							self.codeController.user(self.codeController.getActiveUserName(), didSolve: self.problem)
+							self.configureProblemMenu()
+							
+							self.configureShowSolutionButton()
 						} else if numSuccesses > testResults.count / 2 {
-							if #available(OSX 10.13, *) {
-								self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("successGreen"))
-							} else {
-								self.outputStatusTextField.textColor = NSColor(red:0.095, green:0.627, blue:0.109, alpha:1)
-							}
-							self.outputStatusTextField.stringValue = "Correct for more than half the tests"
+							self.outputStatus = ("Correct for more than half the tests", .successGreen)
 						} else {
-							self.outputStatusTextField.textColor = .labelColor
-							self.outputStatusTextField.stringValue = ""
+							self.outputStatus = ("", .labelColor)
 						}
 						
 						self.assistantView = .tableView
@@ -728,31 +894,33 @@ class SwiftCoderViewController: NSViewController {
 		} catch {
 			print("Error")
 			DispatchQueue.main.async {
-				self.assistantView = .textField
-				if #available(OSX 10.13, *) {
-					self.outputStatusTextField.textColor = NSColor(named: NSColor.Name("errorRed"))
-				} else {
-					self.outputStatusTextField.textColor = .red
-				}
-				self.outputStatusTextField.stringValue =  "Error saving your code:"
-				self.outputField.font = NSFont.systemFont(ofSize: 14)
-				self.outputField.string = error.localizedDescription
+				self.assistantView = .textView
+				self.outputStatus = ("Error saving your code:", .errorRed)
+				self.outputTextView.font = .systemFont(ofSize: 14)
+				self.outputTextView.string = error.localizedDescription
 			}
 		}
 		
 	}
 	
 	@IBAction func showSolution(sender: AnyObject) {
-		outputStatusTextField.textColor = .labelColor
-		outputStatusTextField.stringValue = "Solution:"
-		self.assistantView = .textField
+		outputStatus = ("Solution:", .labelColor)
+		self.assistantView = .textView
 		
 		if let solution = problem.solution {
-			outputField.font = NSFont(name: "Menlo", size: 13)
-			outputField.string = solution
+			let string = solution + "\n"
+			let theme = inputTextView.theme ?? SourceCodeThemes.dynamicSwiftBook
+			let highlightedSolution = sourceKitten?.highlightedCode(forSource: string, theme: theme) ?? NSMutableAttributedString(source: string, tokens: lexer.getSavannaTokens(input: string), theme: theme)
+			
+			highlightedSolution.addAttributes([
+				.font: NSFont.codingFont(ofSize: 13)!,
+				.backgroundColor: theme.backgroundColor
+				], range: NSRange(location: 0, length: highlightedSolution.length))
+			
+			outputTextView.textStorage?.setAttributedString(highlightedSolution)
 		} else {
-			outputField.font = NSFont.systemFont(ofSize: 14)
-			outputField.string = "The solution isn't available for this problem."
+			outputTextView.font = .systemFont(ofSize: 14)
+			outputTextView.string = "The solution isn't available for this problem."
 		}
 		
 	}
@@ -761,14 +929,51 @@ class SwiftCoderViewController: NSViewController {
 		if let hint = problem.hint, let url = URL(string: hint) {
 			NSWorkspace.shared.open(url)
 		} else {
-			outputStatusTextField.textColor = .labelColor
-			outputStatusTextField.stringValue = "Hint:"
-			self.assistantView = .textField
+			outputStatus = ("Hint:", .labelColor)
+			self.assistantView = .textView
 			
-			outputField.font = NSFont.systemFont(ofSize: 14)
+			if let hint = problem.hint {
+				let attr = attributedStringForCodeMarkdown(from: hint)
+				outputTextView.textStorage?.setAttributedString(attr)
+			} else {
+				outputTextView.font = .systemFont(ofSize: 14)
+				outputTextView.string = "There is no hint for this problem."
+			}
 			
-			outputField.string = problem.hint ?? "There is no hint for this problem."
 		}
+	}
+	
+	private let baseAttributes: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 14), .foregroundColor: NSColor.labelColor]
+	
+	private func attributedStringForCodeMarkdown(from string: String, baseAttributes: [NSAttributedString.Key: Any]? = nil) -> NSMutableAttributedString {
+		let baseAttributes = baseAttributes ?? self.baseAttributes
+		
+		let attr = NSMutableAttributedString(string: string, attributes: baseAttributes)
+		let codeMatches = string.matches(forRegex: #"```[a-z]*\n(.*)?\n```|`([^`]*)`|^    (.*)"#, options: [.anchorsMatchLines])
+		
+		for match in codeMatches.reversed() {
+			let range = NSRange(match.fullMatch.range, in: string)
+			attr.addAttributes([.font: NSFont.codingFont(ofSize: 14) as Any], range: range)
+			attr.replaceCharacters(in: range, with: match.groups.first!.value)
+		}
+		
+		let boldMatches = attr.string.matches(forRegex: #"\*\*(.+)\*\*"#, options: [.caseInsensitive])
+		
+		for match in boldMatches.reversed() {
+			let range = NSRange(match.fullMatch.range, in: attr.string)
+			attr.applyFontTraits([.boldFontMask], range: range)
+			attr.replaceCharacters(in: range, with: match.groups.first!.value)
+		}
+		
+		let italicMatches = attr.string.matches(forRegex: #"\*(.+)\*"#, options: [.caseInsensitive])
+		
+		for match in italicMatches.reversed() {
+			let range = NSRange(match.fullMatch.range, in: attr.string)
+			attr.applyFontTraits([.italicFontMask], range: range)
+			attr.replaceCharacters(in: range, with: match.groups.first!.value)
+		}
+		
+		return attr
 	}
 	
 	@IBAction func startOver(sender: AnyObject) {
@@ -781,24 +986,275 @@ class SwiftCoderViewController: NSViewController {
 		
 		switch alert.runModal() {
 		case NSApplication.ModalResponse.alertSecondButtonReturn:
-			inputTextView.text = problem.startingCode
-			try? codeController.saveCode(inputTextView.text, for: problem)
+			do {
+				try codeController.deleteUserRecords(forUser: codeController.getActiveUserName(), problem: problem)
+				inputTextView.text = problem.startingCode
+				configureProblemMenu()
+				configureShowSolutionButton()
+			} catch {
+				NSAlert(error: error).runModal()
+			}
 		default:
 			break
 		}
 		
 	}
 	
+//	func printCompletionOptions() {
+//		let options = sourceKitten.complete(source: inputTextView.text, offset: inputTextView.contentTextView.selectedRange().upperBound)
+//		for option in options {
+//			print([option.typeName.flatMap { "(\($0))" }, option.name].compactMap({$0}).joined(separator: " "))
+//			if let docBrief = option.docBrief {
+//				print(docBrief)
+//			}
+//			print()
+//		}
+//	}
+	
+	let noQuickHelpString: NSAttributedString = {
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.alignment = .center
+		return NSAttributedString(string: "No Quick Help", attributes: [
+			.font: NSFont.systemFont(ofSize: 17),
+			.foregroundColor: NSColor.labelColor,
+			.paragraphStyle: paragraphStyle
+			])
+	}()
+	
+	func showNoQuickHelp() {
+		if Thread.isMainThread {
+			self.quickHelpTextView.textStorage?.setAttributedString(self.noQuickHelpString)
+			self.quickHelpTextView.isSelectable = false
+			self.quickHelpTextView.alphaValue = 0.6
+		} else {
+			DispatchQueue.main.async {
+				self.showNoQuickHelp()
+			}
+		}
+	}
+	
+	func updateQuickHelp() {
+		guard let sourceKitten = sourceKitten else { return }
+		
+		guard isQuickHelpVisible, let sdkPath = try? LocalCodeController.shared.sdkPath() else {
+			return showNoQuickHelp()
+		}
+		
+		do {
+			var string: String!
+			if Thread.isMainThread {
+				string = self.inputTextView.text
+			} else {
+				DispatchQueue.main.sync {
+					string = self.inputTextView.text
+				}
+			}
+			
+			try self.codeController.saveCode(string, for: self.problem)
+		} catch {
+			return showNoQuickHelp()
+		}
+		
+		let offset = inputTextView.contentTextView.selectedRange().lowerBound
+		
+		DispatchQueue.global(qos: .userInteractive).async {
+			let programFilePath = LocalCodeController.shared.baseDirectory.appendingPathComponent(self.problem.functionName + ".swift").path
+			
+			guard let cursorInfo = sourceKitten.cursorInfo(path: programFilePath, offset: offset, sdkPath: sdkPath) ?? sourceKitten.cursorInfo(path: programFilePath, offset: offset-1, sdkPath: sdkPath) else {
+				return self.showNoQuickHelp()
+			}
+				
+			let attributedString = self.attributedStringForCodeMarkdown(from: "**Declaration**\n\n")
+			
+			let declaration = sourceKitten.parse(declaration: cursorInfo.annotatedDeclaration)
+			
+			let theme = self.inputTextView.theme ?? SourceCodeThemes.dynamicSwiftBook
+			
+			let highlightedDeclaration = sourceKitten.highlightedCode(forSource: declaration + "\n", theme: theme)
+			
+			highlightedDeclaration.addAttributes([
+				.font: NSFont.codingFont(ofSize: 13)!,
+				.backgroundColor: theme.backgroundColor
+				], range: NSRange(location: 0, length: highlightedDeclaration.length))
+			
+			attributedString.append(highlightedDeclaration)
+			
+			if let doc = cursorInfo.fullDocumentation() {
+				let attributedDocumentation = self.attributedStringForCodeMarkdown(from: "\n\(doc)")
+				attributedString.append(attributedDocumentation)
+			}
+			
+			DispatchQueue.main.async {
+				self.quickHelpTextView.isSelectable = true
+				self.quickHelpTextView.alphaValue = 1
+				self.quickHelpTextView.textStorage?.setAttributedString(attributedString)
+			}
+			
+		}
+	}
+	
+	@objc func assistantSegmentedControlValueChanged(_ sender: NSSegmentedControl) {
+		isQuickHelpVisible = sender.selectedSegment == 1
+	}
+	
 	func applicationShouldTerminateAfterLastWindowClosed(app: NSApplication) -> Bool {
 		return true
+	}
+	
+	var completionsNeedDisplay = false
+	
+	func shouldInclude(_ completionItem: CodeCompletionItem, word: String? = nil) -> Bool {
+		if let kind = SwiftDeclarationKind(rawValue: completionItem.kind) {
+			let hiddenDeclarationKinds: Set<SwiftDeclarationKind> = [/*.functionOperator,
+																	 .functionOperatorInfix,
+																	 .functionOperatorPrefix,
+																	 .functionOperatorPostfix,*/
+																	 .functionSubscript,
+																	 .precedenceGroup,
+			]
+		
+			if hiddenDeclarationKinds.contains(kind) {
+				return false
+			}
+		}
+		
+		if let typeName = completionItem.typeName, (completionItem.moduleName == "Swift" && typeName.contains("_")) || (typeName == "<<error type>>" && (completionItem.descriptionKey ?? completionItem.name) == word) {
+			return false
+		}
+		
+		if completionItem.moduleName == "Swift", let name = completionItem.name, name.hasPrefix("print"), SwiftDeclarationKind(rawValue: completionItem.kind) == .functionFree {
+			return false
+		}
+		
+		return true
+	}
+	
+	func completionItem(_ first: CodeCompletionItem, isOrderedBefore second: CodeCompletionItem) -> Bool {
+		
+		// Prioritize parameters and items from local scope
+		let firstContextIsLocal = first.context.contains("local")
+		let secondContextIsLocal = second.context.contains("local")
+		
+		switch (firstContextIsLocal, secondContextIsLocal) {
+		case (true, false):
+			return true
+		case (false, true):
+			return false
+		default:
+			break
+		}
+		
+		let firstIsKeyword = first.kind.contains("keyword")
+		let secondIsKeyword = second.kind.contains("keyword")
+		
+		// Prioritize `return`
+		let firstIsReturn = firstIsKeyword && first.name == "return"
+		let secondIsReturn = secondIsKeyword && second.name == "return"
+		
+		switch (firstIsReturn, secondIsReturn) {
+		case (true, false):
+			return true
+		case (false, true):
+			return false
+		default:
+			break
+		}
+		
+		// Prioritize items defined by the user
+		let firstContextIsFromSameModule = first.context.contains("thismodule")
+		let secondContextIsFromSameModule = second.context.contains("thismodule")
+		
+		switch (firstContextIsFromSameModule, secondContextIsFromSameModule) {
+		case (true, false):
+			return true
+		case (false, true):
+			return false
+		default:
+			break
+		}
+		
+		// Prioritize these keywords, in order
+		let keywords = ["let", "var", "if", "for", "while", "func", "return"]
+		
+		let indexOfFirst: Int? = firstIsKeyword ? first.name.flatMap { keywords.firstIndex(of: $0) } : nil
+		let indexOfSecond: Int? = secondIsKeyword ? second.name.flatMap { keywords.firstIndex(of: $0) } : nil
+		
+		switch (indexOfFirst, indexOfSecond) {
+		case (let firstIndex?, let secondIndex?):
+			return firstIndex < secondIndex
+		case (_?, nil):
+			return true
+		case (nil, _?):
+			return false
+		default:
+			break
+		}
+		
+		// Deprioritize operators
+		let firstIsOperator = first.kind.contains("operator")
+		let secondIsOperator = second.kind.contains("operator")
+		
+		switch (firstIsOperator, secondIsOperator) {
+		case (true, false):
+			return false
+		case (false, true):
+			return true
+		default:
+			break
+		}
+		
+		// Prioritize functions and variables
+		let firstContains = first.kind.contains("function") || first.kind.contains("var")
+		let secondContains = second.kind.contains("function") || second.kind.contains("var")
+
+		switch (firstContains, secondContains) {
+		case (true, false):
+			return true
+		case (false, true):
+			return false
+		default:
+			break
+		}
+		
+//		// Prioritize keywords
+//		switch (firstIsKeyword, secondIsKeyword) {
+//		case (true, false):
+//			return true
+//		case (false, true):
+//			return false
+//		default:
+//			break
+//		}
+		
+		// Prioritize alphabetically
+		return first.autocompletionDisplayString < second.autocompletionDisplayString
+	}
+	
+	var completionItems: [CodeCompletionItem] = []
+	
+	func updateCompletionOptions(source: String, offset: Int) {
+		guard let sourceKitten = sourceKitten else { return }
+		print(#function)
+		
+		guard let sdkPath = try? LocalCodeController.shared.sdkPath() else {
+			completionItems.removeAll()
+			return
+		}
+		
+		let items = sourceKitten.complete(source: source, offset: offset, sdkPath: sdkPath).filter { shouldInclude($0) }.sorted(by: completionItem(_:isOrderedBefore:))
+		
+		if !items.isEmpty {
+			completionItems = items
+//			inputTextView.contentTextView.complete(self)
+		}
 	}
 	
 	@available(OSX 10.12.2, *)
 	override func makeTouchBar() -> NSTouchBar? {
 		let mainBar = NSTouchBar()
 		mainBar.delegate = self
-		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .problems]
-		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .characterPicker, .problems]
+		mainBar.defaultItemIdentifiers = [.go, .commentUncomment, .problems, .quickHelp]
+		mainBar.customizationAllowedItemIdentifiers = [.go, .commentUncomment, .characterPicker, .problems, .quickHelp]
 		mainBar.customizationRequiredItemIdentifiers = []
 		mainBar.principalItemIdentifier = .problems
 		mainBar.customizationIdentifier = "com.josh.birnholz.SwiftCoder.main-touch-bar"
@@ -813,7 +1269,10 @@ extension NSTouchBarItem.Identifier {
 	static let go = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.go")
 	static let commentUncomment = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.comment-uncommon")
 	static let problems = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.problems")
+	static let quickHelp = NSTouchBarItem.Identifier("com.josh.birnholz.Swift-Coder.quickHelp")
 }
+
+// MARK: NSTouchBarDelegate
 
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSTouchBarDelegate {
@@ -831,6 +1290,15 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 			item.view = NSButton(image: NSImage(named: NSImage.touchBarPlayTemplateName)!, target: self, action: #selector(goButtonPressed(sender:)))
 			item.customizationLabel = "Go"
 			item.visibilityPriority = .high
+			return item
+		case .quickHelp:
+			let item = NSCustomTouchBarItem(identifier: identifier)
+			let segmentedControl = NSSegmentedControl(images: [NSImage(named: NSImage.touchBarListViewTemplateName)!, #imageLiteral(resourceName: "HelpButton")], trackingMode: .selectOne, target: self, action: #selector(assistantSegmentedControlValueChanged(_:)))
+			segmentedControl.selectedSegment = isQuickHelpVisible ? 1 : 0
+			item.view = segmentedControl
+			item.customizationLabel = "Quick Help"
+//			item.visibilityPriority = .high
+			self.touchBarAssistantSegmentedControl = segmentedControl
 			return item
 		case .problems:
 			let item = NSCustomTouchBarItem(identifier: identifier)
@@ -850,7 +1318,7 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 			item.view = scrubber
 			item.visibilityPriority = .high
 			item.customizationLabel = "Problems"
-			self.untypedProblemScrubber = scrubber
+			self._untypedProblemScrubber = scrubber
 			return item
 		default:
 			return nil
@@ -859,6 +1327,8 @@ extension SwiftCoderViewController: NSTouchBarDelegate {
 
 }
 
+// MARK: NSScrubberDelegate
+
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSScrubberDelegate {
 	func scrubber(_ scrubber: NSScrubber, didSelectItemAt selectedIndex: Int) {
@@ -866,6 +1336,8 @@ extension SwiftCoderViewController: NSScrubberDelegate {
 		problemIndexPath.index = selectedIndex
 	}
 }
+
+// MARK: NSScrubberDataSource
 
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSScrubberDataSource {
@@ -881,6 +1353,8 @@ extension SwiftCoderViewController: NSScrubberDataSource {
 	}
 
 }
+
+// MARK: NSScrubberFlowLayoutDelegate
 
 @available(OSX 10.12.2, *)
 extension SwiftCoderViewController: NSScrubberFlowLayoutDelegate {
@@ -900,6 +1374,7 @@ extension SwiftCoderViewController: NSScrubberFlowLayoutDelegate {
 
 }
 
+// MARK: NSTableViewDataSource
 
 extension SwiftCoderViewController: NSTableViewDataSource {
 	
@@ -929,6 +1404,8 @@ class BackgroundColorTableCellView: NSTableCellView {
 	}
 	
 }
+
+// MARK: NSTableViewDelegate
 
 extension SwiftCoderViewController: NSTableViewDelegate {
 	
@@ -970,11 +1447,8 @@ extension SwiftCoderViewController: NSTableViewDelegate {
 			
 			let successful: CompilationResult.TestResult.Successful = isHiddenRow ? (allHiddenTestResultsPassed ? .ok : .failure) : result.success
 			
-			if #available(OSX 10.13, *) {
-				cell.backgroundColor = successful == .ok ? NSColor(named: NSColor.Name("successGreen")) : NSColor(named: NSColor.Name("errorRed"))
-			} else {
-				cell.backgroundColor = successful == .ok ? NSColor(red:0.095, green:0.627, blue:0.109, alpha:1) : .red
-			}
+			cell.backgroundColor = successful == .ok ? .successGreen : .errorRed
+			
 			return cell
 		}
 		
@@ -992,6 +1466,8 @@ extension SwiftCoderViewController: NSTableViewDelegate {
 	}
 	
 }
+
+// MARK: NSMenuItemValidation
 
 extension SwiftCoderViewController: NSMenuItemValidation {
 	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -1050,9 +1526,113 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 	}
 }
 
+// MARK: SyntaxTextViewDelegate
+
 extension SwiftCoderViewController: SyntaxTextViewDelegate {
 	func lexerForSource(_ source: String) -> Lexer {
-		return lexer
+		return sourceKitten ?? lexer
+	}
+	
+	func didChangeText(_ syntaxTextView: SyntaxTextView) {
+		print(#function)
+		self.completionsNeedDisplay = true
+//		syntaxTextView.contentTextView.complete(self)
+	}
+	
+	func didChangeSelectedRange(_ syntaxTextView: SyntaxTextView, selectedRange: NSRange) {
+		print(#function)
+		self.updateQuickHelp()
+		var string: String!
+		if Thread.isMainThread {
+			string = self.inputTextView.text
+		} else {
+			DispatchQueue.main.sync {
+				string = self.inputTextView.text
+			}
+		}
+		
+		DispatchQueue.global(qos: .userInteractive).async {
+			self.updateCompletionOptions(source: string, offset: selectedRange.location)
+			if self.completionsNeedDisplay {
+				DispatchQueue.main.async {
+					syntaxTextView.contentTextView.complete(self)
+					if self.completionsNeedDisplay {
+						self.completionsNeedDisplay = false
+					}
+				}
+			}
+		}
+	}
+	
+	func textViewDidBeginEditing(_ syntaxTextView: SyntaxTextView) {
+		print(#function)
+	}
+	
+	func toolTip(forCharacterAt characterIndex: Int, source: String, in syntaxTextView: SyntaxTextView) -> String? {
+		guard let sourceKitten = sourceKitten, let sdkPath = try? LocalCodeController.shared.sdkPath() else { return nil }
+		
+		do {
+			try LocalCodeController.shared.saveCode(inputTextView.text, for: problem)
+		} catch {
+			return nil
+		}
+		
+		let programFilePath = LocalCodeController.shared.baseDirectory.appendingPathComponent(self.problem.functionName + ".swift").path
+		
+		guard let cursorInfo = sourceKitten.cursorInfo(path: programFilePath, offset: characterIndex, sdkPath: sdkPath) else {
+			return nil
+		}
+			
+		let declaration: String = sourceKitten.parse(declaration: cursorInfo.annotatedDeclaration)
+		
+		var toolTip = declaration
+		
+		if let summary = cursorInfo.fullDocumentation()?.summary {
+			toolTip += "\n\n\(summary)"
+		}
+		
+		return toolTip
+	}
+	
+}
+
+// MARK: NCRAutocompleteTextViewDelegate
+
+extension SwiftCoderViewController: NCRAutocompleteTextViewDelegate {
+	func textView(_ textView: NCRAutocompleteTextView, completionsFor word: Substring, forPartialWordRange charRange: NSRange) -> (candidates: [NCRAutocompletionCandidate], indexOfSelectedItem: Int) {
+		
+		let lowercased = word.lowercased()
+		
+		var filteredCompletionItems: [NCRAutocompletionCandidate] = completionItems.filter { completionItem in
+			shouldInclude(completionItem, word: String(word)) && completionItem.autocompletionInsertionString.lowercased().hasPrefix(lowercased)
+		}
+		
+		if filteredCompletionItems.isEmpty {
+			filteredCompletionItems = completionItems
+			inputTextView.contentTextView.autocompletionInsertionMode = .insert
+		} else {
+			inputTextView.contentTextView.autocompletionInsertionMode = .complete
+		}
+		
+		//		filteredCompletionItems = filteredCompletionItems.sorted { first, second in
+		//			if first.autocompletionInsertionString.lowercased().hasPrefix(word.lowercased()) {
+		//				return true
+		//			} else {
+		//				return false
+		//			}
+		//		}
+		
+		return (filteredCompletionItems, 0)
+		
+		//		guard let sdkPath = try? LocalCodeController.shared.sdkPath() else { return ([], -1) }
+		//
+		//		let items = sourceKitten.complete(source: syntaxTextView.text, offset: charRange.upperBound, sdkPath: sdkPath)
+		//
+		//		return (items, 0)
+	}
+	
+	func textView(_ textView: NCRAutocompleteTextView, shouldShowImagesFor candidates: [NCRAutocompletionCandidate]) -> Bool {
+		return candidates.contains { ($0 as? CodeCompletionItem)?.autocompletionImage != nil }
 	}
 	
 }

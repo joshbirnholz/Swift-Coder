@@ -16,8 +16,29 @@ let codingBatArray1Problems: [Problem] = [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
 		prompt: "Given an array of ints, return true if 6 appears as either the first or last element in the array. The array will be length 1 or more.",
-		solution: nil,
-		hint: "The first element is nums[0] and the last element is nums[nums.count - 1]. Check if either of those is == 6.",
+		solution: """
+func firstLast6(nums: [Int]) -> Bool {
+	if nums[0] == 6 {
+		return true
+	}
+	if nums[nums.count - 1] == 6 {
+		return true
+	}
+	return false
+	
+	// Solution notes: check the first and last elements,
+	// returning true if they are == 6. We are given that
+	// the array is at least length 1, so we don't need
+	// to check the length before using [].
+	// A solution can be written very compactly with ||
+	// as just:
+	// return nums[0] == 6 || nums[nums.count - 1] == 6
+	// Or more simply using the first and last properties:
+	// return nums.first == 6 || nums.last == 6
+}
+""",
+		hidesSolutionUntilSolved: true,
+		hint: "The first element is `nums[0]` and the last element is `nums[nums.count - 1]`. Check if either of those is `== 6`.",
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: [1, 2, 6]),
 			Problem.TestCase(expectation: true, arguments: [6, 1, 2, 3]),
@@ -40,7 +61,7 @@ let codingBatArray1Problems: [Problem] = [
 			parameters: [
 				Problem.Parameter(name: "nums", type: [Int].self)],
 			prompt: "Given an array of Ints, return true if the array is length 1 or more, and the first element and the last element are equal.",
-			hint: "The length is nums.count, the first element is nums[0] and the last element is nums[nums.count - 1]",
+			hint: "The length is `nums.count`, the first element is `nums[0]` and the last element is `nums[nums.count - 1]`",
 			testCases: [
 				Problem.TestCase(expectation: false, arguments: [1, 2, 3]),
 				Problem.TestCase(expectation: true, arguments: [1, 2, 3, 1]),
@@ -98,7 +119,7 @@ let codingBatArray1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Given an array of ints length 3, return an array with the elements \"rotated left\" so [1, 2, 3] yields [2, 3, 1].",
+		prompt: "Given an array of ints length 3, return an array with the elements \"rotated left\" so `[1, 2, 3]` yields `[2, 3, 1]`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -116,7 +137,7 @@ let codingBatArray1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Given an array of ints length 3, return a new array with the elements in reverse order, so [1, 2, 3] becomes [3, 2, 1].",
+		prompt: "Given an array of ints length 3, return a new array with the elements in reverse order, so `[1, 2, 3]` becomes `[3, 2, 1]`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -137,8 +158,23 @@ let codingBatArray1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Given an array of ints length 3, figure out which is larger, the first or last element in the array, and set all the other elements to be that value. Return the changed array.",
-		solution: nil,
+		prompt: "Given an array of ints length 3, figure out which is larger, the first or last element in the array. Make a copy of the array and set all the elements to be the larger value. Return the changed array.",
+		solution: """
+func maxEnd3(nums: [Int]) -> [Int] {
+	let maximum = max(nums[0], nums[2])
+	
+	var result = nums
+	result[0] = maximum
+	result[1] = maximum
+	result[2] = maximum
+	
+	return result
+	
+	// Solution notes: you could write if-logic to
+	// figure out which element is the biggest, but
+	// here we use max() to solve that part nicely.
+}
+""",
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: [3, 3, 3], arguments: [1, 2, 3]),
@@ -180,7 +216,7 @@ let codingBatArray1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [Int].self),
 			Problem.Parameter(name: "b", type: [Int].self)
 		],
-		prompt: "Given 2 int arrays, a and b, each length 3, return a new array length 2 containing their middle elements.",
+		prompt: "Given 2 int arrays, `a` and `b`, each length 3, return a new array length 2 containing their middle elements.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -266,8 +302,18 @@ let codingBatArray1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Given an int array, return a new array with double the length where its last element is the same as the original array, and all the other elements are 0. The original array will be length 1 or more.",
-		solution: nil,
+		prompt: "Given an int array, return a new array with double the length where its last element is the same as the original array, and all the other elements are 0. The original array will be length 1 or more. Note: use `Array(repeating: 0, count: x)` to create a new array containing x number of 0's.",
+		solution: """
+func makeLast(nums: [Int]) -> [Int] {
+	// Make a new result array with double the length
+	var result = Array(repeating: 0, count: nums.count*2)
+	
+	// Copy over the last element
+	result[result.count - 1] = nums[nums.count - 1]
+	return result
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: [0, 0, 0, 0, 0, 6], arguments: [4, 5, 6]),
@@ -330,7 +376,7 @@ let codingBatArray1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [Int].self),
 			Problem.Parameter(name: "b", type: [Int].self)
 		],
-		prompt: "Start with 2 int arrays, a and b, of any length. Return how many of the arrays have 1 as their first element.",
+		prompt: "Start with 2 int arrays, `a` and `b`, of any length. Return how many of the arrays have 1 as their first element.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -354,7 +400,7 @@ let codingBatArray1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [Int].self),
 			Problem.Parameter(name: "b", type: [Int].self)
 		],
-		prompt: "Start with 2 int arrays, a and b, each length 2. Consider the sum of the values in each array. Return the array which has the largest sum. In event of a tie, return a.",
+		prompt: "Start with 2 int arrays, `a` and `b`, each length 2. Consider the sum of the values in each array. Return the array which has the largest sum. In event of a tie, return `a`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -521,7 +567,7 @@ let codingBatArray1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [Int].self),
 			Problem.Parameter(name: "b", type: [Int].self)
 		],
-		prompt: "Given 2 int arrays, a and b, return a new array length 2 containing, as much as will fit, the elements from a followed by the elements from b. The arrays may be any length, including 0, but there will be 2 or more elements available between the 2 arrays.",
+		prompt: "Given 2 int arrays, `a` and `b`, return a new array length 2 containing, as much as will fit, the elements from a followed by the elements from b. The arrays may be any length, including 0, but there will be 2 or more elements available between the 2 arrays.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -547,7 +593,7 @@ let codingBatArray1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [Int].self),
 			Problem.Parameter(name: "b", type: [Int].self)
 		],
-		prompt: "Given 2 int arrays, a and b, of any length, return a new array with the first element of each array. If either array is length 0, ignore that array.",
+		prompt: "Given 2 int arrays, `a` and `b`, of any length, return a new array with the first element of each array. If either array is length 0, ignore that array.",
 		solution: nil,
 		hint: nil,
 		testCases: [

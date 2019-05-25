@@ -14,11 +14,13 @@ protocol CodeController {
 	func saveAndTest(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ()) throws
 	func setActiveUsername(_ username: String?)
 	func getActiveUserName() -> String?
-	func cleanupTemporaryFiles()
 	func swiftVersionString() -> String?
 	func getUsernames() -> [String]
 	func deleteUser(_ username: String)
 	func validateUsername(_ username: String) -> Bool
 	func setShouldIncludeStringSubscriptAPI(_ shouldInclude: Bool)
 	func shouldIncludeStringSubscriptAPI() -> Bool
+	func user(_ username: String?, hasSolved problem: Problem) -> Bool
+	func user(_ username: String?, didSolve problem: Problem)
+	func deleteUserRecords(forUser username: String?, problem: Problem) throws
 }

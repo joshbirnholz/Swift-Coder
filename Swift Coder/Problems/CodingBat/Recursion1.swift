@@ -30,7 +30,7 @@ let codingBatRecursion1Problems: [Problem] = [
 			return n * factorial(n: n-1)
 		}
 		""",
-		hint: "First, detect the \"base case\", a case so simple that the answer can be returned immediately (here when n==1). Otherwise make a recursive call of factorial(n: n-1) (towards the base case). Assume the recursive call returns a correct value, and fix that value up to make our result.",
+		hint: "First, detect the \"base case\", a case so simple that the answer can be returned immediately (here when `n==1`). Otherwise make a recursive call of `factorial(n: n-1)` (towards the base case). Assume the recursive call returns a correct value, and fix that value up to make our result.",
 		testCases: [
 			Problem.TestCase(expectation: 1, arguments: 1),
 			Problem.TestCase(expectation: 2, arguments: 2),
@@ -64,7 +64,7 @@ let codingBatRecursion1Problems: [Problem] = [
 			return 2 + bunnyEars(bunnies: bunnies-1)
 		}
 		""",
-		hint: "First detect the base case (bunnies == 0), and in that case just return 0. Otherwise, make a recursive call to bunnyEars(bunnies: bunnies-1). Trust that the recursive call returns the correct value, and fix it up by adding 2.",
+		hint: "First detect the base case (`bunnies == 0`), and in that case just return 0. Otherwise, make a recursive call to `bunnyEars(bunnies: bunnies-1)`. Trust that the recursive call returns the correct value, and fix it up by adding 2.",
 		testCases: [
 			Problem.TestCase(expectation: 0, arguments: 0),
 			Problem.TestCase(expectation: 2, arguments: 1),

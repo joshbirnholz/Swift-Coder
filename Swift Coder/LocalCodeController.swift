@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import SourceKittenFramework
 
 class LocalCodeController: CodeController {
 	
@@ -14,18 +15,26 @@ class LocalCodeController: CodeController {
 		case swift
 		case swiftc
 		case sdk
-		case xcode
+		case any(String)
 		
 		var name: String {
 			switch self {
 			case .swift, .swiftc: return "the Swift executable"
 			case .sdk: return "the macOS SDK"
-			case .xcode: return "Xcode"
+			case .any(let string): return string
 			}
 		}
 		
 		var localizedDescription: String {
-			return "Couldn't reach \(name). Make sure Xcode is installed and the path is set correctly.\n\nDownload Xcode:\nhttps://developer.apple.com/xcode/\nhttps://itunes.apple.com/us/app/xcode/id497799835?mt=12"
+			var message = "Couldn't reach \(name). "
+			
+			if LocalCodeController.shared.customToolchainURL == nil {
+				message += "Xcode may not be installed. Download Xcode from the App Store."
+			} else {
+				message += "The selected toolchain may be invalid."
+			}
+			
+			return message
 		}
 	}
 	
@@ -63,12 +72,18 @@ class LocalCodeController: CodeController {
 	}
 	
 	public let tempDirectory: URL
-	public var xcodeURL: URL {
+	
+	public var customToolchainURL: URL? {
 		get {
-			return UserDefaults.standard.url(forKey: "xcodeURL") ?? URL(fileURLWithPath: "/Applications/Xcode.app")
+			return UserDefaults.standard.url(forKey: "customToolchainPath")
 		}
 		set {
-			UserDefaults.standard.set(newValue, forKey: "xcodeURL")
+			UserDefaults.standard.set(newValue, forKey: "customToolchainPath")
+			
+			if newValue == nil {
+				self.xcrunSwiftcPath = try? xcrunFind("swift")
+				self.xcrunSwiftcPath = try? xcrunFind("swiftc")
+			}
 		}
 	}
 	
@@ -115,45 +130,89 @@ class LocalCodeController: CodeController {
 			fatalError("Couldn't get temp directory")
 		}
 		
-		print(xcodeURL.path)
 		print(baseDirectory.path)
 		print(tempDirectory.path)
 	}
 	
-	private func swiftPath() throws -> String {
-		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
-			throw PathError.xcode
+	private let xcodeDefaultToolchainPath = NSSearchPathForDirectoriesInDomains(.applicationDirectory, .systemDomainMask, true).first?.appending("/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain")
+	private let xcodeDefaultSDKPath = NSSearchPathForDirectoriesInDomains(.applicationDirectory, .systemDomainMask, true).first?.appending("/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
+	
+	func xcrunFind(_ utility: String, localizedDescription: String? = nil) throws -> String {
+		if isSandboxed {
+			guard let path = xcodeDefaultToolchainPath.flatMap({ "\($0)/usr/bin/\(utility)" }) else {
+				throw PathError.any(localizedDescription ?? utility)
+			}
+			print(#function, path)
+			return path
+		} else {
+			let path = try self.execute(arguments: ["xcrun", "-find", utility]).output
+			
+			guard FileManager.default.fileExists(atPath: path) else {
+				throw PathError.any(localizedDescription ?? utility)
+			}
+			
+			return path
 		}
 		
-		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift").path
-		guard FileManager.default.fileExists(atPath: path) else {
+	}
+	
+	private lazy var xcrunSwiftPath: String? = {
+		try? self.xcrunFind("swift")
+	}()
+	
+	private lazy var xcrunSwiftcPath: String? = {
+		try? self.xcrunFind("swiftc")
+	}()
+	
+	private func swiftPath() throws -> String {
+		var path: String?
+		
+		if let customToolchainPath = customToolchainURL {
+			path = customToolchainPath
+				.appendingPathComponent("usr", isDirectory: true)
+				.appendingPathComponent("bin", isDirectory: true)
+				.appendingPathComponent("swift", isDirectory: false)
+				.path
+		} else if let p = xcrunSwiftPath {
+			path = p
+		}
+		
+		guard let p = path, FileManager.default.fileExists(atPath: p) else {
 			throw PathError.swift
 		}
-		return path
+		
+		return p
 	}
 	
 	private func swiftcPath() throws -> String {
-		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
-			throw PathError.xcode
+		var path: String?
+		
+		if let customToolchainPath = customToolchainURL {
+			path = customToolchainPath
+				.appendingPathComponent("usr", isDirectory: true)
+				.appendingPathComponent("bin", isDirectory: true)
+				.appendingPathComponent("swift", isDirectory: false)
+				.path
+		} else if let p = xcrunSwiftcPath {
+			path = p
 		}
 		
-		let path = xcodeURL.appendingPathComponent("Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc").path
-		guard FileManager.default.fileExists(atPath: path) else {
+		guard let p = path, FileManager.default.fileExists(atPath: p) else {
 			throw PathError.swiftc
 		}
-		return path
+		
+		return p
 	}
 	
-	private func sdkPath() throws -> String {
-		guard FileManager.default.fileExists(atPath: xcodeURL.path) else {
-			throw PathError.xcode
+	public func sdkPath() throws -> String {
+		if isSandboxed {
+			guard let path = xcodeDefaultSDKPath, FileManager.default.fileExists(atPath: path) else {
+				throw PathError.sdk
+			}
+			return path
+		} else {
+			return SourceKittenFramework.sdkPath()
 		}
-		
-		let path = xcodeURL.appendingPathComponent("Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk").path
-		guard FileManager.default.fileExists(atPath: path) else {
-			throw PathError.sdk
-		}
-		return path
 	}
 	
 	func swiftVersionString() -> String? {
@@ -356,7 +415,6 @@ class LocalCodeController: CodeController {
 		
 	}
 	
-	/// Be sure to save the code first before calling test!
 	func saveAndTest(_ code: String, for problem: Problem, completion: @escaping (CompilationResult) -> ()) throws {
 		
 		try self.saveCode(code, for: problem)
@@ -625,7 +683,35 @@ class LocalCodeController: CodeController {
 	}
 	
 	func deleteUser(_ username: String) {
-		try? FileManager.default.trashItem(at: applicationSupportDirectory.appendingPathComponent("users").appendingPathComponent(username), resultingItemURL: nil)
+		do {
+			try FileManager.default.trashItem(at: applicationSupportDirectory.appendingPathComponent("users").appendingPathComponent(username), resultingItemURL: nil)
+			
+			UserDefaults.standard.dictionaryRepresentation().keys.filter { $0.hasPrefix("user-\(username)-solved-") }.forEach { UserDefaults.standard.removeObject(forKey: $0) }
+		} catch {
+			
+		}
+	}
+	
+	fileprivate func solvedKey(forUser username: String?, problem: Problem) -> String {
+		return "user-\(username ?? "")-solved-\(problem.title)"
+	}
+	
+	func user(_ username: String?, didSolve problem: Problem) {
+		let key = solvedKey(forUser: username, problem: problem)
+		UserDefaults.standard.set(true, forKey: key)
+	}
+	
+	func user(_ username: String?, hasSolved problem: Problem) -> Bool {
+		let key = solvedKey(forUser: username, problem: problem)
+		return UserDefaults.standard.bool(forKey: key)
+	}
+	
+	func deleteUserRecords(forUser username: String?, problem: Problem) throws {
+		
+		try saveCode(problem.startingCode, for: problem)
+		
+		let key = solvedKey(forUser: username, problem: problem)
+		UserDefaults.standard.removeObject(forKey: key)
 	}
 	
 }

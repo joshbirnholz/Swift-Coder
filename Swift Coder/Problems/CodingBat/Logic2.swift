@@ -16,7 +16,7 @@ let codingBatLogic2Problems: [Problem] = [
 				Problem.Parameter(name: "big", type: Int.self),
 				Problem.Parameter(name: "goal", type: Int.self)
 		],
-			prompt: "We want to make a row of bricks that is goal inches long. We have a number of small bricks (1 inch each) and big bricks (5 inches each). Return true if it is possible to make the goal by choosing from the given bricks. This is a little harder than it looks and can be done without any loops.",
+			prompt: "We want to make a row of bricks that is `goal` inches long. We have a number of small bricks (1 inch each) and big bricks (5 inches each). Return true if it is possible to make the goal by choosing from the given bricks. This is a little harder than it looks and can be done without any loops.",
 			hint: "https://www.youtube.com/watch?v=86PSF-n43-g",
 			testCases: [
 				Problem.TestCase(expectation: true, arguments: 3, 1, 8),
@@ -57,8 +57,28 @@ let codingBatLogic2Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given 3 int values, a b c, return their sum. However, if one of the values is the same as another of the values, it does not count towards the sum.",
-		solution: nil,
+		prompt: "Given 3 int values, `a` `b` `c`, return their sum. However, if one of the values is the same as another of the values, it does not count towards the sum.",
+		solution: """
+func loneSum(a: Int, b: Int, c: Int) -> Int {
+	var sum = 0;
+	if a != b && a != c {
+		sum += a
+	}
+	if b != a && b != c {
+		sum += b
+	}
+	if c != a && c != b {
+		sum += c
+	}
+	return sum
+	
+	// Solution notes: this code is a pretty direct translation
+	// of the problem statement.
+	// For each of a/b/c, check that it is different from
+	// the other two before adding it to the sum variable
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: 6, arguments: 1, 2, 3),
@@ -81,7 +101,7 @@ let codingBatLogic2Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given 3 int values, a b c, return their sum. However, if one of the values is 13 then it does not count towards the sum and values to its right do not count. So for example, if b is 13, then both b and c do not count.",
+		prompt: "Given 3 int values, `a` `b` `c`, return their sum. However, if one of the values is 13 then it does not count towards the sum and values to its right do not count. So for example, if `b` is 13, then both `b` and `c` do not count.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -108,7 +128,7 @@ let codingBatLogic2Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given 3 int values, a b c, return their sum. However, if any of the values is a teen -- in the range 13...19 -- then that value counts as 0, except 15 and 16 do not count as a teens. Write a separate helper \"func fixTeen(n: Int) -> Int {\"that takes in an int value and returns that value fixed for the teen rule. In this way, you avoid repeating the teen code 3 times (i.e. \"decomposition\"). Define the helper below and at the same indent level as the main noTeenSum function.",
+		prompt: "Given 3 int values, `a` `b` `c`, return their sum. However, if any of the values is a teen -- in the range 13...19 -- then that value counts as 0, except 15 and 16 do not count as a teens. Write a separate helper \"`func fixTeen(n: Int) -> Int {`\" that takes in an int value and returns that value fixed for the teen rule. In this way, you avoid repeating the teen code 3 times (i.e. \"decomposition\"). Define the helper below and at the same indent level as the main `noTeenSum` function.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -139,7 +159,7 @@ let codingBatLogic2Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "For this problem, we'll round an int value up to the next multiple of 10 if its rightmost digit is 5 or more, so 15 rounds up to 20. Alternately, round down to the previous multiple of 10 if its rightmost digit is less than 5, so 12 rounds down to 10. Given 3 ints, a b c, return the sum of their rounded values. To avoid code repetition, write a separate helper \"func round10(num: Int) -> Int {\" and call it 3 times. Write the helper entirely below and at the same indent level as the roundSum function.",
+		prompt: "For this problem, we'll round an int value up to the next multiple of 10 if its rightmost digit is 5 or more, so 15 rounds up to 20. Alternately, round down to the previous multiple of 10 if its rightmost digit is less than 5, so 12 rounds down to 10. Given 3 ints, `a` `b` `c`, return the sum of their rounded values. To avoid code repetition, write a separate helper \"`func round10(num: Int) -> Int {`\" and call it 3 times. Write the helper entirely below and at the same indent level as the `roundSum` function.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -173,7 +193,7 @@ let codingBatLogic2Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given three ints, a b c, return true if one of b or c is \"close\" (differing from a by at most 1), while the other is \"far\", differing from both other values by 2 or more. Note: abs(num) computes the absolute value of a number.",
+		prompt: "Given three ints, `a` `b` `c`, return true if one of `b` or `c` is \"close\" (differing from a by at most 1), while the other is \"far\", differing from both other values by 2 or more. Note: `abs(num)` computes the absolute value of a number.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -198,6 +218,30 @@ let codingBatLogic2Problems: [Problem] = [
 				Problem.Parameter(name: "a", type: Int.self),
 				Problem.Parameter(name: "b", type: Int.self)
 		], prompt: "Given 2 Int values greater than 0, return whichever value is nearest to 21 without going over. Return 0 if they both go over.",
+		   solution: """
+func blackJack(a: Int, b: Int) -> Int {
+	// The value of a/b, or 0 if over 21
+	var aVal = a
+	if aVal > 21 {
+		aVal = 0
+	}
+	var bVal = b
+	if bVal > 21 {
+		bVal = 0
+	}
+	
+	// Now it works to just return whichever is larger.
+	if aVal > bVal {
+		return aVal
+	} else {
+		return bVal
+	}
+	
+	// You can write a very short version of this same strategy
+	// using the "ternary operator" ?: and max()
+}
+""",
+		   hidesSolutionUntilSolved: true,
 		   testCases: [
 			Problem.TestCase(expectation: 21, arguments: 19, 21),
 			Problem.TestCase(expectation: 21, arguments: 21, 19),
@@ -223,7 +267,7 @@ let codingBatLogic2Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given three ints, a b c, one of them is small, one is medium and one is large. Return true if the three values are evenly spaced, so the difference between small and medium is the same as the difference between medium and large.",
+		prompt: "Given three ints, `a` `b` `c`, one of them is small, one is medium and one is large. Return true if the three values are evenly spaced, so the difference between small and medium is the same as the difference between medium and large.",
 		solution: nil,
 		hint: nil,
 		testCases: [

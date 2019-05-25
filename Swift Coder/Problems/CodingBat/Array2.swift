@@ -15,7 +15,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Return the number of even ints in the given array. Note: the % (remainder) operator computes the remainder, e.g. 5 % 2 is 1.",
+		prompt: "Return the number of even ints in the given array. Note: the `%` (remainder) operator computes the remainder, e.g. 5 % 2 is 1.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -36,7 +36,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Given an array length 1 or more of ints, return the difference between the largest and smallest values in the array. Note: the built-in min(v1, v2) and max(v1, v2) methods return the smaller or larger of two values.",
+		prompt: "Given an array length 1 or more of ints, return the difference between the largest and smallest values in the array. Note: the built-in `min(v1, v2)` and `max(v1, v2)` methods return the smaller or larger of two values.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -248,7 +248,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a number n, create and return a new int array of length n, containing the numbers 0, 1, 2, ... n-1. The given n may be 0, in which case just return a length 0 array. You do not need a separate if-statement for the length-0 case; the for-loop should naturally execute 0 times in that case, so it just works.",
+		prompt: "Given a number `n`, create and return a new int array of length n, containing the numbers 0, 1, 2, ... n-1. The given n may be 0, in which case just return a length 0 array. You do not need a separate if-statement for the count-0 case; the for-loop should naturally execute 0 times in that case, so it just works.",
 		solution: nil,
 		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
 		testCases: [
@@ -295,7 +295,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a number n, create and return a new string array of length n, containing the strings \"0\", \"1\" \"2\" .. through n-1. N may be 0, in which case just return a length 0 array. Note: String(xxx) will make the String form of an Int.",
+		prompt: "Given a number n, create and return a new string array of length n, containing the strings \"0\", \"1\" \"2\" .. through n-1. N may be 0, in which case just return a length 0 array. Note: `String(xxx)` will make the String form of an Int.",
 		solution: nil,
 		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
 		testCases: [
@@ -349,7 +349,7 @@ let codingBatArray2Problems: [Problem] = [
 			Problem.Parameter(name: "nums1", type: [Int].self),
 			Problem.Parameter(name: "nums2", type: [Int].self)
 		],
-		prompt: "Given arrays nums1 and nums2 of the same length, for every element in nums1, consider the corresponding element in nums2 (at the same index). Return the count of the number of times that the two elements differ by 2 or less, but are not equal.",
+		prompt: "Given arrays `nums1` and `nums2` of the same length, for every element in `nums1`, consider the corresponding element in `nums2` (at the same index). Return the count of the number of times that the two elements differ by 2 or less, but are not equal.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -373,7 +373,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Given an array of ints, return true if the array contains two 7's next to each other, or there are two 7's separated by one element, such as with [7, 1, 7].",
+		prompt: "Given an array of ints, return true if the array contains two 7's next to each other, or there are two 7's separated by one element, such as with `[7, 1, 7]`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -511,7 +511,7 @@ let codingBatArray2Problems: [Problem] = [
 			Problem.Parameter(name: "nums", type: [Int].self),
 			Problem.Parameter(name: "len", type: Int.self)
 		],
-		prompt: "Return true if the group of N numbers at the start and end of the array are the same. For example, with [5, 6, 45, 99, 13, 5, 6], the ends are the same for n=0 and n=2, and false for n=1 and n=3. You may assume that n is in the range 0...nums.count.",
+		prompt: "Return true if the group of N numbers at the start and end of the array are the same. For example, with [5, 6, 45, 99, 13, 5, 6], the ends are the same for n=0 and n=2, and false for n=1 and n=3. You may assume that n is in the range 0...`nums.count`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -603,7 +603,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "For each multiple of 10 in the given array, change all the values following it to be that multiple of 10, until encountering another multiple of 10. So [2, 10, 3, 4, 20, 5] yields [2, 10, 10, 10, 20, 20].",
+		prompt: "For each multiple of 10 in the given array, change all the values following it to be that multiple of 10, until encountering another multiple of 10. So `[2, 10, 3, 4, 20, 5]` yields `[2, 10, 10, 10, 20, 20]`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -697,7 +697,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Return an array that contains the exact same numbers as the given array, but rearranged so that all the zeros are grouped at the start of the array. The order of the non-zero numbers does not matter. So [1, 0, 0, 1] becomes [0 ,0, 1, 1]. You may modify and return the given array or make a new array.",
+		prompt: "Return an array that contains the exact same numbers as the given array, but rearranged so that all the zeros are grouped at the start of the array. The order of the non-zero numbers does not matter. So `[1, 0, 0, 1]` becomes `[0 ,0, 1, 1]`. You may modify and return the given array or make a new array.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -721,7 +721,7 @@ let codingBatArray2Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "nums", type: [Int].self)
 		],
-		prompt: "Return a version of the given array where all the 10's have been removed. The remaining elements should shift left towards the start of the array as needed, and the empty spaces a the end of the array should be 0. So [1, 10, 10, 2] yields [1, 2, 0, 0].",
+		prompt: "Return a version of the given array where all the 10's have been removed. The remaining elements should shift left towards the start of the array as needed, and the empty spaces a the end of the array should be 0. So `[1, 10, 10, 2]` yields `[1, 2, 0, 0]`.",
 		solution: nil,
 		hint: nil,
 		testCases: [

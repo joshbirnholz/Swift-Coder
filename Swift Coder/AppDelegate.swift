@@ -19,6 +19,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 	}
 	
+	func applicationWillTerminate(_ notification: Notification) {
+		LocalCodeController.shared.cleanupTemporaryFiles()
+	}
+	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 		return true
 	}
@@ -58,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		if let problemSet = loadedProblemSets.first,
 			let vc = NSApplication.shared.mainWindow?.contentViewController as? SwiftCoderViewController {
 			vc.problemIndexPath = ProblemIndexPath(list: problemSet, index: 0)
-			vc.setupProblemMenu()
+			vc.configureProblemMenu()
 		}
 	}
 	

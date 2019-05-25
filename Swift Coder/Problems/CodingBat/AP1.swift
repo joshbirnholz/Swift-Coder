@@ -53,7 +53,7 @@ let codingBatAP1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "scores", type: [Int].self)
 		],
-		prompt: "Given an array of scores sorted in increasing order, return true if the array contains 3 adjacent scores that differ from each other by at most 2, such as with [3, 4, 5] or [3, 5, 5].",
+		prompt: "Given an array of scores sorted in increasing order, return true if the array contains 3 adjacent scores that differ from each other by at most 2, such as with `[3, 4, 5]` or `[3, 5, 5]`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -75,7 +75,7 @@ let codingBatAP1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "scores", type: [Int].self)
 		],
-		prompt: "Given an array of scores, compute the int average of the first half and the second half, and return whichever is larger. We'll say that the second half begins at index length/2. The array length will be at least 2. To practice decomposition, write a separate helper method \nfunc average(scores: [Int], start: Int, end: Int) -> Int { which computes the average of the elements between indexes start..end. Call your helper method twice to implement the scoresAverage function. Write your helper method after your scoresAverage function in the text area. Normally you would compute averages with doubles, but here we use ints so the expected results are exact.",
+		prompt: "Given an array of scores, compute the int average of the first half and the second half, and return whichever is larger. We'll say that the second half begins at index `count`/2. The array length will be at least 2. To practice decomposition, write a separate helper method `func average(scores: [Int], start: Int, end: Int) -> Int {` which computes the average of the elements between indexes start..end. Call your helper method twice to implement the `scoresAverage` function. Write your helper method after your `scoresAverage` function in the text area. Normally you would compute averages with doubles, but here we use ints so the expected results are exact.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -134,7 +134,7 @@ let codingBatAP1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a positive int n, return true if it contains a 1 digit. Note: use % to get the rightmost digit, and / to discard the rightmost digit.",
+		prompt: "Given a positive int `n`, return true if it contains a 1 digit. Note: use `%` to get the rightmost digit, and `/` to discard the rightmost digit.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -158,7 +158,7 @@ let codingBatAP1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "We'll say that a positive int divides itself if every digit in the number divides into the number evenly. So for example 128 divides itself since 1, 2, and 8 all divide into 128 evenly. We'll say that 0 does not divide into anything evenly, so no number with a 0 digit divides itself. Note: use % to get the rightmost digit, and / to discard the rightmost digit.",
+		prompt: "We'll say that a positive int divides itself if every digit in the number divides into the number evenly. So for example 128 divides itself since 1, 2, and 8 all divide into 128 evenly. We'll say that 0 does not divide into anything evenly, so no number with a 0 digit divides itself. Note: use `%` to get the rightmost digit, and `/` to discard the rightmost digit.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -183,7 +183,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "nums", type: [Int].self),
 			Problem.Parameter(name: "count", type: Int.self)
 		],
-		prompt: "Given an array of positive ints, return a new array of length \"count\" containing the first even numbers from the original array. The original array will contain at least \"count\" even numbers.",
+		prompt: "Given an array of positive ints, return a new array of length \"`count`\" containing the first even numbers from the original array. The original array will contain at least \"`count`\" even numbers.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -209,7 +209,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "nums", type: [Int].self),
 			Problem.Parameter(name: "count", type: Int.self)
 		],
-		prompt: "We'll say that a positive int n is \"endy\" if it is in the range 0...10 or 90...100. Given an array of positive ints, return a new array of length \"count\" containing the first endy numbers from the original array. Decompose out a separate isEndy(int n) method to test if a number is endy. The original array will contain at least \"count\" endy numbers.",
+		prompt: "We'll say that a positive int n is \"endy\" if it is in the range 0...10 or 90...100. Given an array of positive ints, return a new array of length \"`count`\" containing the first endy numbers from the original array. Decompose out a separate `isEndy(n: Int)` method to test if a number is endy. The original array will contain at least \"`count`\" endy numbers.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -235,7 +235,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [String].self),
 			Problem.Parameter(name: "b", type: [String].self)
 		],
-		prompt: "Given 2 arrays that are the same length containing strings, compare the 1st string in one array to the 1st string in the other array, the 2nd to the 2nd and so on. Count the number of times that the 2 strings are non-empty and start with the same char. The strings may be any length, including 0.",
+		prompt: "Given 2 arrays that are the same length containing strings, compare the 1st string in one array to the 1st string in the other array, the 2nd to the 2nd and so on. Count the number of times that the 2 strings are non-empty and start with the same character. The strings may be any length, including 0.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -261,7 +261,7 @@ let codingBatAP1Problems: [Problem] = [
 				Problem.Parameter(name: "key", type: [String].self),
 				Problem.Parameter(name: "answers", type: [String].self)
 		],
-			prompt: "The \"key\" array is an array containing the correct answers to an exam, like [\"a\", \"a\", \"b\", \"b\"]. The \"answers\" array contains a student's answers, with \"?\" representing a question left blank. The two arrays are not empty and are the same length. Return the score for this array of answers, giving +4 for each correct answer, -1 for each incorrect answer, and +0 for each blank answer.",
+			prompt: "The \"`key`\" array is an array containing the correct answers to an exam, like `[\"a\", \"a\", \"b\", \"b\"]`. The \"`answers`\" array contains a student's answers, with \"?\" representing a question left blank. The two arrays are not empty and are the same length. Return the score for this array of answers, giving +4 for each correct answer, -1 for each incorrect answer, and +0 for each blank answer.",
 			testCases: [
 				Problem.TestCase(expectation: 6, arguments: ["a", "a", "b", "b"], ["a", "c", "b", "c"]),
 				Problem.TestCase(expectation: 11, arguments: ["a", "a", "b", "b"], ["a", "a", "b", "c"]),
@@ -304,7 +304,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [Int].self),
 			Problem.Parameter(name: "b", type: [Int].self)
 		],
-		prompt: "Given two arrays, A and B, of non-negative int scores. A \"special\" score is one which is a multiple of 10, such as 40 or 90. Return the sum of largest special score in A and the largest special score in B. To practice decomposition, write a separate helper function which finds the largest special score in an array. Write your helper function after your scoresSpecial method in the text area.",
+		prompt: "Given two arrays, `a` and `b`, of non-negative int scores. A \"special\" score is one which is a multiple of 10, such as 40 or 90. Return the sum of largest special score in A and the largest special score in B. To practice decomposition, write a separate helper function which finds the largest special score in an array. Write your helper function after your `scoresSpecial` method in the text area.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -331,7 +331,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "start", type: Int.self),
 			Problem.Parameter(name: "end", type: Int.self)
 		],
-		prompt: "We have an array of heights, representing the altitude along a walking trail. Given start/end indexes into the array, return the sum of the changes for a walk beginning at the start index and ending at the end index. For example, with the heights [5, 3, 6, 7, 2] and start=2, end=4 yields a sum of 1 + 5 = 6. The start end end index will both be valid indexes into the array with start <= end.",
+		prompt: "We have an array of heights, representing the altitude along a walking trail. Given `start`/`end` indexes into the array, return the sum of the changes for a walk beginning at the start index and ending at the end index. For example, with the heights `[5, 3, 6, 7, 2]` and `start`=2, `end`=4 yields a sum of 1 + 5 = 6. The start end end index will both be valid indexes into the array with start <= end.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -358,7 +358,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "start", type: Int.self),
 			Problem.Parameter(name: "end", type: Int.self)
 		],
-		prompt: "(A variation on the sumHeights problem.) We have an array of heights, representing the altitude along a walking trail. Given start/end indexes into the array, return the sum of the changes for a walk beginning at the start index and ending at the end index, however increases in height count double. For example, with the heights [5, 3, 6, 7, 2] and start=2, end=4 yields a sum of 1*2 + 5 = 7. The start end end index will both be valid indexes into the array with start <= end.",
+		prompt: "(A variation on the sumHeights problem.) We have an array of heights, representing the altitude along a walking trail. Given start/end indexes into the array, return the sum of the changes for a walk beginning at the start index and ending at the end index, however increases in height count double. For example, with the heights `[5, 3, 6, 7, 2]` and start=2, end=4 yields a sum of 1*2 + 5 = 7. The start end end index will both be valid indexes into the array with start <= end.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -440,7 +440,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: [String].self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Start with two arrays of strings, A and B, each with its elements in alphabetical order and without duplicates. Return a new array containing the first N elements from the two arrays. The result array should be in alphabetical order and without duplicates. A and B will both have a length which is N or more. The best \"linear\" solution makes a single pass over A and B, taking advantage of the fact that they are in alphabetical order, copying elements directly to the new array.",
+		prompt: "Start with two arrays of strings, `a` and `b`, each with its elements in alphabetical order and without duplicates. Return a new array containing the first N elements from the two arrays. The result array should be in alphabetical order and without duplicates. `a` and `b` will both have a length which is `n or more. The best \"linear\" solution makes a single pass over `a` and `b`, taking advantage of the fact that they are in alphabetical order, copying elements directly to the new array.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -463,7 +463,7 @@ let codingBatAP1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: [String].self),
 			Problem.Parameter(name: "b", type: [String].self)
 		],
-		prompt: "Start with two arrays of strings, a and b, each in alphabetical order, possibly with duplicates. Return the count of the number of strings which appear in both arrays. The best \"linear\" solution makes a single pass over both arrays, taking advantage of the fact that they are in alphabetical order.",
+		prompt: "Start with two arrays of strings, `a` and `b`, each in alphabetical order, possibly with duplicates. Return the count of the number of strings which appear in both arrays. The best \"linear\" solution makes a single pass over both arrays, taking advantage of the fact that they are in alphabetical order.",
 		solution: nil,
 		hint: nil,
 		testCases: [

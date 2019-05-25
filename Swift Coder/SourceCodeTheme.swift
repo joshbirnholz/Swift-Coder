@@ -54,6 +54,9 @@ private struct SwiftCoderTheme: SourceCodeTheme {
 		case .identifier:
 			return #colorLiteral(red: 0.2470588235, green: 0.2980392157, blue: 0.4352941176, alpha: 1)
 			
+		case .typeIdentifier:
+			return #colorLiteral(red: 0.2470588235, green: 0.2980392157, blue: 0.4352941176, alpha: 1)
+			
 		case .keyword:
 			return #colorLiteral(red: 0.5333333333, green: 0.1411764706, blue: 0.4862745098, alpha: 1)
 			
@@ -104,7 +107,7 @@ private struct SwiftBookColorTheme: SourceCodeTheme {
 	
 	public let gutterStyle: GutterStyle = GutterStyle(backgroundColor: SwiftBookColorTheme.gutterColor, minimumWidth: 32)
 	
-	public let font = Font(name: "Menlo", size: 13)!
+	public let font = Font(name: "SF Mono", size: 13) ?? Font(name: "Menlo", size: 13)!
 	
 	public let backgroundColor: Color = {
 		if #available(OSX 10.13, *) {
@@ -141,6 +144,12 @@ private struct SwiftBookColorTheme: SourceCodeTheme {
 			} else {
 				return #colorLiteral(red: 0.2862745098, green: 0.4274509804, blue: 0.4509803922, alpha: 1)
 			}
+		case .typeIdentifier:
+			if #available(OSX 10.13, *) {
+				return NSColor(named: NSColor.Name("typeIdentifierColor"))!
+			} else {
+				return #colorLiteral(red: 0.2862745098, green: 0.4274509804, blue: 0.4509803922, alpha: 1)
+			}
 		case .keyword:
 			if #available(OSX 10.13, *) {
 				return NSColor(named: NSColor.Name("keywordColor"))!
@@ -170,6 +179,8 @@ private struct SwiftBookColorTheme: SourceCodeTheme {
 		} else {
 			attributes[.foregroundColor] = Color.black
 		}
+		
+		attributes[.toolTip] = ""
 		
 		return attributes
 	}

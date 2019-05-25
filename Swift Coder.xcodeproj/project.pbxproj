@@ -37,7 +37,6 @@
 		540F00462124BBBD00284D48 /* SwiftLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F003F2124BBBD00284D48 /* SwiftLexer.swift */; };
 		540F00482124C01C00284D48 /* SourceCodeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540F00472124C01C00284D48 /* SourceCodeTheme.swift */; };
 		540FFFF82124BB6600284D48 /* SavannaKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 540FFFF62124BB6600284D48 /* SavannaKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		540FFFFB2124BB6600284D48 /* SavannaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FFFF42124BB6600284D48 /* SavannaKit.framework */; };
 		540FFFFC2124BB6600284D48 /* SavannaKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 540FFFF42124BB6600284D48 /* SavannaKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		542019B9224B219C00B9FE1F /* SwiftCoderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5468857F1CC2BA0C003F3614 /* SwiftCoderViewController.swift */; };
 		542A053B21A4823E004E5F4F /* Warmup1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542A053A21A4823E004E5F4F /* Warmup1.swift */; };
@@ -63,9 +62,23 @@
 		546885AE1CC2E758003F3614 /* ProblemSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546885AD1CC2E758003F3614 /* ProblemSet.swift */; };
 		546C3CF5226FA19A00A3204E /* CodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546C3CF4226FA19A00A3204E /* CodeController.swift */; };
 		547B567F225296E200D9B3A1 /* Optionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547B567E225296E200D9B3A1 /* Optionals.swift */; };
+		547F1CD72280C2D300023A61 /* SourceKitten.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547F1CD62280C2D300023A61 /* SourceKitten.swift */; };
+		547F1CEA22810A3000023A61 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 547F1CE822810A3000023A61 /* SWXMLHash.framework */; };
+		547F1CEB22810A3000023A61 /* SWXMLHash.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 547F1CE822810A3000023A61 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		547F1CEC22810A3000023A61 /* Yams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 547F1CE922810A3000023A61 /* Yams.framework */; };
+		547F1CED22810A3000023A61 /* Yams.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 547F1CE922810A3000023A61 /* Yams.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5490932522820F7F00A6B1B1 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5490932422820F7F00A6B1B1 /* SourceKittenFramework.framework */; };
+		5490932622820F7F00A6B1B1 /* SourceKittenFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5490932422820F7F00A6B1B1 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		54940F392279FAC100404E57 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54940F382279FAC100404E57 /* WindowController.swift */; };
+		54940F3B227A323200404E57 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54940F3A227A323200404E57 /* Colors.swift */; };
+		54940F3E227A777100404E57 /* Unwrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54940F3D227A777100404E57 /* Unwrap.swift */; };
+		54940F40227A83BD00404E57 /* glossary.html in Resources */ = {isa = PBXBuildFile; fileRef = 54940F3F227A83BD00404E57 /* glossary.html */; };
 		549BABFD212217A60015D6F6 /* LocalCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549BABFC212217A60015D6F6 /* LocalCodeController.swift */; };
+		54A0A406227CE651005BEA90 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A0A405227CE651005BEA90 /* Fonts.swift */; };
+		54CB34972283CFFE002F5ECF /* SavannaKit-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 54CB34962283CFFE002F5ECF /* SavannaKit-Bridging-Header.h */; };
+		54CB36DA2283FD8C002F5ECF /* NCRAutocompleteTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB36D92283FD8C002F5ECF /* NCRAutocompleteTextView.swift */; };
 		54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFF10F219B77FC0089E740 /* CompilerMessage.swift */; };
+		54EFAF962283662F00AFB850 /* RoundedBackgroundLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFAF952283662F00AFB850 /* RoundedBackgroundLayoutManager.swift */; };
 		54EFE62B219624CC0023585D /* CompilationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFE62A219624CC0023585D /* CompilationResult.swift */; };
 		54EFE62E21962D680023585D /* StringAPI.txt in Resources */ = {isa = PBXBuildFile; fileRef = 54EFE62C219629C80023585D /* StringAPI.txt */; };
 		54FAFCE322528E3B00BBCE0E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FAFCE222528E3B00BBCE0E /* Extensions.swift */; };
@@ -106,6 +119,9 @@
 			dstSubfolderSpec = 10;
 			files = (
 				540F00332124BBAF00284D48 /* SourceEditor.framework in Embed Frameworks */,
+				5490932622820F7F00A6B1B1 /* SourceKittenFramework.framework in Embed Frameworks */,
+				547F1CED22810A3000023A61 /* Yams.framework in Embed Frameworks */,
+				547F1CEB22810A3000023A61 /* SWXMLHash.framework in Embed Frameworks */,
 				540FFFFC2124BB6600284D48 /* SavannaKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -172,11 +188,23 @@
 		546885AD1CC2E758003F3614 /* ProblemSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemSet.swift; sourceTree = "<group>"; };
 		546C3CF4226FA19A00A3204E /* CodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeController.swift; sourceTree = "<group>"; };
 		547B567E225296E200D9B3A1 /* Optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optionals.swift; sourceTree = "<group>"; };
+		547F1CD62280C2D300023A61 /* SourceKitten.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceKitten.swift; sourceTree = "<group>"; };
+		547F1CDF228109D100023A61 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SourceKittenFramework.framework; path = Carthage/Build/Mac/SourceKittenFramework.framework; sourceTree = "<group>"; };
+		547F1CE822810A3000023A61 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SWXMLHash.framework; path = Carthage/Build/Mac/SWXMLHash.framework; sourceTree = "<group>"; };
+		547F1CE922810A3000023A61 /* Yams.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Yams.framework; path = Carthage/Build/Mac/Yams.framework; sourceTree = "<group>"; };
+		5490932422820F7F00A6B1B1 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SourceKittenFramework.framework; path = Carthage/Build/Mac/SourceKittenFramework.framework; sourceTree = "<group>"; };
 		54940F382279FAC100404E57 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		54940F3A227A323200404E57 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		54940F3D227A777100404E57 /* Unwrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unwrap.swift; sourceTree = "<group>"; };
+		54940F3F227A83BD00404E57 /* glossary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = glossary.html; sourceTree = "<group>"; };
 		549BABFC212217A60015D6F6 /* LocalCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCodeController.swift; sourceTree = "<group>"; };
+		54A0A405227CE651005BEA90 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		54CB34962283CFFE002F5ECF /* SavannaKit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SavannaKit-Bridging-Header.h"; sourceTree = "<group>"; };
+		54CB36D92283FD8C002F5ECF /* NCRAutocompleteTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NCRAutocompleteTextView.swift; sourceTree = "<group>"; };
 		54CFF10F219B77FC0089E740 /* CompilerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerMessage.swift; sourceTree = "<group>"; };
 		54E227B52193FF6800E33204 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		54E227C4219419E500E33204 /* Swift Coder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Swift Coder.entitlements"; sourceTree = "<group>"; };
+		54EFAF952283662F00AFB850 /* RoundedBackgroundLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBackgroundLayoutManager.swift; sourceTree = "<group>"; };
 		54EFE62A219624CC0023585D /* CompilationResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilationResult.swift; sourceTree = "<group>"; };
 		54EFE62C219629C80023585D /* StringAPI.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = StringAPI.txt; sourceTree = "<group>"; };
 		54FAFCE222528E3B00BBCE0E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -206,8 +234,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				547F1CEC22810A3000023A61 /* Yams.framework in Frameworks */,
+				5490932522820F7F00A6B1B1 /* SourceKittenFramework.framework in Frameworks */,
 				540F00322124BBAF00284D48 /* SourceEditor.framework in Frameworks */,
-				540FFFFB2124BB6600284D48 /* SavannaKit.framework in Frameworks */,
+				547F1CEA22810A3000023A61 /* SWXMLHash.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +258,7 @@
 		540F00062124BB7400284D48 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				54CB36D92283FD8C002F5ECF /* NCRAutocompleteTextView.swift */,
 				540F00072124BB7400284D48 /* SyntaxTextView.swift */,
 				540F00082124BB7400284D48 /* SyntaxTextView+TextViewDelegate.swift */,
 				540F00092124BB7400284D48 /* InnerTextView.swift */,
@@ -287,6 +318,7 @@
 			isa = PBXGroup;
 			children = (
 				540FFFF62124BB6600284D48 /* SavannaKit.h */,
+				54CB34962283CFFE002F5ECF /* SavannaKit-Bridging-Header.h */,
 				540F000E2124BB7400284D48 /* ASTVisualizer.swift */,
 				540F000F2124BB7400284D48 /* Model */,
 				540F00012124BB7400284D48 /* Util */,
@@ -299,6 +331,7 @@
 		542A04B421A1EE94004E5F4F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				547F1CDF228109D100023A61 /* SourceKittenFramework.framework */,
 				542019B7224AC24D00B9FE1F /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -310,6 +343,7 @@
 				546885AB1CC2DE70003F3614 /* Problem.swift */,
 				546885AD1CC2E758003F3614 /* ProblemSet.swift */,
 				54BB418321A5B615002B660E /* CodingBat */,
+				54940F3C227A776300404E57 /* Unwrap */,
 				542A055C21A4841F004E5F4F /* ProjectEuler.swift */,
 				547B567E225296E200D9B3A1 /* Optionals.swift */,
 			);
@@ -319,6 +353,9 @@
 		546885711CC2BA0C003F3614 = {
 			isa = PBXGroup;
 			children = (
+				5490932422820F7F00A6B1B1 /* SourceKittenFramework.framework */,
+				547F1CE822810A3000023A61 /* SWXMLHash.framework */,
+				547F1CE922810A3000023A61 /* Yams.framework */,
 				54E227B52193FF6800E33204 /* README.md */,
 				54FCC3BA219150B20035DD4D /* CodingBatTest.playground */,
 				5468857C1CC2BA0C003F3614 /* Swift Coder */,
@@ -356,10 +393,23 @@
 				54940F382279FAC100404E57 /* WindowController.swift */,
 				546885831CC2BA0C003F3614 /* Main.storyboard */,
 				546885861CC2BA0C003F3614 /* Info.plist */,
+				54EFAF952283662F00AFB850 /* RoundedBackgroundLayoutManager.swift */,
 				540F00472124C01C00284D48 /* SourceCodeTheme.swift */,
+				54940F3A227A323200404E57 /* Colors.swift */,
+				54A0A405227CE651005BEA90 /* Fonts.swift */,
+				547F1CD62280C2D300023A61 /* SourceKitten.swift */,
 				54EFE62C219629C80023585D /* StringAPI.txt */,
+				54940F3F227A83BD00404E57 /* glossary.html */,
 			);
 			path = "Swift Coder";
+			sourceTree = "<group>";
+		};
+		54940F3C227A776300404E57 /* Unwrap */ = {
+			isa = PBXGroup;
+			children = (
+				54940F3D227A777100404E57 /* Unwrap.swift */,
+			);
+			path = Unwrap;
 			sourceTree = "<group>";
 		};
 		54BB418321A5B615002B660E /* CodingBat */ = {
@@ -402,6 +452,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54CB34972283CFFE002F5ECF /* SavannaKit-Bridging-Header.h in Headers */,
 				540FFFF82124BB6600284D48 /* SavannaKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -543,6 +594,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54940F40227A83BD00404E57 /* glossary.html in Resources */,
 				54EFE62E21962D680023585D /* StringAPI.txt in Resources */,
 				546885821CC2BA0C003F3614 /* Assets.xcassets in Resources */,
 				546885851CC2BA0C003F3614 /* Main.storyboard in Resources */,
@@ -582,6 +634,7 @@
 				540F00212124BB7400284D48 /* Lexer.swift in Sources */,
 				540F00182124BB7400284D48 /* NSMutableAttributedString+Tokens.swift in Sources */,
 				540F001A2124BB7400284D48 /* SyntaxTextView+TextViewDelegate.swift in Sources */,
+				54CB36DA2283FD8C002F5ECF /* NCRAutocompleteTextView.swift in Sources */,
 				540F00232124BB7400284D48 /* SyntaxColorTheme.swift in Sources */,
 				540F00192124BB7400284D48 /* SyntaxTextView.swift in Sources */,
 				540F00162124BB7400284D48 /* NSTextView+UIKit.swift in Sources */,
@@ -599,6 +652,7 @@
 				54CFF110219B77FC0089E740 /* CompilerMessage.swift in Sources */,
 				546C3CF5226FA19A00A3204E /* CodeController.swift in Sources */,
 				54EFE62B219624CC0023585D /* CompilationResult.swift in Sources */,
+				547F1CD72280C2D300023A61 /* SourceKitten.swift in Sources */,
 				546885AE1CC2E758003F3614 /* ProblemSet.swift in Sources */,
 				542A054121A482B4004E5F4F /* Array1.swift in Sources */,
 				542A053F21A4829A004E5F4F /* Logic1.swift in Sources */,
@@ -613,11 +667,15 @@
 				542A054F21A48365004E5F4F /* Array3.swift in Sources */,
 				542A054721A4830F004E5F4F /* AP1.swift in Sources */,
 				542A053D21A48273004E5F4F /* Warmup2.swift in Sources */,
+				54EFAF962283662F00AFB850 /* RoundedBackgroundLayoutManager.swift in Sources */,
 				547B567F225296E200D9B3A1 /* Optionals.swift in Sources */,
 				542A054D21A48352004E5F4F /* Array2.swift in Sources */,
 				542A054521A482F1004E5F4F /* Logic2.swift in Sources */,
 				542A054321A482D8004E5F4F /* String1.swift in Sources */,
+				54A0A406227CE651005BEA90 /* Fonts.swift in Sources */,
 				542A055321A48392004E5F4F /* Dictionary2.swift in Sources */,
+				54940F3B227A323200404E57 /* Colors.swift in Sources */,
+				54940F3E227A777100404E57 /* Unwrap.swift in Sources */,
 				549BABFD212217A60015D6F6 /* LocalCodeController.swift in Sources */,
 				542A055B21A48409004E5F4F /* Functional2.swift in Sources */,
 				542A055521A483AC004E5F4F /* Recursion1.swift in Sources */,
@@ -924,6 +982,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -940,6 +999,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.josh.birnholz.Swift-Coder";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -949,6 +1009,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;

@@ -16,17 +16,25 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "name", type: String.self)
 		],
 		prompt: "Given a string name, e.g. \"Bob\", return a greeting of the form \"Hello Bob!\".",
-		solution: nil,
+		solution: """
+func helloName(name: String) -> String {
+	return "Hello " + name + "!"
+}
+
+// Could also use string interpolation:
+// return "Hello \\(name)!"
+""",
+		hidesSolutionUntilSolved: true,
 		hint: """
 		The code
-
-		return "xyz" + name
+		
+		    return "xyz" + name
 
 		would return "xyzBob" for the "Bob" example, so it's not a solution, but it shows the right code pattern.
 
 		This code does the same thing:
 
-		return "xyz\\(name)"
+		    return "xyz\\(name)"
 		""",
 		testCases: [
 			Problem.TestCase(expectation: "Hello Bob!", arguments: "Bob"),
@@ -49,8 +57,16 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given two strings, a and b, return the result of putting them together in the order abba, e.g. \"Hi\" and \"Bye\" returns \"HiByeByeHi\".",
-		solution: nil,
+		prompt: "Given two strings, `a` and `b`, return the result of putting them together in the order abba, e.g. \"Hi\" and \"Bye\" returns \"HiByeByeHi\".",
+		solution: #"""
+func makeAbba(a: String, b: String) -> String {
+	return a+b+b+a;
+}
+
+// Could also use string interpolation:
+// return "\(a)\(b)\(b)\(a)"
+"""#,
+		hidesSolutionUntilSolved: true,
 		hint: """
 		The code
 
@@ -78,7 +94,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "tag", type: String.self),
 			Problem.Parameter(name: "word", type: String.self)
 		],
-		prompt: "The web is built with HTML strings like \"<i>Yay</i>\" which draws Yay as italic text. In this example, the \"i\" tag makes <i> and </i> which surround the word \"Yay\". Given tag and word strings, create the HTML string with tags around the word, e.g. \"<i>Yay</i>\".",
+		prompt: "The web is built with HTML strings like \"`<i>Yay</i>`\" which draws Yay as italic text. In this example, the \"i\" tag makes `<i>` and `</i>` which surround the word \"Yay\". Given tag and word strings, create the HTML string with tags around the word, e.g. \"`<i>Yay</i>`\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -99,7 +115,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "out", type: String.self),
 			Problem.Parameter(name: "word", type: String.self)
 		],
-		prompt: "Given an \"out\" string length 4, such as \"<<>>\", and a word, return a new string where the word is in the middle of the out string, e.g. \"<<word>>\". Note: str.prefix(2) will give you the first two characters of a String, and str.suffix(2) will give you the last two characters.",
+		prompt: "Given an \"out\" string length 4, such as \"<<>>\", and a word, return a new string where the word is in the middle of the out string, e.g. \"<<word>>\". Note: `str.prefix(2)` will give you the first two characters of a String, and `str.suffix(2)` will give you the last two characters.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -117,8 +133,18 @@ let codingBatString1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a new string made of 3 copies of the last 2 characters of the original string. The string length will be at least 2.",
-		solution: nil,
+		prompt: "Given a string, return a new string made of 3 copies of the last 2 characters of the original string. The string length will be at least 2. Note: use `String(str.suffix(2))` to get the last two characters of a string.",
+		solution: """
+func extraEnd(str: String) -> String {
+	let end = String(str.suffix(2))
+	return end + end + end
+	
+	// Solution notes: Here we store the last two
+	// characters in a local variable, which makes
+	// the code longer but simpler.
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: "lololo", arguments: "Hello"),
@@ -135,8 +161,13 @@ let codingBatString1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return the string made of its first two characters, so the String \"Hello\" yields \"He\". If the string is shorter than length 2, return whatever there is, so \"X\" yields \"X\", and the empty string \"\" yields the empty string \"\".",
-		solution: nil,
+		prompt: "Given a string, return the string made of its first two characters, so the String \"Hello\" yields \"He\". If the string is shorter than length 2, return whatever there is, so \"X\" yields \"X\", and the empty string \"\" yields the empty string \"\". Note: use `String(str.prefix(2))` to get the first two characters of a string.",
+		solution: """
+func firstTwo(str: String) -> String {
+	return String(str.prefix(2))
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: "He", arguments: "Hello"),
@@ -176,7 +207,7 @@ let codingBatString1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a version without the first and last char, so \"Hello\" yields \"ell\". The string length will be at least 2.",
+		prompt: "Given a string, return a version without the first and last character, so \"Hello\" yields \"ell\". The string length will be at least 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -198,7 +229,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given 2 strings, a and b, return a string of the form short+long+short, with the shorter string on the outside and the longer string on the inside. The strings will not be the same length, but they may be empty (length 0).",
+		prompt: "Given 2 strings, `a` and `b`, return a string of the form short+long+short, with the shorter string on the outside and the longer string on the inside. The strings will not be the same length, but they may be empty (length 0).",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -223,7 +254,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given 2 strings, return their concatenation, except omit the first char of each. The strings will be at least length 1.",
+		prompt: "Given 2 strings, return their concatenation, except omit the first character of each. The strings will be at least length 1.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -245,8 +276,14 @@ let codingBatString1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a \"rotated left 2\" version where the first 2 characters are moved to the end. The string length will be at least 2.",
-		solution: nil,
+		prompt: "Given a string, return a \"rotated left 2\" version where the first 2 characters are moved to the end. The string length will be at least 2. Note: Use `String(str.dropFirst(2))` to get all but the first two characters of a string.",
+		solution: """
+func left2(str: String) -> String {
+	let start = String(str.prefix(2))
+	let rest = (str.dropFirst(2))
+	return rest + start
+}
+""",
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: "lloHe", arguments: "Hello"),
@@ -266,7 +303,7 @@ let codingBatString1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a \"rotated right 2\" version where the last 2 characters are moved to the start. The string length will be at least 2.",
+		prompt: "Given a string, return a \"rotated right 2\" version where the last 2 characters are moved to the start. The string length will be at least 2. Note: use `String(str.dropLast(2))` to get the last two characters of a string.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -310,7 +347,12 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self)
 		],
 		prompt: "Given a string, return a version without both the first and last char of the string. The string may be any length, including 0.",
-		solution: nil,
+		solution: """
+func withouEnd2(str: String) -> String {
+	return String(str.dropFirst().dropLast())
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: "ell", arguments: "Hello"),
@@ -370,7 +412,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and an int n, return a string made of the first and last n characters from the string. The string length will be at least n.",
+		prompt: "Given a string and an int `n`, return a string made of the first and last `n` characters from the string. The string length will be at least `n`.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -459,7 +501,7 @@ let codingBatString1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return a string length 2 made of its first 2 characters. If the string length is less than 2, use '@' for the missing characters.",
+		prompt: "Given a string, return a string length 2 made of its first 2 characters. If the string length is less than 2, use \"@\" for the missing characters.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -480,7 +522,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given 2 strings, a and b, return a new string made of the first char of a and the last char of b, so \"yo\" and \"swift\" yields \"yt\". If either string is length 0, use '@' for its missing char.",
+		prompt: "Given 2 strings, `a` and `b`, return a new string made of the first character of a and the last character of b, so \"yo\" and \"swift\" yields \"yt\". If either string is length 0, use \"@\" for its missing character.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -565,7 +607,12 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self)
 		],
 		prompt: "Given a string, return true if the first 2 characters in the string also appear at the end of the string, such as with \"edited\".",
-		solution: nil,
+		solution: """
+func frontAgain(str: String) -> Bool {
+	return str.count >= 2 && str.prefix(2) == str.suffix(2)
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: "edited"),
@@ -682,7 +729,7 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "word", type: String.self)
 		],
-		prompt: "Given a string and a second \"word\" string, we'll say that the word matches the string if it appears at the front of the string, except its first character does not need to match exactly. On a match, return the front of the string, or otherwise return the empty string. So, so with the string \"hippo\" the word \"hi\" returns \"hi\" and \"xip\" returns \"hip\". The word will be at least length 1.",
+		prompt: "Given a string and a second \"`word`\" string, we'll say that the word matches the string if it appears at the front of the string, except its first character does not need to match exactly. On a match, return the front of the string, or otherwise return the empty string. So, so with the string \"hippo\" the word \"hi\" returns \"hi\" and \"xip\" returns \"hip\". The word will be at least length 1.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -711,7 +758,22 @@ let codingBatString1Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self)
 		],
 		prompt: "Given a string, if the first or last characters are \"x\", return the string without those \"x\" characters, and otherwise return the string unchanged.",
-		solution: nil,
+		solution: """
+func withoutX(str: String) -> String {
+	var result = str
+	
+	if str.hasPrefix("x") {
+		result = String(result.dropFirst())
+	}
+	
+	if str.hasSuffix("x") {
+		result = String(result.dropLast())
+	}
+	
+	return result
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: "Hi", arguments: "xHix"),

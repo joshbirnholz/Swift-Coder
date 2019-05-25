@@ -14,6 +14,7 @@ public enum SourceCodeTokenType {
 	case number
 	case string
 	case identifier
+	case typeIdentifier
 	case keyword
 	case comment
 	case editorPlaceholder

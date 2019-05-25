@@ -25,6 +25,8 @@ public protocol SyntaxTextViewDelegate: class {
 	
 	func lexerForSource(_ source: String) -> Lexer
 	
+	func toolTip(forCharacterAt characterIndex: Int, source: String, in syntaxTextView: SyntaxTextView) -> String?
+	
 }
 
 // Provide default empty implementations of methods that are optional.
@@ -34,6 +36,15 @@ public extension SyntaxTextViewDelegate {
     func didChangeSelectedRange(_ syntaxTextView: SyntaxTextView, selectedRange: NSRange) { }
 	
     func textViewDidBeginEditing(_ syntaxTextView: SyntaxTextView) { }
+	
+	func toolTip(forCharacterAt characterIndex: Int, source: String, in syntaxTextView: SyntaxTextView) -> String? {
+		return nil
+	}
+	
+	func completions(_ syntaxTextView: SyntaxTextView, words: [String], forPartialWordRange charRange: NSRange) -> (actualCompletions: [String], indexOfSelectedItem: Int) {
+		return ([], -1)
+	}
+	
 }
 
 struct ThemeInfo {

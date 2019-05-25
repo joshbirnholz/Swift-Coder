@@ -140,7 +140,7 @@ extension SyntaxTextView {
 }
 
 #if os(macOS)
-	
+
 	extension SyntaxTextView: NSTextViewDelegate {
 		
 		open func textView(_ textView: NSTextView, shouldChangeTextIn affectedCharRange: NSRange, replacementString: String?) -> Bool {
@@ -178,8 +178,15 @@ extension SyntaxTextView {
 		open func textViewDidChangeSelection(_ notification: Notification) {
 			
 			contentDidChangeSelection()
+			
+			self.delegate?.didChangeSelectedRange(self, selectedRange: self.textView.selectedRange())
 
 		}
+		
+		public func textView(_ textView: NSTextView, willDisplayToolTip tooltip: String, forCharacterAt characterIndex: Int) -> String? {
+			return self.delegate?.toolTip(forCharacterAt: characterIndex, source: textView.string, in: self)
+		}
+		
 		
 	}
 	

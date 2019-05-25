@@ -16,7 +16,7 @@ let codingBatWarmup2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and a non-negative int n, return a larger string that is n copies of the original string.",
+		prompt: "Given a string and a non-negative int n, return a larger string that is `n` copies of the original string.",
 		solution: """
 		func stringTimes(str: String, n: Int) -> String {
 			var result = ""
@@ -50,7 +50,7 @@ let codingBatWarmup2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and a non-negative int n, we'll say that the front of the string is the first 3 characters, or whatever is there if the string is less than length 3. Return n copies of the front;",
+		prompt: "Given a string and a non-negative int `n`, we'll say that the front of the string is the first 3 characters, or whatever is there if the string is less than length 3. Return `n` copies of the front;",
 		solution: """
 		func frontTimes(str: String, n: Int) -> String {
 			let front = String(str.prefix(3))

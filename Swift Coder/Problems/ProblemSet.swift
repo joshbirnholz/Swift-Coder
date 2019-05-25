@@ -33,25 +33,26 @@ public class ProblemSet: CaseIterable, Codable, Equatable, Hashable {
 	var problems: [Problem]
 	
 	private static let builtInProblemLists: KeyValuePairs<String, [Problem]> = [
-		"Warmup-1": codingBatWarmup1Problems,
-		"Warmup-2": codingBatWarmup2Problems,
-		"String-1": codingBatString1Problems,
-		"Array-1": codingBatArray1Problems,
-		"Logic-1": codingBatLogic1Problems,
-		"Logic-2": codingBatLogic2Problems,
-		"String-2": codingBatString2Problems,
-		"String-3": codingBatString3Problems,
-		"Array-2": codingBatArray2Problems,
-		"Array-3": codingBatArray3Problems,
-		"AP-1": codingBatAP1Problems,
-		"Recursion-1": codingBatRecursion1Problems,
-		"Recursion-2": codingBatRecursion2Problems,
-		"Dictionary-1": codingBatDictionary1Problems,
-		"Dictionary-2": codingBatDictionary2Problems,
-		"Functional-1": codingBatFunctional1Problems,
-		"Functional-2": codingBatFunctional2Problems,
+		"CodingBat: Warmup-1": codingBatWarmup1Problems,
+		"CodingBat: Warmup-2": codingBatWarmup2Problems,
+		"CodingBat: String-1": codingBatString1Problems,
+		"CodingBat: Array-1": codingBatArray1Problems,
+		"CodingBat: Logic-1": codingBatLogic1Problems,
+		"CodingBat: Logic-2": codingBatLogic2Problems,
+		"CodingBat: String-2": codingBatString2Problems,
+		"CodingBat: String-3": codingBatString3Problems,
+		"CodingBat: Array-2": codingBatArray2Problems,
+		"CodingBat: Array-3": codingBatArray3Problems,
+		"CodingBat: AP-1": codingBatAP1Problems,
+		"CodingBat: Recursion-1": codingBatRecursion1Problems,
+		"CodingBat: Recursion-2": codingBatRecursion2Problems,
+		"CodingBat: Dictionary-1": codingBatDictionary1Problems,
+		"CodingBat: Dictionary-2": codingBatDictionary2Problems,
+		"CodingBat: Functional-1": codingBatFunctional1Problems,
+		"CodingBat: Functional-2": codingBatFunctional2Problems,
 		"Optionals": optionalsProblems,
-		"Project Euler": eulerProblems
+		"Project Euler": eulerProblems,
+		"Unwrap": unwrapFreeCodingProblems
 	]
 	
 	public static var allCases: [ProblemSet] = builtInProblemLists.map {

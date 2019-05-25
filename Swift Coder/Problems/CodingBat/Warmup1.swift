@@ -16,7 +16,7 @@ let codingBatWarmup1Problems: [Problem] = [
 			Problem.Parameter(name: "weekday", type: Bool.self),
 			Problem.Parameter(name: "vacation", type: Bool.self)
 		],
-		prompt: "The parameter weekday is true if it is a weekday, and the parameter vacation is true if we are on vacation. We sleep in if it is not a weekday or we're on vacation. Return true if we sleep in.",
+		prompt: "The parameter `weekday` is true if it is a weekday, and the parameter `vacation` is true if we are on vacation. We sleep in if it is not a weekday or we're on vacation. Return true if we sleep in.",
 		solution: """
 		func sleepIn(weekday: Bool, vacation: Bool) -> Bool {
 			if !weekday || vacation {
@@ -47,7 +47,7 @@ let codingBatWarmup1Problems: [Problem] = [
 			Problem.Parameter(name: "aSmile", type: Bool.self),
 			Problem.Parameter(name: "bSmile", type: Bool.self)
 		],
-		prompt: "We have two monkeys, a and b, and the parameters aSmile and bSmile indicate if each is smiling. We are in trouble if they are both smiling or if neither of them is smiling. Return true if we are in trouble.",
+		prompt: "We have two monkeys, a and b, and the parameters `aSmile` and `bSmile` indicate if each is smiling. We are in trouble if they are both smiling or if neither of them is smiling. Return true if we are in trouble.",
 		solution: """
 func monkeyTrouble(aSmile: Bool, bSmile: Bool) -> Bool {
 	if aSmile && bSmile {
@@ -106,7 +106,7 @@ func sumDouble(a: Int, b: Int) -> Int {
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given an int n, return the absolute difference between n and 21, except return double the absolute difference if n is over 21.",
+		prompt: "Given an int `n`, return the absolute difference between `n` and 21, except return double the absolute difference if `n` is over 21.",
 		solution: """
 func diff21(n: Int) -> Int {
 	if n <= 21 {
@@ -137,7 +137,7 @@ func diff21(n: Int) -> Int {
 			Problem.Parameter(name: "talking", type: Bool.self),
 			Problem.Parameter(name: "hour", type: Int.self)
 		],
-		prompt: "We have a loud talking parrot. The \"hour\" parameter is the current hour time in the range 0..23. We are in trouble if the parrot is talking and the hour is before 7 or after 20. Return true if we are in trouble.",
+		prompt: "We have a loud talking parrot. The \"`hour`\" parameter is the current hour time in the range 0..23. We are in trouble if the parrot is talking and the hour is before 7 or after 20. Return true if we are in trouble.",
 		solution: """
 func parrotTrouble(talking: Bool, hour: Int) -> Bool {
 	return talking && (hour < 7 || hour > 20)
@@ -188,7 +188,7 @@ func makes10(a: Int, b: Int) -> Bool {
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given an int n, return true if it is within 10 of 100 or 200. Note: abs(num) computes the absolute value of a number.",
+		prompt: "Given an int n, return true if it is within 10 of 100 or 200. Note: `abs(num)` computes the absolute value of a number.",
 		solution: """
 func nearHundred(n: Int) -> Bool {
 	return (abs(100 - n) <= 10) || (abs(200 - n) <= 10)
@@ -219,7 +219,7 @@ func nearHundred(n: Int) -> Bool {
 				Problem.Parameter(name: "b", type: Int.self),
 				Problem.Parameter(name: "negative", type: Bool.self)
 		],
-			prompt: "Given 2 int values, return true if one is negative and one is positive. Except if the parameter \"negative\" is true, then return true only if both are negative.",
+			prompt: "Given 2 int values, return true if one is negative and one is positive. Except if the parameter \"`negative`\" is true, then return true only if both are negative.",
 			solution: """
 			func posNeg(a: Int, b: Int, negative: Bool) -> Bool {
 				if negative {
@@ -305,7 +305,7 @@ func nearHundred(n: Int) -> Bool {
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Return true if the given non-negative number is a multiple of 3 or a multiple of 5. Use the % (remainder) operator.",
+		prompt: "Return true if the given non-negative number is a multiple of 3 or a multiple of 5. Use the `%` (remainder) operator.",
 		solution: """
 		func or35(n: Int) -> Bool {
 			return n % 3 == 0 || n % 5 == 0
@@ -496,7 +496,7 @@ func nearHundred(n: Int) -> Bool {
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given three int values, a b c, return the largest.",
+		prompt: "Given three int values, `a` `b` `c`, return the largest.",
 		solution: """
 		func intMax(a: Int, b: Int, c: Int) -> Int {
 			var max: Int
@@ -542,7 +542,7 @@ func nearHundred(n: Int) -> Bool {
 			Problem.Parameter(name: "a", type: Int.self),
 			Problem.Parameter(name: "b", type: Int.self)
 		],
-		prompt: "Given 2 int values, return whichever value is nearest to the value 10, or return 0 in the event of a tie. Note that abs(n) returns the absolute value of a number.",
+		prompt: "Given 2 int values, return whichever value is nearest to the value 10, or return 0 in the event of a tie. Note that `abs(n)` returns the absolute value of a number.",
 		solution: """
 		func close10(a: Int, b: Int) -> Int {
 			let aDiff = abs(a - 10)
@@ -699,7 +699,7 @@ func nearHundred(n: Int) -> Bool {
 			Problem.Parameter(name: "a", type: Int.self),
 			Problem.Parameter(name: "b", type: Int.self)
 		],
-		prompt: "Given two non-negative int values, return true if they have the same last digit, such as with 27 and 57. Note that the % (remainder) operator computes remainders, so 17 % 10 is 7.",
+		prompt: "Given two non-negative int values, return true if they have the same last digit, such as with 27 and 57. Note that the `%` (remainder) operator computes remainders, so `17 % 10` is 7.",
 		solution: """
 		func lastDigit(a: Int, b: Int) -> Bool {
 			// True if the last digits are the same

@@ -16,8 +16,17 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self)
 		],
 		prompt: "Given a string, return a string where for every char in the original, there are two characters.",
-		solution: nil,
-		hint: nil,
+		solution: """
+func doubleChar(str: String) -> String {
+	var result = ""
+	for character in str {
+		result = result + String(character) + String(character)
+	}
+	return result
+}
+""",
+		hidesSolutionUntilSolved: true,
+		hint: #"Declare a local String result variable, starting with the empty string "". The standard loop over every character in a string is: "`for character in str`". Inside the loop, use "`character`" to get each character, and add them to the result string with "`=`" and "`+`"."#,
 		testCases: [
 			Problem.TestCase(expectation: "TThhee", arguments: "The"),
 			Problem.TestCase(expectation: "AAAAbbbb", arguments: "AAbb"),
@@ -113,7 +122,7 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given two strings, return true if either of the strings appears at the very end of the other string, ignoring upper/lower case differences (in other words, the computation should not be \"case sensitive\"). Note: str.lowercased() returns the lowercase version of a string.",
+		prompt: "Given two strings, return true if either of the strings appears at the very end of the other string, ignoring upper/lower case differences (in other words, the computation should not be \"case sensitive\"). Note: `str.lowercased()` returns the lowercase version of a string.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -194,7 +203,32 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self)
 		],
 		prompt: "We'll say that a String is xy-balanced if for all the 'x' characters in the string, there exists a 'y' character somewhere later in the string. So \"xxy\" is balanced, but \"xyx\" is not. One 'y' can balance multiple 'x's. Return true if the given string is xy-balanced.",
-		solution: nil,
+		solution: """
+func xyBalance(str: String) -> Bool {
+	// Find the rightmost y
+	var y = -1
+	for (i, c) in str.enumerated() {
+		if c == "y" {
+			y = i
+		}
+	}
+	
+	// Look at the x's, return false if one is after y
+	for (i, c) in str.enumerated() {
+		if c == "x" && i > y {
+			return false
+		}
+	}
+	
+	return true
+	
+	// Solution notes: this solution uses two loops, using
+	// enumerated() to get quick access to the indices.
+	// You could do it with a single reverse loop, noticing
+	// if you see an x before a y. Or use lastIndex(of:).
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: "aaxbby"),
@@ -225,7 +259,7 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: String.self),
 			Problem.Parameter(name: "b", type: String.self)
 		],
-		prompt: "Given two strings, a and b, create a bigger string made of the first char of a, the first char of b, the second char of a, the second char of b, and so on. Any leftover characters go at the end of the result.",
+		prompt: "Given two strings, `a` and `b`, create a bigger string made of the first character of a, the first character of `b`, the second character of `a`, the second character of `b`, and so on. Any leftover characters go at the end of the result.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -252,7 +286,7 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and an int n, return a string made of n repetitions of the last n characters of the string. You may assume that n is between 0 and the length of the string, inclusive.",
+		prompt: "Given a string and an int `n`, return a string made of `n` repetitions of the last `n` characters of the string. You may assume that `n` is between 0 and the length of the string, inclusive.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -274,7 +308,7 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given a string and an int n, return a string made of the first n characters of the string, followed by the first n-1 characters of the string, and so on. You may assume that n is between 0 and the length of the string, inclusive (i.e. n >= 0 and n <= str.count).",
+		prompt: "Given a string and an int `n`, return a string made of the first n characters of the string, followed by the first `n-1` characters of the string, and so on. You may assume that n is between 0 and the length of the string, inclusive (i.e. `n` >= 0 and `n` <= str.count).",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -298,7 +332,7 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "sep", type: String.self),
 			Problem.Parameter(name: "count", type: Int.self)
 		],
-		prompt: "Given two strings, word and a separator sep, return a big string made of count occurrences of the word, separated by the separator string.",
+		prompt: "Given two strings, `word` and a separator `sep`, return a big string made of `count` occurrences of the word, separated by the separator string.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -408,7 +442,22 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self)
 		],
 		prompt: "Returns true if for every '*' (star) in the string, if there are characters both immediately before and after the star, they are the same.",
-		solution: nil,
+		solution: """
+func sameStarChar(str: String) -> Bool {
+	for (i, c) in str.enumerated().dropFirst().dropLast() {
+		if c == "*" {
+			let previous = str[str.index(str.startIndex, offsetBy: i-1)]
+			let next = str[str.index(str.startIndex, offsetBy: i+1)]
+			if previous != next {
+				return false
+			}
+		}
+	}
+	
+	return true
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: "xy*yzz"),
@@ -546,7 +595,7 @@ let codingBatString2Problems: [Problem] = [
 			Problem.Parameter(name: "str", type: String.self),
 			Problem.Parameter(name: "word", type: String.self)
 		],
-		prompt: "Given a string and a non-empty word string, return a string made of each char just before and just after every appearance of the word in the string. Ignore cases where there is no char before or after the word, and a char may be included twice if it is between two words.",
+		prompt: "Given a string and a non-empty word string, return a string made of each char just before and just after every appearance of the word in the string. Ignore cases where there is no character before or after the word, and a character may be included twice if it is between two words.",
 		solution: nil,
 		hint: nil,
 		testCases: [

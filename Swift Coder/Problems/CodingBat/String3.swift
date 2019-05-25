@@ -15,7 +15,7 @@ let codingBatString3Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, count the number of words ending in 'y' or 'z' -- so the 'y' in \"heavy\" and the 'z' in \"fez\" count, but not the 'y' in \"yellow\" (not case sensitive). We'll say that a y or z is at the end of a word if there is not an alphabetic letter immediately following it.",
+		prompt: "Given a string, count the number of words ending in 'y' or 'z' -- so the 'y' in \"heavy\" and the 'z' in \"fez\" count, but not the 'y' in \"yellow\" (not case sensitive). We'll say that a y or z is at the end of a word if there is not an alphabetic letter immediately following it. (Note: `CharacterSet.letters.contains(character)` tests if a character is an alphabetic letter.)",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -40,7 +40,7 @@ let codingBatString3Problems: [Problem] = [
 			Problem.Parameter(name: "base", type: String.self),
 			Problem.Parameter(name: "remove", type: String.self)
 		],
-		prompt: "Given two strings, base and remove, return a version of the base string where all instances of the remove string have been removed (not case sensitive). You may assume that the remove string is length 1 or more. Remove only non-overlapping instances, so with \"xxx\" removing \"xx\" leaves \"x\".",
+		prompt: "Given two strings, `base` and `remove`, return a version of the base string where all instances of the remove string have been removed (not case sensitive). You may assume that the remove string is length 1 or more. Remove only non-overlapping instances, so with \"xxx\" removing \"xx\" leaves \"x\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -143,7 +143,7 @@ let codingBatString3Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return the sum of the digits 0-9 that appear in the string, ignoring all other characters. Return 0 if there are no digits in the string. (Note: Int(str) converts a string to an int.)",
+		prompt: "Given a string, return the sum of the digits 0-9 that appear in the string, ignoring all other characters. Return 0 if there are no digits in the string. (Note: `Int(str)` converts a string to an int.)",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -164,7 +164,7 @@ let codingBatString3Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "string", type: String.self)
 		],
-		prompt: "Given a string, return the longest substring that appears at both the beginning and end of the string without overlapping. For example, sameEnds2(string: \"abXab\") is \"ab\".",
+		prompt: "Given a string, return the longest substring that appears at both the beginning and end of the string without overlapping. For example, `sameEnds2(string: \"abXab\")` is \"ab\".",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -237,7 +237,7 @@ let codingBatString3Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string, return the sum of the numbers appearing in the string, ignoring all other characters. A number is a series of 1 or more digit characters in a row. (Note: Int(string) converts a string to an int.)",
+		prompt: "Given a string, return the sum of the numbers appearing in the string, ignoring all other characters. A number is a series of 1 or more digit characters in a row. (Note: `Int(string)` converts a string to an int.)",
 		solution: nil,
 		hint: nil,
 		testCases: [

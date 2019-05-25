@@ -60,6 +60,7 @@ struct Problem {
 	var parameters = [Parameter]()
 	var prompt: String
 	var solution: String?
+	var hidesSolutionUntilSolved: Bool
 	var hint: String?
 	var onRunTest: String?
 	var testCases: [TestCase] = []
@@ -102,13 +103,26 @@ struct Problem {
 	///   - numberOfTimesToTest: The number of times the code should be tested per test case. The default value is one.
 	///   - onRunTest: Code to run each time the code is tested.
 	///   - eulerMode: If `true`, indicates that the answer should be hidden, and only one test case shown
-	init(title: String, functionName: String? = nil, returnType: StringConvertible.Type, parameters: [Parameter], prompt: String, solution: String? = nil, hint: String? = nil, testCases: [TestCase], customTesterOutputCode: String? = nil, numberOfTimesToTest: Int = 1, onRunTest: String? = nil, eulerMode: Bool = false) {
+	init(title: String,
+		 functionName: String? = nil,
+		 returnType: StringConvertible.Type,
+		 parameters: [Parameter],
+		 prompt: String,
+		 solution: String? = nil,
+		 hidesSolutionUntilSolved: Bool = false,
+		 hint: String? = nil,
+		 testCases: [TestCase],
+		 customTesterOutputCode: String? = nil,
+		 numberOfTimesToTest: Int = 1,
+		 onRunTest: String? = nil,
+		 eulerMode: Bool = false) {
 		
 		self.title = title
 		self.functionName = functionName ?? title
 		self.prompt = prompt
 		self.parameters = parameters
 		self.solution = solution
+		self.hidesSolutionUntilSolved = hidesSolutionUntilSolved
 		self.hint = hint
 		self.eulerMode = eulerMode
 		self.numberOfTimesToTest = numberOfTimesToTest
@@ -135,13 +149,26 @@ struct Problem {
 	///   - hint: A hint. A hint consiting entirely of a valid URL will open the URL.
 	///   - testCases: An array of `TestCase`s of an array of Strings for the parameter values to be used and the expected return value for the call, all as `String`s
 	///   - eulerMode: If `true`, indicates that the answer should be hidden, and only one test case shown
-	init<T: StringConvertibleTuple>(title: String, functionName: String? = nil, returnType: T.Type, tupleReturnTypeLabels: [String?], parameters: [Parameter], prompt: String, solution: String? = nil, hint: String? = nil, testCases: [TestCase], numberOfTimesToTest: Int = 1,  onRunTest: String? = nil, eulerMode: Bool = false) {
+	init<T: StringConvertibleTuple>(title: String,
+									functionName: String? = nil,
+									returnType: T.Type,
+									tupleReturnTypeLabels: [String?],
+									parameters: [Parameter],
+									prompt: String,
+									solution: String? = nil,
+									hidesSolutionUntilSolved: Bool = false,
+									hint: String? = nil,
+									testCases: [TestCase],
+									numberOfTimesToTest: Int = 1,
+									onRunTest: String? = nil,
+									eulerMode: Bool = false) {
 		
 		self.title = title
 		self.functionName = functionName ?? title
 		self.prompt = prompt
 		self.parameters = parameters
 		self.solution = solution
+		self.hidesSolutionUntilSolved = hidesSolutionUntilSolved
 		self.hint = hint
 		self.eulerMode = eulerMode
 		
@@ -378,6 +405,7 @@ extension Problem: Codable {
 		case parameters// = [Parameter]()
 		case prompt//: String
 		case solution//: String?
+		case hidesSolutionUntilSolved//Bool
 		case hint//: String?
 		case onRunTest//: String?
 		case testCases//: [TestCase] = []
@@ -418,6 +446,8 @@ extension Problem: Codable {
 			try container.encode(solution, forKey: .solution)
 		}
 		
+		try container.encode(hidesSolutionUntilSolved, forKey: .hidesSolutionUntilSolved)
+		
 		try container.encode(numberOfTimesToTest, forKey: .numberOfTimesToTest)
 		try container.encode(eulerMode, forKey: .eulerMode)
 		try container.encode(returnType, forKey: .displayedReturnType)
@@ -440,6 +470,8 @@ extension Problem: Codable {
 		self.numberOfTimesToTest = try container.decodeIfPresent(Int.self, forKey: .numberOfTimesToTest) ?? 1
 		self.eulerMode = try container.decodeIfPresent(Bool.self, forKey: .eulerMode) ?? false
 		self.returnType = try container.decodeIfPresent(String.self, forKey: .displayedReturnType) ?? returnType.convertibleTypeName
+		self.solution = try container.decodeIfPresent(String.self, forKey: .solution)
+		self.hidesSolutionUntilSolved = try container.decodeIfPresent(Bool.self, forKey: .hidesSolutionUntilSolved) ?? false
 		
 		self.onRunTest = nil
 	}

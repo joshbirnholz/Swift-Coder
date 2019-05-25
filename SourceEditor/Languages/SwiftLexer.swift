@@ -38,17 +38,17 @@ public class SwiftLexer: SourceCodeRegexLexer {
 		
 		generators.append(keywordGenerator(stdlibIdentifiers, tokenType: .identifier))
 		
+		// Single-line string literal without interpolation
+		generators.append(regexGenerator(#"(")(?![^"\n]*\\\(.*\))[^"\n]*(")"#, tokenType: .string))
+		
+		// Multi-line string literal
+		generators.append(regexGenerator("(\"\"\")(.*?)(\"\"\")", options: [.dotMatchesLineSeparators], tokenType: .string))
+		
 		// Line comment
 		generators.append(regexGenerator("//(.*)", tokenType: .comment))
 		
 		// Block comment
 		generators.append(regexGenerator("(/\\*)(.*)(\\*/)", options: [.dotMatchesLineSeparators], tokenType: .comment))
-		
-		// Single-line string literal
-		generators.append(regexGenerator("(\"|@\")[^\"\\n]*(@\"|\")", tokenType: .string))
-		
-		// Multi-line string literal
-		generators.append(regexGenerator("(\"\"\")(.*?)(\"\"\")", options: [.dotMatchesLineSeparators], tokenType: .string))
 		
 		// Editor placeholder
 		var editorPlaceholderPattern = "(<#)[^\"\\n]*"

@@ -16,6 +16,33 @@ let codingBatLogic1Problems: [Problem] = [
 				Problem.Parameter(name: "isWeekend", type: Bool.self)
 		],
 			prompt: "When squirrels get together for a party, they like to have cigars. A squirrel party is successful when the number of cigars is between 40 and 60, inclusive. Unless it is the weekend, in which case there is no upper bound on the number of cigars. Return true if the party with the given values is successful, or false otherwise.",
+			solution: """
+func cigarParty(cigars: Int, isWeekend: Bool) -> Bool {
+	if isWeekend {
+		return cigars >= 40
+		// A longer way to write the above line:
+		// if cigars >= 40 {
+		//     return true
+		// } else {
+		//     return false
+		// }
+	} else {
+		return cigars >= 40 && cigars <= 60
+	}
+}
+""",
+			hidesSolutionUntilSolved: true,
+			hint: """
+One approach begins with
+
+    if isWeekend {
+    	...
+    } else {
+    	...
+    }
+
+In each section, check cigars with >=, <= etc. to return true if cigars is in range or else return false. Extra trick: for shorter code, note that "return (x >= 50)" automatically returns true if x >= 50 and false if x < 50. This works because the expression "(x >= 50)" evaluates to the value true or false, and then that value is returned.
+""",
 			testCases: [
 				Problem.TestCase(expectation: false, arguments: 30, false),
 				Problem.TestCase(expectation: true, arguments: 50, false),
@@ -35,7 +62,36 @@ let codingBatLogic1Problems: [Problem] = [
 				Problem.Parameter(name: "you", type: Int.self),
 				Problem.Parameter(name: "date", type: Int.self)
 		],
-			prompt: "You and your date are trying to get a table at a restaurant. The parameter \"you\" is the stylishness of your clothes, in the range 0..10, and \"date\" is the stylishness of your date's clothes. The result getting the table is encoded as an int value with 0=no, 1=maybe, 2=yes. If either of you is very stylish, 8 or more, then the result is 2 (yes). With the exception that if either of you has style of 2 or less, then the result is 0 (no). Otherwise the result is 1 (maybe).",
+			prompt: "You and your date are trying to get a table at a restaurant. The parameter \"`you`\" is the stylishness of your clothes, in the range 0..10, and \"`date`\" is the stylishness of your date's clothes. The result getting the table is encoded as an int value with 0=no, 1=maybe, 2=yes. If either of you is very stylish, 8 or more, then the result is 2 (yes). With the exception that if either of you has style of 2 or less, then the result is 0 (no). Otherwise the result is 1 (maybe).",
+			solution: """
+func dateFashion(you: Int, date: Int) -> Int {
+	// Check the <=2 case first, since it takes precedence
+	// over the >=8 case.
+	if you <= 2 || date <= 2 {
+		return 0
+	}
+	else if you >= 8 || date >= 8 {
+		return 2
+	}
+	else {
+		return 1
+	}
+}
+""",
+			hidesSolutionUntilSolved: true,
+			hint: """
+One solution uses the pattern
+
+    if xxx {
+    	return 0
+    } else if yyy {
+    	return 2
+    } else {
+    	return 1
+    }
+
+where xxx and yyy compute with <=, >= if the you/date numbers get that result. The order of the if statements is significant -- the 0 result case takes precedence over the other cases, so that if statement comes first.
+""",
 			testCases: [
 				Problem.TestCase(expectation: 2, arguments: 5, 10),
 				Problem.TestCase(expectation: 0, arguments: 5, 2),
@@ -57,7 +113,7 @@ let codingBatLogic1Problems: [Problem] = [
 				Problem.Parameter(name: "temp", type: Int.self),
 				Problem.Parameter(name: "isSummer", type: Bool.self)
 		],
-			prompt: "The squirrels in Palo Alto spend most of the day playing. In particular, they play if the temperature is between 60 and 90 (inclusive). Unless it is summer, then the upper limit is 100 instead of 90. Given an int temperature and a boolean isSummer, return true if the squirrels play and false otherwise.",
+			prompt: "The squirrels in Palo Alto spend most of the day playing. In particular, they play if the temperature is between 60 and 90 (inclusive). Unless it is summer, then the upper limit is 100 instead of 90. Given an int `temperature` and a boolean `isSummer`, return true if the squirrels play and false otherwise.",
 			testCases: [
 				Problem.TestCase(expectation: true, arguments: 70, false),
 				Problem.TestCase(expectation: false, arguments: 95, false),
@@ -108,7 +164,19 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self)
 		],
 		prompt: "Given 2 ints, a and b, return their sum. However, sums in the range 10..19 inclusive, are forbidden, so in that case just return 20.",
-		solution: nil,
+		solution: """
+func sortaSum(a: Int, b: Int) -> Int {
+	let sum = a + b
+	if sum >= 10 && sum <= 19 {
+		return 20
+	}
+	return sum
+
+	// Solution notes: storing a + b in a local variable first
+	// cleans the code up a bit.
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: 7, arguments: 3, 4),
@@ -153,7 +221,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: Int.self),
 			Problem.Parameter(name: "b", type: Int.self)
 		],
-		prompt: "The number 6 is a truly great number. Given two int values, a and b, return true if either one is 6. Or if their sum or difference is 6. Note: the function abs(num) computes the absolute value of a number.",
+		prompt: "The number 6 is a truly great number. Given two int values, a and b, return true if either one is 6. Or if their sum or difference is 6. Note: the function `abs(num)` computes the absolute value of a number.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -215,7 +283,7 @@ let codingBatLogic1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "We'll say a number is special if it is a multiple of 11 or if it is one more than a multiple of 11. Return true if the given non-negative number is special. Use the % (remainder) operator.",
+		prompt: "We'll say a number is special if it is a multiple of 11 or if it is one more than a multiple of 11. Return true if the given non-negative number is special. Use the `%` (remainder) operator.",
 		solution: nil,
 		hint: "https://docs.swift.org/swift-book/LanguageGuide/BasicOperators.html#ID64",
 		testCases: [
@@ -282,7 +350,7 @@ let codingBatLogic1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Return true if the given non-negative number is a multiple of 3 or 5, but not both. Use the % (remainder) operator.",
+		prompt: "Return true if the given non-negative number is a multiple of 3 or 5, but not both. Use the `%` (remainder) operator.",
 		solution: nil,
 		hint: "https://docs.swift.org/swift-book/LanguageGuide/BasicOperators.html#ID64",
 		testCases: [
@@ -346,7 +414,7 @@ let codingBatLogic1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "num", type: Int.self)
 		],
-		prompt: "Given a non-negative number \"num\", return true if num is within 2 of a multiple of 10. Note: (a % b) is the remainder of dividing a by b, so (7 % 5) is 2.",
+		prompt: "Given a non-negative number \"`num`\", return true if num is within 2 of a multiple of 10. Note: `(a % b)` is the remainder of dividing a by b, so `(7 % 5)` is 2.",
 		solution: nil,
 		hint: "https://docs.swift.org/swift-book/LanguageGuide/BasicOperators.html#ID64",
 		testCases: [
@@ -407,7 +475,26 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "isAsleep", type: Bool.self)
 		],
 		prompt: "Your cell phone rings. Return true if you should answer it. Normally you answer, except in the morning you only answer if it is your mom calling. In all cases, if you are asleep, you do not answer.",
-		solution: nil,
+		solution: """
+func answerCell(isMorning: Bool, isMom: Bool, isAsleep: Bool) -> Bool {
+	if isAsleep {
+		return false
+	}
+	
+	if isMorning && !isMom {
+		return false
+	}
+	
+	return true
+	
+	// Solution notes: write code to detect each of the
+	// false cases. Deal with one case at a time to
+	// keep it simple.
+	// Avoid using == true in tests; use the variables
+	// directly as shown here.
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: false, false, false),
@@ -452,9 +539,34 @@ let codingBatLogic1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "str", type: String.self)
 		],
-		prompt: "Given a string str, if the string starts with \"f\" return \"Fizz\". If the string ends with \"b\" return \"Buzz\". If both the \"f\" and \"b\" conditions are true, return \"FizzBuzz\". In all other cases, return the string unchanged.",
-		solution: nil,
-		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
+		prompt: "Given a string `str`, if the string starts with \"f\" return \"Fizz\". If the string ends with \"b\" return \"Buzz\". If both the \"f\" and \"b\" conditions are true, return \"FizzBuzz\". In all other cases, return the string unchanged. See also: https://codingbat.com/doc/practice/fizzbuzz-code.html",
+		solution: """
+func fizzString(str: String) -> String {
+	let f = str.hasPrefix("f")
+	let b = str.hasSuffix("b")
+	
+	if f && b {
+		return "FizzBuzz"
+	}
+	
+	if f {
+		return "Fizz"
+	}
+	
+	if b {
+		return "Buzz"
+	}
+	
+	return str
+	
+	// Style: you could use a series of "else" there,
+	// but it seems simpler to just not have them.
+}
+""",
+		hidesSolutionUntilSolved: true,
+		hint: """
+The built-in `str.hasPrefix(xxx)` and `str.hasSuffix(xxx)` tests are very handy here.
+""",
 		testCases: [
 			Problem.TestCase(expectation: "Fizz", arguments: "fig"),
 			Problem.TestCase(expectation: "Buzz", arguments: "dib"),
@@ -481,7 +593,7 @@ let codingBatLogic1Problems: [Problem] = [
 		parameters: [
 			Problem.Parameter(name: "n", type: Int.self)
 		],
-		prompt: "Given an int n, return the string form of the number followed by \"!\". So the int 6 yields \"6!\". Except if the number is divisible by 3 use \"Fizz\" instead of the number, and if the number is divisible by 5 use \"Buzz\", and if divisible by both 3 and 5, use \"FizzBuzz\". Note: the % \"mod\" operator computes the remainder after division, so 23 % 10 yields 3. What will the remainder be when one number divides evenly into another?",
+		prompt: "Given an int `n`, return the string form of the number followed by \"!\". So the int 6 yields \"6!\". Except if the number is divisible by 3 use \"Fizz\" instead of the number, and if the number is divisible by 5 use \"Buzz\", and if divisible by both 3 and 5, use \"FizzBuzz\". Note: the `%` \"remainder\" operator computes the remainder after division, so `23 % 10` yields 3. What will the remainder be when one number divides evenly into another?",
 		solution: nil,
 		hint: "https://codingbat.com/doc/practice/fizzbuzz-code.html",
 		testCases: [
@@ -513,7 +625,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given three ints, a b c, return true if it is possible to add two of the ints to get the third.",
+		prompt: "Given three ints, `a` `b` `c`, return true if it is possible to add two of the ints to get the third.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -541,7 +653,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "c", type: Int.self),
 			Problem.Parameter(name: "bOk", type: Bool.self)
 		],
-		prompt: "Given three ints, a b c, return true if b is greater than a, and c is greater than b. However, with the exception that if \"bOk\" is true, b does not need to be greater than a.",
+		prompt: "Given three ints, `a` `b` `c`, return true if b is greater than a, and c is greater than b. However, with the exception that if \"`bOk`\" is true, b does not need to be greater than a.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -569,7 +681,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "c", type: Int.self),
 			Problem.Parameter(name: "equalOk", type: Bool.self)
 		],
-		prompt: "Given three ints, a b c, return true if they are in strict increasing order, such as 2 5 11, or 5 6 7, but not 6 5 7 or 5 5 7. However, with the exception that if \"equalOk\" is true, equality is allowed, such as 5 5 7 or 5 5 5.",
+		prompt: "Given three ints, `a` `b` `c`, return true if they are in strict increasing order, such as 2 5 11, or 5 6 7, but not 6 5 7 or 5 5 7. However, with the exception that if \"`equalOk`\" is true, equality is allowed, such as 5 5 7 or 5 5 5.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -598,7 +710,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given three ints, a b c, return true if two or more of them have the same rightmost digit. The ints are non-negative. Note: the % (remainder) operator computes the remainder, e.g. 17 % 10 is 7.",
+		prompt: "Given three ints, `a` `b` `c`, return true if two or more of them have the same rightmost digit. The ints are non-negative. Note: the `%` (remainder) operator computes the remainder, e.g. `17 % 10` is 7.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -626,9 +738,23 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "Given three ints, a b c, return true if one of them is 10 or more less than one of the others.",
-		solution: nil,
-		hint: nil,
+		prompt: "Given three ints, `a` `b` `c`, return true if one of them is 10 or more less than one of the others.",
+		solution: """
+func lessBy10(a: Int, b: Int, c: Int) -> Bool {
+	return abs(a - b) >= 10 ||
+	       abs(b - c) >= 10 ||
+	       abs(a - c) >= 10
+	
+	// Solution notes: it's a bit surprising that this
+	// can be so short. We simplify by using abs() to
+	// take the absolute value -- say with the ab pair,
+	// one is smaller and one is bigger, but we don't
+	// care which is which, since we are just looking
+	// for a difference of 10 or more.
+}
+""",
+		hidesSolutionUntilSolved: true,
+		hint: "There are just three pairings: ab, bc, ac. Detect if the difference in one of those pairs is 10 or more.",
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: 1, 7, 11),
 			Problem.TestCase(expectation: false, arguments: 1, 7, 10),
@@ -655,7 +781,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "die2", type: Int.self),
 			Problem.Parameter(name: "noDoubles", type: Bool.self)
 		],
-		prompt: "Return the sum of two 6-sided dice rolls, each in the range 1..6. However, if noDoubles is true, if the two dice show the same value, increment one die to the next value, wrapping around to 1 if its value was 6.",
+		prompt: "Return the sum of two 6-sided dice rolls, each in the range 1..6. However, if `noDoubles` is true, if the two dice show the same value, increment one die to the next value, wrapping around to 1 if its value was 6.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -681,7 +807,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: Int.self),
 			Problem.Parameter(name: "b", type: Int.self)
 		],
-		prompt: "Given two int values, return whichever value is larger. However if the two values have the same remainder when divided by 5, then the return the smaller value. However, in all cases, if the two values are the same, return 0. Note: the % (remainder) operator computes the remainder, e.g. 7 % 5 is 2.",
+		prompt: "Given two int values, return whichever value is larger. However if the two values have the same remainder when divided by 5, then the return the smaller value. However, in all cases, if the two values are the same, return 0. Note: the `%` (remainder) operator computes the remainder, e.g. `7 % 5` is 2.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -707,7 +833,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "You have a red lottery ticket showing ints a, b, and c, each of which is 0, 1, or 2. If they are all the value 2, the result is 10. Otherwise if they are all the same, the result is 5. Otherwise so long as both b and c are different from a, the result is 1. Otherwise the result is 0.",
+		prompt: "You have a red lottery ticket showing ints `a`, `b`, and `c`, each of which is 0, 1, or 2. If they are all the value 2, the result is 10. Otherwise if they are all the same, the result is 5. Otherwise so long as both `b` and `c` are different from a, the result is 1. Otherwise the result is 0.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -733,7 +859,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "You have a green lottery ticket, with ints a, b, and c on it. If the numbers are all different from each other, the result is 0. If all of the numbers are the same, the result is 20. If two of the numbers are the same, the result is 10.",
+		prompt: "You have a green lottery ticket, with ints `a`, `b`, and `c` on it. If the numbers are all different from each other, the result is 0. If all of the numbers are the same, the result is 20. If two of the numbers are the same, the result is 10.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -760,7 +886,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "b", type: Int.self),
 			Problem.Parameter(name: "c", type: Int.self)
 		],
-		prompt: "You have a blue lottery ticket, with ints a, b, and c on it. This makes three pairs, which we'll call ab, bc, and ac. Consider the sum of the numbers in each pair. If any pair sums to exactly 10, the result is 10. Otherwise if the ab sum is exactly 10 more than either bc or ac sums, the result is 5. Otherwise the result is 0.",
+		prompt: "You have a blue lottery ticket, with ints `a`, `b`, and `c` on it. This makes three pairs, which we'll call ab, bc, and ac. Consider the sum of the numbers in each pair. If any pair sums to exactly 10, the result is 10. Otherwise if the ab sum is exactly 10 more than either bc or ac sums, the result is 5. Otherwise the result is 0.",
 		solution: nil,
 		hint: nil,
 		testCases: [
@@ -786,8 +912,22 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: Int.self),
 			Problem.Parameter(name: "b", type: Int.self)
 		],
-		prompt: "Given two ints, each in the range 10..99, return true if there is a digit that appears in both numbers, such as the 2 in 12 and 23. (Note: division, e.g. n/10, gives the left digit while the % (remainder) n%10 gives the right digit.)",
-		solution: nil,
+		prompt: "Given two ints, each in the range 10..99, return true if there is a digit that appears in both numbers, such as the 2 in 12 and 23. (Note: division, e.g. `n/10`, gives the left digit while the `%` (remainder) `n%10` gives the right digit.)",
+		solution: """
+func shareDigit(a: Int, b: Int) -> Bool {
+	let a1 = a / 10  // left digit of a
+	let a2 = a % 10  // right digit of a
+	let b1 = b / 10
+	let b2 = b % 10
+	return a1 == b1 || a1 == b2 || a2 == b1 || a2 == b2
+	
+	// Solution notes: here we first store the left and right
+	// digits of a and b in local variables. Then the solution
+	// just checks == looking for a match. One could write it
+	// all as one long line, but that could prove error prone.
+}
+""",
+		hidesSolutionUntilSolved: true,
 		hint: nil,
 		testCases: [
 			Problem.TestCase(expectation: true, arguments: 12, 23),
@@ -810,7 +950,7 @@ let codingBatLogic1Problems: [Problem] = [
 			Problem.Parameter(name: "a", type: Int.self),
 			Problem.Parameter(name: "b", type: Int.self)
 		],
-		prompt: "Given 2 non-negative ints, a and b, return their sum, so long as the sum has the same number of digits as a. If the sum has more digits than a, just return a without b. (Note: one way to compute the number of digits of a non-negative int n is to convert it to a string with String(n) and then check the length of the string.)",
+		prompt: "Given 2 non-negative ints, `a` and `b`, return their sum, so long as the sum has the same number of digits as `a`. If the sum has more digits than `a`, just return `a` without `b`. (Note: one way to compute the number of digits of a non-negative int n is to convert it to a string with `String(n)` and then check the length of the string.)",
 		solution: nil,
 		hint: nil,
 		testCases: [
