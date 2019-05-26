@@ -1,0 +1,3 @@
+github "drmohundro/SWXMLHash" "4.8.0"
+github "joshbirnholz/SourceKitten" "3bccf76a99dbd5ef070c0811744fd6f2c5292529"
+github "jpsim/Yams" "2.0.0"
