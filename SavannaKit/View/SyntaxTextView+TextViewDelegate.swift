@@ -262,19 +262,28 @@ extension SyntaxTextView {
 			var newLinePrefix = ""
 			
 			for char in currentLine {
-				
-				let tempSet = CharacterSet(charactersIn: "\(char)")
-				
-				if tempSet.isSubset(of: .whitespacesAndNewlines) {
+				if char.isWhitespace {
 					newLinePrefix += "\(char)"
 				} else {
 					break
 				}
-
 			}
 			
-			if currentLine.hasSuffix("{") {
+			let (opens, closes) = textView.text.reduce((0, 0)) { previous, current in
+				if current == "{" {
+					return (previous.0 + 1, previous.1)
+				} else if current == "}" {
+					return (previous.0, previous.1 + 1)
+				} else {
+					return previous
+				}
+			}
+			
+			if opens != closes && currentLine.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("{") {
 				insertingSuffix = "\n" + newLinePrefix + "}"
+			}
+			
+			if currentLine.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("{") {
 				newLinePrefix += "\t"
 			}
 			

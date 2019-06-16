@@ -23,6 +23,15 @@ class SwiftCoderViewController: NSViewController {
 	let sourceKitten = SourceKitten()
 	let lexer = { SwiftLexer() }()
 	
+	var isAutomaticCodeCompletionEnabled: Bool {
+		get {
+			return userDefaults.bool(forKey: #function)
+		}
+		set {
+			userDefaults.set(newValue, forKey: #function)
+		}
+	}
+	
 	enum AssistantView: Int, CaseIterable {
 		case tableView
 		case textView
@@ -276,10 +285,10 @@ class SwiftCoderViewController: NSViewController {
 		inputTextView.contentTextView.autocompletionHighlightedAttributes = [:]
 		inputTextView.contentTextView.autocompletesWhileTyping = false
 		
-		var wordBoundaryCharacterSet = CharacterSet.alphanumerics.inverted
-		wordBoundaryCharacterSet.remove(charactersIn: "()?!#@$\\`_-<>")
+		var wordCharacterSet: Set<Character> = .alphanumerics
+		"()?!#@$\\`_-<>".forEach { wordCharacterSet.insert($0) }
 		
-		inputTextView.contentTextView.autocompletionWordBoundaryCharacterSet = wordBoundaryCharacterSet
+		inputTextView.contentTextView.autocompletionWordCharacterSet = wordCharacterSet
 		
 		setupCodeMenu()
 		setupHelpMenu()
@@ -488,12 +497,17 @@ class SwiftCoderViewController: NSViewController {
 		showAlert()
 	}
 	
+	var codeCompletionToggleMenuItem: NSMenuItem?
 	var swiftVersionMenuItem: NSMenuItem?
 	
 	func setupAppMenu() {
 		guard let appMenu = NSApp.mainMenu?.items.first?.submenu else { return }
 		
+		appMenu.delegate = self
+		
 		let index = appMenu.indexOfItem(withTitle: "Preferences…")
+		
+		codeCompletionToggleMenuItem = appMenu.insertItem(withTitle: "Enable Code Completion", action: #selector(toggleCodeCompletionEnabled), keyEquivalent: "", at: index)
 		
 		appMenu.insertItem(withTitle: "Manage Problem Sets in Finder", action: #selector(manageProblemSetsInFinder), keyEquivalent: "", at: index)
 		
@@ -506,6 +520,10 @@ class SwiftCoderViewController: NSViewController {
 	@objc func manageProblemSetsInFinder() {
 		let url = LocalCodeController.shared.applicationSupportDirectory.appendingPathComponent("Problems", isDirectory: true)
 		NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: url.path)
+	}
+	
+	@objc func toggleCodeCompletionEnabled() {
+		self.isAutomaticCodeCompletionEnabled.toggle()
 	}
 	
 	@objc func doNothing() { }
@@ -621,10 +639,19 @@ class SwiftCoderViewController: NSViewController {
 		problemMenu.addItem(withTitle: "Random", action: #selector(randomButtonPressed(sender:)), keyEquivalent: "")
 		problemMenu.addItem(.separator())
 		
+		let activeUser = codeController.getActiveUserName()
+		
 		let problemSetMenu = NSMenu(title: "Problem Set")
 		let setItems: [NSMenuItem] = ProblemSet.allCases.map {
 			let item = NSMenuItem(title: $0.title, action: #selector(problemSetMenuItemSelected), keyEquivalent: "")
 			item.representedObject = $0
+			
+			let allSolved = $0.problems.allSatisfy { codeController.user(activeUser, hasSolved: $0) }
+			
+			if allSolved {
+				item.title += " ⭐️"
+			}
+			
 			return item
 		}
 		setItems.forEach(problemSetMenu.addItem)
@@ -636,8 +663,6 @@ class SwiftCoderViewController: NSViewController {
 		
 //		problemSetPopupButton.menu = problemSetMenu
 //		problemSetPopupButton.setTitle(problemIndexPath.list.title)
-		
-		let activeUser = codeController.getActiveUserName()
 		
 		let items: [NSMenuItem] = problems.enumerated().map { index, problem in
 			let item = NSMenuItem(title: problem.title, action: #selector(problemMenuItemSelected), keyEquivalent: "")
@@ -872,7 +897,18 @@ class SwiftCoderViewController: NSViewController {
 						let numSuccesses = testResults.filter { $0.success == .ok }.count
 						
 						if numSuccesses == testResults.count {
-							self.outputStatus = ("✓ All correct", .successGreen)
+							let activeUsername = self.codeController.getActiveUserName()
+							let allSolved = self.problemIndexPath.list.problems.allSatisfy { self.codeController.user(activeUsername, hasSolved: $0) }
+							
+							var message = "✓ "
+							
+							if allSolved {
+								message = "⭐️ "
+							}
+							
+							message += "All correct"
+							
+							self.outputStatus = (message, .successGreen)
 							
 							self.codeController.user(self.codeController.getActiveUserName(), didSolve: self.problem)
 							self.configureProblemMenu()
@@ -1241,7 +1277,11 @@ class SwiftCoderViewController: NSViewController {
 			return
 		}
 		
+		
 		let items = sourceKitten.complete(source: source, offset: offset, sdkPath: sdkPath).filter { shouldInclude($0) }.sorted(by: completionItem(_:isOrderedBefore:))
+		
+//		completionItems = items.filter { shouldInclude($0) }.sorted(by: completionItem(_:isOrderedBefore:))
+//		return
 		
 		if !items.isEmpty {
 			completionItems = items
@@ -1475,6 +1515,10 @@ extension SwiftCoderViewController: NSMenuItemValidation {
 			return problemIndexPath.index - 1 >= 0
 		}
 		
+		if menuItem.action == #selector(toggleCodeCompletionEnabled) {
+			menuItem.state = isAutomaticCodeCompletionEnabled ? .on : .off
+		}
+		
 		if menuItem.action == #selector(nextButtonPressed(sender:)) {
 			return problemIndexPath.index + 1 < problems.count
 		}
@@ -1535,11 +1579,12 @@ extension SwiftCoderViewController: SyntaxTextViewDelegate {
 	
 	func didChangeText(_ syntaxTextView: SyntaxTextView) {
 		print(#function)
-		self.completionsNeedDisplay = true
+//		self.completionsNeedDisplay = true
 //		syntaxTextView.contentTextView.complete(self)
 	}
 	
 	func didChangeSelectedRange(_ syntaxTextView: SyntaxTextView, selectedRange: NSRange) {
+		self.completionsNeedDisplay = isAutomaticCodeCompletionEnabled
 		print(#function)
 		self.updateQuickHelp()
 		var string: String!
@@ -1551,7 +1596,7 @@ extension SwiftCoderViewController: SyntaxTextViewDelegate {
 			}
 		}
 		
-		DispatchQueue.global(qos: .userInteractive).async {
+		DispatchQueue.global(qos: .userInteractive).sync {
 			self.updateCompletionOptions(source: string, offset: selectedRange.location)
 			if self.completionsNeedDisplay {
 				DispatchQueue.main.async {
@@ -1614,6 +1659,8 @@ extension SwiftCoderViewController: NCRAutocompleteTextViewDelegate {
 			inputTextView.contentTextView.autocompletionInsertionMode = .complete
 		}
 		
+		print("Just finished: " + word)
+		
 		//		filteredCompletionItems = filteredCompletionItems.sorted { first, second in
 		//			if first.autocompletionInsertionString.lowercased().hasPrefix(word.lowercased()) {
 		//				return true
@@ -1635,4 +1682,10 @@ extension SwiftCoderViewController: NCRAutocompleteTextViewDelegate {
 		return candidates.contains { ($0 as? CodeCompletionItem)?.autocompletionImage != nil }
 	}
 	
+}
+
+extension SwiftCoderViewController: NSMenuDelegate {
+	func menuNeedsUpdate(_ menu: NSMenu) {
+		codeCompletionToggleMenuItem?.isHidden = !(isAutomaticCodeCompletionEnabled || NSEvent.modifierFlags.contains(.option))
+	}
 }

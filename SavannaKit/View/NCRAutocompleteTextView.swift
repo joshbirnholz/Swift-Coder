@@ -8,6 +8,12 @@
 
 import Cocoa
 
+public extension Set where Element == Character {
+	static var alphanumerics: Set<Character> {
+		return Set<Character>(arrayLiteral: "Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M","q","w","e","r","t","y","u","i","o","p","a","s","d","f","g","h","j","k","l","z","x","c","v","b","n","m","1","2","3","4","5","6","7","8","9","0")
+	}
+}
+
 // MARK: -
 
 public protocol NCRAutocompleteTextViewDelegate: class {
@@ -115,8 +121,8 @@ open class NCRAutocompleteTextView: NSTextView, NSTableViewDelegate, NSTableView
 		}
 	}()
 	
-	/// A character set representing valid characters to continue completing a given word. The default value is `CharacterSet.alphanumerics.inverted`.
-	open var autocompletionWordBoundaryCharacterSet = CharacterSet.alphanumerics.inverted
+	/// A character set representing valid characters to continue completing a given word. The default value is `Set<Character>.alphanumerics`.
+	open var autocompletionWordCharacterSet: Set<Character> = .alphanumerics
 	
 	/// The minimum width for the autocompletion popover.
 	open var autocompletionPopoverMinimumWidth: CGFloat = 200.0
@@ -188,7 +194,7 @@ open class NCRAutocompleteTextView: NSTextView, NSTableViewDelegate, NSTableView
 	}
 	
 	// Used to highlight typed characters and insert text
-	private var substring: Substring!
+	private(set) var substring: Substring!
 	// Used to keep track of when the insert cursor has moved so we
 	// can close the popover. See didChangeSelection(_:)
 	private var lastPos: Int = -1
@@ -353,12 +359,10 @@ open class NCRAutocompleteTextView: NSTextView, NSTableViewDelegate, NSTableView
 	}
 	
 	private func characterIsWordBoundary(_ character: Character) -> Bool {
-		return autocompletionWordBoundaryCharacterSet.isSuperset(of: CharacterSet.init(charactersIn: String(character)))
+		return !autocompletionWordCharacterSet.contains(character)
 	}
 	
-	open override func complete(_ sender: Any?) {
-		guard let window = window else { return }
-		
+	@discardableResult private func updateSubstring() -> Range<Substring.Index> {
 		let startIndex = string.prefix(selectedRange.location).lastIndex {
 			characterIsWordBoundary($0)
 			}.flatMap { string.index(after: $0) } ?? string.startIndex
@@ -367,8 +371,17 @@ open class NCRAutocompleteTextView: NSTextView, NSTableViewDelegate, NSTableView
 			characterIsWordBoundary($0)
 			} ?? string.endIndex
 		
-		let substringRange = startIndex ..< endIndex
-		substring = string[substringRange]
+		let range = startIndex ..< endIndex
+		
+		substring = string[range]
+		
+		return range 
+	}
+	
+	open override func complete(_ sender: Any?) {
+		guard let window = window else { return }
+		
+		let substringRange = updateSubstring()
 		
 		guard !substring.isEmpty else {
 			// This happens when we just started a new word or if we have already typed the entire word
@@ -408,7 +421,7 @@ open class NCRAutocompleteTextView: NSTextView, NSTableViewDelegate, NSTableView
 		var rect = firstRect(forCharacterRange: NSRange(substringRange, in: string), actualRange: nil)
 		rect = window.convertFromScreen(rect)
 		rect = convert(rect, from: nil)
-		let firstChar = (substring as NSString).substring(to: 1) as NSString
+		let firstChar = substring.isEmpty ? " " : (substring as NSString).substring(to: 1) as NSString
 		let firstCharSize = firstChar.size(withAttributes: [.font: self.font as Any])
 		rect.size.width = firstCharSize.width
 		
