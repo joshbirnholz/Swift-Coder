@@ -894,6 +894,8 @@ class SwiftCoderViewController: NSViewController {
 							$1.success == .ok
 						}
 						
+						self.codeController.user(self.codeController.getActiveUserName(), didSolve: self.problem)
+						
 						let numSuccesses = testResults.filter { $0.success == .ok }.count
 						
 						if numSuccesses == testResults.count {
@@ -910,7 +912,7 @@ class SwiftCoderViewController: NSViewController {
 							
 							self.outputStatus = (message, .successGreen)
 							
-							self.codeController.user(self.codeController.getActiveUserName(), didSolve: self.problem)
+							
 							self.configureProblemMenu()
 							
 							self.configureShowSolutionButton()
