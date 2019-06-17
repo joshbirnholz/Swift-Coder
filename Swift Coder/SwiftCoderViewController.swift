@@ -1584,9 +1584,15 @@ extension SwiftCoderViewController: SyntaxTextViewDelegate {
 	}
 	
 	func didChangeSelectedRange(_ syntaxTextView: SyntaxTextView, selectedRange: NSRange) {
-		self.completionsNeedDisplay = isAutomaticCodeCompletionEnabled
 		print(#function)
 		self.updateQuickHelp()
+		
+		guard isAutomaticCodeCompletionEnabled else {
+			return
+		}
+		
+		self.completionsNeedDisplay = isAutomaticCodeCompletionEnabled
+		
 		var string: String!
 		if Thread.isMainThread {
 			string = self.inputTextView.text
