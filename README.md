@@ -14,8 +14,6 @@ So I’ve created this app to let me do just that.
 
 **Xcode must be installed in order for the app to be able to compile your code.** If Xcode is installed in a location other than /Applications/, you can pick a custom path from the **Swift Coder** menu.
 
-If you run the app with the App Sandbox entitlement, code can't affect any other files on your computer, but it will use a different method to test your code that takes a few extra seconds. This is safer, so the App Sandbox entitlement is enabled in the project. You can disable it to speed up running your code.
-
 ### Screenshots
 
 ![Screenshot 1](https://i.imgur.com/BMsJ2Ly.png)
